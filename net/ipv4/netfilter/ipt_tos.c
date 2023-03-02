@@ -2,7 +2,7 @@
 #include <linux/module.h>
 #include <linux/skbuff.h>
 
-#include <linux/netfilter_ipv4/ipt_tos.h>
+#include <linux/netfilter_ipv4/ipt_tos_.h>
 #include <linux/netfilter_ipv4/ip_tables.h>
 
 static int

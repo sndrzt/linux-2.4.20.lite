@@ -1,6 +1,6 @@
 /* IP tables module for matching the value of the IPv4 DSCP field
  *
- * ipt_dscp.c,v 1.3 2002/08/05 19:00:21 laforge Exp
+ * ipt_dscp_.c,v 1.3 2002/08/05 19:00:21 laforge Exp
  *
  * (C) 2002 by Harald Welte <laforge@gnumonks.org>
  *

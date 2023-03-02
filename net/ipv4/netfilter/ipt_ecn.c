@@ -12,7 +12,7 @@
 #include <linux/tcp.h>
 
 #include <linux/netfilter_ipv4/ip_tables.h>
-#include <linux/netfilter_ipv4/ipt_ecn.h>
+#include <linux/netfilter_ipv4/ipt_ecn_.h>
 
 MODULE_AUTHOR("Harald Welte <laforge@gnumonks.org>");
 MODULE_DESCRIPTION("IP tables ECN matching module");

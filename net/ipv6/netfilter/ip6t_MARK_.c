@@ -5,7 +5,7 @@
 #include <net/checksum.h>
 
 #include <linux/netfilter_ipv6/ip6_tables.h>
-#include <linux/netfilter_ipv6/ip6t_MARK.h>
+#include <linux/netfilter_ipv6/ip6t_MARK_.h>
 
 static unsigned int
 target(struct sk_buff **pskb,

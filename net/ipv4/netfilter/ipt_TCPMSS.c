@@ -10,7 +10,7 @@
 #include <net/tcp.h>
 
 #include <linux/netfilter_ipv4/ip_tables.h>
-#include <linux/netfilter_ipv4/ipt_TCPMSS.h>
+#include <linux/netfilter_ipv4/ipt_TCPMSS_.h>
 
 #if 0
 #define DEBUGP printk

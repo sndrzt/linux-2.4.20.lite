@@ -15,7 +15,7 @@
 #include <net/checksum.h>
 
 #include <linux/netfilter_ipv4/ip_tables.h>
-#include <linux/netfilter_ipv4/ipt_DSCP.h>
+#include <linux/netfilter_ipv4/ipt_DSCP_.h>
 
 MODULE_AUTHOR("Harald Welte <laforge@gnumonks.org>");
 MODULE_DESCRIPTION("IP tables DSCP modification module");

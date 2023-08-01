@@ -149,7 +149,7 @@ struct vm_operations_struct {
  *
  * TODO: make this structure smaller, it could be as small as 32 bytes.
  */
-typedef struct page {
+struct page {
 	struct list_head list;		/* ->mapping has some page lists. */
 	struct address_space *mapping;	/* The inode (or ...) we belong to. */
 	unsigned long index;		/* Our offset within mapping. */
@@ -177,7 +177,7 @@ typedef struct page {
 	void *virtual;			/* Kernel virtual address (NULL if
 					   not kmapped, ie. highmem) */
 #endif /* CONFIG_HIGMEM || WANT_PAGE_VIRTUAL */
-} mem_map_t;
+};
 
 /*
  * Methods to modify the page usage count.
@@ -322,10 +322,10 @@ typedef struct page {
 #define NODE_SHIFT 4
 #define ZONE_SHIFT (BITS_PER_LONG - 8)
 
-struct zone_struct;
-extern struct zone_struct *zone_table[];
+struct pm_zone;
+extern struct pm_zone *zone_table[];
 
-static inline zone_t *page_zone(struct page *page)
+static inline struct pm_zone *page_zone(struct page *page)
 {
 	return zone_table[page->flags >> ZONE_SHIFT];
 }
@@ -364,7 +364,7 @@ static inline void set_page_zone(struct page *page, unsigned long zone_num)
 #else /* CONFIG_HIGHMEM || WANT_PAGE_VIRTUAL */
 
 #define page_address(page)						\
-	__va( (((page) - page_zone(page)->zone_mem_map) << PAGE_SHIFT)	\
+	__va( (((page) - page_zone(page)->zone_pg_map) << PAGE_SHIFT)	\
 			+ page_zone(page)->zone_start_paddr)
 
 #endif /* CONFIG_HIGHMEM || WANT_PAGE_VIRTUAL */
@@ -413,7 +413,7 @@ extern void FASTCALL(set_page_dirty(struct page *));
 #define NOPAGE_OOM	((struct page *) (-1))
 
 /* The array of struct pages */
-extern mem_map_t * mem_map;
+extern struct page * pg_map;
 
 /*
  * There is only one page-allocator function, and two main namespaces to
@@ -461,7 +461,7 @@ extern void FASTCALL(free_pages(unsigned long addr, unsigned int order));
 #define free_page(addr) free_pages((addr),0)
 
 extern void show_free_areas(void);
-extern void show_free_areas_node(struct pg_node *pgnod);
+extern void show_free_areas_node(struct pm_node *pmnod);
 
 extern void clear_page_tables(struct mm_struct *, unsigned long, int);
 
@@ -508,7 +508,7 @@ extern int pgt_cache_water[2];
 extern int check_pgt_cache(void);
 
 extern void free_area_init(unsigned long * zones_size);
-extern void free_area_init_node(int nid, struct pg_node *pgnod, struct page *pmap,
+extern void free_area_init_node(int nid, struct pm_node *pmnod, struct page *pmap,
 	unsigned long * zones_size, unsigned long zone_start_paddr, 
 	unsigned long *zholes_size);
 extern void mem_init(void);
@@ -576,7 +576,7 @@ static inline int can_vma_merge(struct vm_area_struct * vma, unsigned long vm_fl
 		return 0;
 }
 
-struct zone_t;
+struct pm_zone;
 /* filemap.c */
 extern void remove_inode_page(struct page *);
 extern unsigned long page_unuse(struct page *);

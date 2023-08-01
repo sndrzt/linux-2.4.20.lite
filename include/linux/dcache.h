@@ -170,7 +170,7 @@ extern void shrink_dcache_parent(struct dentry *);
 extern int d_invalidate(struct dentry *);
 
 #define shrink_dcache() prune_dcache(0)
-struct zone_struct;
+struct pm_zone;
 /* dcache memory management */
 extern int shrink_dcache_memory(int, unsigned int);
 extern void prune_dcache(int);

@@ -306,7 +306,7 @@ static inline void ptep_mkdirty(pte_t *ptep)			{ set_bit(_PAGE_BIT_DIRTY, ptep);
  * and a page entry and page directory to the page they refer to.
  */
 
-#define mk_pte(page, pgprot)	__mk_pte((page) - mem_map, (pgprot))
+#define mk_pte(page, pgprot)	__mk_pte((page) - pg_map, (pgprot))
 
 /* This takes a physical page address that is used by the remapping functions */
 #define mk_pte_phys(physpage, pgprot)	__mk_pte((physpage) >> PAGE_SHIFT, pgprot)

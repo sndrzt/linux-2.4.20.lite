@@ -19,12 +19,12 @@
 #define MAX_ORDER CONFIG_FORCE_MAX_ZONEORDER
 #endif
 
-typedef struct free_area_struct {
+struct free_area {
 	struct list_head	free_list;
 	unsigned long		*map;
-} free_area_t;
+};
 
-struct pg_node;
+struct pm_node;
 
 /*
  * On machines where it is needed (eg PCs) we divide physical memory
@@ -34,7 +34,7 @@ struct pg_node;
  * ZONE_NORMAL	16-896 MB	direct mapped by the kernel
  * ZONE_HIGHMEM	 > 896 MB	only page cache and user processes
  */
-typedef struct zone_struct {
+struct pm_zone {
 	/*
 	 * Commonly accessed fields:
 	 */
@@ -46,10 +46,10 @@ typedef struct zone_struct {
 	/*
 	 * free areas of different sizes
 	 */
-	free_area_t		free_area[MAX_ORDER];
+	struct free_area		free_area[MAX_ORDER];
 
 	/*
-	 * wait_table		-- the array holding the hash table
+	 * wait_tbl		-- the array holding the hash table
 	 * wait_table_size	-- the size of the hash table array
 	 * wait_table_shift	-- wait_table_size
 	 * 				== BITS_PER_LONG (1 << wait_table_bits)
@@ -73,15 +73,15 @@ typedef struct zone_struct {
 	 * primary users of these fields, and in mm/page_alloc.c
 	 * free_area_init_core() performs the initialization of them.
 	 */
-	wait_queue_head_t	* wait_table;
+	wait_queue_head_t	* wait_tbl;
 	unsigned long		wait_table_size;
 	unsigned long		wait_table_shift;
 
 	/*
 	 * Discontig memory support fields.
 	 */
-	struct pg_node	*zone_pgnod;
-	struct page		*zone_mem_map;
+	struct pm_node	*zone_pmnod;
+	struct page		*zone_pg_map;
 	unsigned long		zone_start_paddr;
 	unsigned long		zone_start_mapnr;
 
@@ -90,7 +90,7 @@ typedef struct zone_struct {
 	 */
 	char			*name;
 	unsigned long		size;
-} zone_t;
+};
 
 #define ZONE_DMA		0
 #define ZONE_NORMAL		1
@@ -109,41 +109,41 @@ typedef struct zone_struct {
  * footprint of this construct is very small.
  */
 typedef struct zonelist_struct {
-	zone_t * zones [MAX_NR_ZONES+1]; // NULL delimited
+	struct pm_zone * zones [MAX_NR_ZONES+1]; // NULL delimited
 } zonelist_t;
 
 #define GFP_ZONEMASK	0x0f
 
 /*
- * The pg_node structure is used in machines with CONFIG_DISCONTIGMEM
+ * The pm_node structure is used in machines with CONFIG_DISCONTIGMEM
  * (mostly NUMA machines?) to denote a higher-level memory zone than the
- * zone_struct denotes.
+ * pm_zone denotes.
  *
- * On NUMA machines, each NUMA node would have a struct pg_node to describe
+ * On NUMA machines, each NUMA node would have a struct pm_node to describe
  * it's memory layout.
  *
  * XXX: we need to move the global memory statistics (active_list, ...)
- *      into the struct pg_node to properly support NUMA.
+ *      into the struct pm_node to properly support NUMA.
  */
 struct bootmem_data;
-typedef struct pg_node {
-	zone_t node_zones[MAX_NR_ZONES];
+typedef struct pm_node {
+	struct pm_zone node_zones[MAX_NR_ZONES];
 	zonelist_t node_zonelists[GFP_ZONEMASK+1];
 	int nr_zones;
-	struct page *node_mem_map;
+	struct page *pg_map;
 	unsigned long *valid_addr_bitmap;
 	struct bootmem_data *bdata;
 	unsigned long node_start_paddr;
 	unsigned long node_start_mapnr;
 	unsigned long node_size;
 	int node_id;
-	struct pg_node *node_next;
+	struct pm_node *node_next;
 } pg_data_t;
 
 extern int numnodes;
-extern struct pg_node *pg_list;
+extern struct pm_node *nod_list;
 
-#define memclass(pgzone, classzone)	(((pgzone)->zone_pgnod == (classzone)->zone_pgnod) \
+#define memclass(pgzone, classzone)	(((pgzone)->zone_pmnod == (classzone)->zone_pmnod) \
 			&& ((pgzone) <= (classzone)))
 
 /*
@@ -151,42 +151,42 @@ extern struct pg_node *pg_list;
  * prototypes for the discontig memory code.
  */
 struct page;
-extern void show_free_areas_core(struct pg_node *pgnod);
-extern void free_area_init_core(int nid, struct pg_node *pgnod, struct page **gmap,
+extern void show_free_areas_core(struct pm_node *pmnod);
+extern void free_area_init_core(int nid, struct pm_node *pmnod, struct page **gmap,
   unsigned long *zones_size, unsigned long paddr, unsigned long *zholes_size,
   struct page *pmap);
 
-extern struct pg_node contig_page_data;
+extern struct pm_node contig_pm_node;
 
 /**
- * for_each_pgnod - helper macro to iterate over all nodes
- * @pgnod - struct pg_node * variable
+ * for_each_pmnod - helper macro to iterate over all nodes
+ * @pmnod - struct pm_node * variable
  *
  * Meant to help with common loops of the form
- * pgnod = pg_list;
- * while(pgnod) {
+ * pmnod = nod_list;
+ * while(pmnod) {
  * 	...
- * 	pgnod = pgnod->node_next;
+ * 	pmnod = pmnod->node_next;
  * }
  */
-#define for_each_pgnod(pgnod) \
-	for (pgnod = pg_list; pgnod; pgnod = pgnod->node_next)
+#define for_each_pmnod(pmnod) \
+	for (pmnod = nod_list; pmnod; pmnod = pmnod->node_next)
 
 
 /*
  * next_zone - helper magic for for_each_zone()
  * Thanks to William Lee Irwin III for this piece of ingenuity.
  */
-static inline zone_t *next_zone(zone_t *zone)
+static inline struct pm_zone *next_zone(struct pm_zone *zone)
 {
-	struct pg_node *pgnod = zone->zone_pgnod;
+	struct pm_node *pmnod = zone->zone_pmnod;
 
-	if (zone - pgnod->node_zones < MAX_NR_ZONES - 1)
+	if (zone - pmnod->node_zones < MAX_NR_ZONES - 1)
 		zone++;
 
-	else if (pgnod->node_next) {
-		pgnod = pgnod->node_next;
-		zone = pgnod->node_zones;
+	else if (pmnod->node_next) {
+		pmnod = pmnod->node_next;
+		zone = pmnod->node_zones;
 	} else
 		zone = NULL;
 
@@ -195,27 +195,27 @@ static inline zone_t *next_zone(zone_t *zone)
 
 /**
  * for_each_zone - helper macro to iterate over all memory zones
- * @zone - zone_t * variable
+ * @zone - struct pm_zone * variable
  *
  * The user only needs to declare the zone variable, for_each_zone
  * fills it in. This basically means for_each_zone() is an
  * easier to read version of this piece of code:
  *
- * for(pgnod = pg_list; pgnod; pgnod = pgnod->node_next)
+ * for(pmnod = nod_list; pmnod; pmnod = pmnod->node_next)
  * 	for(i = 0; i < MAX_NR_ZONES; ++i) {
- * 		zone_t * z = pgnod->node_zones + i;
+ * 		struct pm_zone * z = pmnod->node_zones + i;
  * 		...
  * 	}
  * }
  */
 #define for_each_zone(zone) \
-	for(zone = pg_list->node_zones; zone; zone = next_zone(zone))
+	for(zone = nod_list->node_zones; zone; zone = next_zone(zone))
 
 
 #ifndef CONFIG_DISCONTIGMEM
 
-#define NODE_DATA(nid)		(&contig_page_data)
-#define NODE_MEM_MAP(nid)	mem_map
+#define NODE_DATA(nid)		(&contig_pm_node)
+#define NODE_MEM_MAP(nid)	pg_map
 #define MAX_NR_NODES		1
 
 #else /* !CONFIG_DISCONTIGMEM */
@@ -229,8 +229,8 @@ static inline zone_t *next_zone(zone_t *zone)
 
 #endif /* !CONFIG_DISCONTIGMEM */
 
-#define MAP_ALIGN(x)	((((x) % sizeof(mem_map_t)) == 0) ? (x) : ((x) + \
-		sizeof(mem_map_t) - ((x) % sizeof(mem_map_t))))
+#define MAP_ALIGN(x)	((((x) % sizeof(struct page)) == 0) ? (x) : ((x) + \
+		sizeof(struct page) - ((x) % sizeof(struct page))))
 
 #endif /* !__ASSEMBLY__ */
 #endif /* __KERNEL__ */

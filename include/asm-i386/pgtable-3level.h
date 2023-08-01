@@ -89,7 +89,7 @@ static inline int pte_same(pte_t a, pte_t b)
 	return a.pte_low == b.pte_low && a.pte_high == b.pte_high;
 }
 
-#define pte_page(x)	(mem_map+(((x).pte_low >> PAGE_SHIFT) | ((x).pte_high << (32 - PAGE_SHIFT))))
+#define pte_page(x)	(pg_map+(((x).pte_low >> PAGE_SHIFT) | ((x).pte_high << (32 - PAGE_SHIFT))))
 #define pte_none(x)	(!(x).pte_low && !(x).pte_high)
 
 static inline pte_t __mk_pte(unsigned long page_nr, pgprot_t pgprot)

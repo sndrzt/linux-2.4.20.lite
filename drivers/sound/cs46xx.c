@@ -1190,13 +1190,13 @@ static int alloc_dmabuf(struct cs_state *state)
 	dmabuf->rawbuf = rawbuf;
 	// Now mark the pages as reserved; otherwise the 
 	// remap_page_range() in cs46xx_mmap doesn't work.
-	// 1. get index to last page in mem_map array for rawbuf.
+	// 1. get index to last page in pg_map array for rawbuf.
 	mapend = virt_to_page(dmabuf->rawbuf + 
 		(PAGE_SIZE << dmabuf->buforder) - 1);
 
 	// 2. mark each physical page in range as 'reserved'.
 	for (map = virt_to_page(dmabuf->rawbuf); map <= mapend; map++)
-		cs4x_mem_map_reserve(map);
+		cs4x_pg_map_reserve(map);
 
 	CS_DBGOUT(CS_PARMS, 9, printk("cs46xx: alloc_dmabuf(): allocated %ld (order = %d) bytes at %p\n",
 	       PAGE_SIZE << order, order, rawbuf) );
@@ -1227,13 +1227,13 @@ static int alloc_dmabuf(struct cs_state *state)
 	
 	// Now mark the pages as reserved; otherwise the 
 	// remap_page_range() in cs46xx_mmap doesn't work.
-	// 1. get index to last page in mem_map array for rawbuf.
+	// 1. get index to last page in pg_map array for rawbuf.
 	mapend = virt_to_page(dmabuf->tmpbuff + 
 		(PAGE_SIZE << dmabuf->buforder_tmpbuff) - 1);
 
 	// 2. mark each physical page in range as 'reserved'.
 	for (map = virt_to_page(dmabuf->tmpbuff); map <= mapend; map++)
-		cs4x_mem_map_reserve(map);
+		cs4x_pg_map_reserve(map);
 	return 0;
 }
 
@@ -1248,7 +1248,7 @@ static void dealloc_dmabuf(struct cs_state *state)
 		mapend = virt_to_page(dmabuf->rawbuf + 
 				(PAGE_SIZE << dmabuf->buforder) - 1);
 		for (map = virt_to_page(dmabuf->rawbuf); map <= mapend; map++)
-			cs4x_mem_map_unreserve(map);
+			cs4x_pg_map_unreserve(map);
 		free_dmabuf(state->card, dmabuf);
 	}
 
@@ -1257,7 +1257,7 @@ static void dealloc_dmabuf(struct cs_state *state)
 		mapend = virt_to_page(dmabuf->tmpbuff +
 				(PAGE_SIZE << dmabuf->buforder_tmpbuff) - 1);
 		for (map = virt_to_page(dmabuf->tmpbuff); map <= mapend; map++)
-			cs4x_mem_map_unreserve(map);
+			cs4x_pg_map_unreserve(map);
 		free_dmabuf2(state->card, dmabuf);
 	}
 

@@ -155,9 +155,9 @@ extern inline struct buffer_head *blk_queue_bounce(request_queue_t *q, int rw,
 	struct page *page = bh->b_page;
 
 #ifndef CONFIG_DISCONTIGMEM
-	if (page - mem_map <= q->bounce_pfn)
+	if (page - pg_map <= q->bounce_pfn)
 #else
-	if ((page - page_zone(page)->zone_mem_map) + (page_zone(page)->zone_start_paddr >> PAGE_SHIFT) <= q->bounce_pfn)
+	if ((page - page_zone(page)->zone_pg_map) + (page_zone(page)->zone_start_paddr >> PAGE_SHIFT) <= q->bounce_pfn)
 #endif
 		return bh;
 

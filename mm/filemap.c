@@ -780,8 +780,8 @@ static int read_cluster_nonblocking(struct file * file, unsigned long offset,
  */
 static inline wait_queue_head_t *page_waitqueue(struct page *page)
 {
-	const zone_t *zone = page_zone(page);
-	wait_queue_head_t *wait = zone->wait_table;
+	const struct pm_zone *zone = page_zone(page);
+	wait_queue_head_t *wait = zone->wait_tbl;
 	unsigned long hash = (unsigned long)page;
 
 #if BITS_PER_LONG == 64

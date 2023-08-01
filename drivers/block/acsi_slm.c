@@ -37,7 +37,7 @@ not be guaranteed. There are several ways to assure this:
 	anymore.
 	
  2) The other method would be to reserve the buffer dynamically each time
-    printing is required. I could think of looking at mem_map where the
+    printing is required. I could think of looking at pg_map where the
 	largest unallocted ST-RAM area is, taking the area, and then extending it
 	by swapping out the neighbored pages, until the needed size is reached.
 	This requires some mm hacking, but seems possible. The only obstacle could

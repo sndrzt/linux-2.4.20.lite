@@ -103,7 +103,7 @@ static inline dma_addr_t pci_map_page(struct pci_dev *hwdev, struct page *page,
 	if (direction == PCI_DMA_NONE)
 		out_of_line_bug();
 
-	return (dma_addr_t)(page - mem_map) * PAGE_SIZE + offset;
+	return (dma_addr_t)(page - pg_map) * PAGE_SIZE + offset;
 }
 
 static inline void pci_unmap_page(struct pci_dev *hwdev, dma_addr_t dma_address,
@@ -242,7 +242,7 @@ pci_dac_dma_to_page(struct pci_dev *pdev, dma64_addr_t dma_addr)
 {
 	unsigned long poff = (dma_addr >> PAGE_SHIFT);
 
-	return mem_map + poff;
+	return pg_map + poff;
 }
 
 static __inline__ unsigned long

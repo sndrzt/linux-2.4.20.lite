@@ -44,7 +44,7 @@
  */
 
 /* mm->page_table_lock is held. mmap_sem is not held */
-static inline int try_to_swap_out(struct mm_struct * mm, struct vm_area_struct* vma, unsigned long address, pte_t * page_table, struct page *page, zone_t * classzone)
+static inline int try_to_swap_out(struct mm_struct * mm, struct vm_area_struct* vma, unsigned long address, pte_t * page_table, struct page *page, struct pm_zone * classzone)
 {
 	pte_t pte;
 	swp_entry_t entry;
@@ -155,7 +155,7 @@ preserve:
 }
 
 /* mm->page_table_lock is held. mmap_sem is not held */
-static inline int swap_out_pmd(struct mm_struct * mm, struct vm_area_struct * vma, pmd_t *dir, unsigned long address, unsigned long end, int count, zone_t * classzone)
+static inline int swap_out_pmd(struct mm_struct * mm, struct vm_area_struct * vma, pmd_t *dir, unsigned long address, unsigned long end, int count, struct pm_zone * classzone)
 {
 	pte_t * pte;
 	unsigned long pmd_end;
@@ -194,7 +194,7 @@ static inline int swap_out_pmd(struct mm_struct * mm, struct vm_area_struct * vm
 }
 
 /* mm->page_table_lock is held. mmap_sem is not held */
-static inline int swap_out_pgd(struct mm_struct * mm, struct vm_area_struct * vma, pgd_t *dir, unsigned long address, unsigned long end, int count, zone_t * classzone)
+static inline int swap_out_pgd(struct mm_struct * mm, struct vm_area_struct * vma, pgd_t *dir, unsigned long address, unsigned long end, int count, struct pm_zone * classzone)
 {
 	pmd_t * pmd;
 	unsigned long pgd_end;
@@ -224,7 +224,7 @@ static inline int swap_out_pgd(struct mm_struct * mm, struct vm_area_struct * vm
 }
 
 /* mm->page_table_lock is held. mmap_sem is not held */
-static inline int swap_out_vma(struct mm_struct * mm, struct vm_area_struct * vma, unsigned long address, int count, zone_t * classzone)
+static inline int swap_out_vma(struct mm_struct * mm, struct vm_area_struct * vma, unsigned long address, int count, struct pm_zone * classzone)
 {
 	pgd_t *pgdir;
 	unsigned long end;
@@ -253,7 +253,7 @@ struct mm_struct *swap_mm = &init_mm;
 /*
  * Returns remaining count of pages to be swapped out by followup call.
  */
-static inline int swap_out_mm(struct mm_struct * mm, int count, int * mmcounter, zone_t * classzone)
+static inline int swap_out_mm(struct mm_struct * mm, int count, int * mmcounter, struct pm_zone * classzone)
 {
 	unsigned long address;
 	struct vm_area_struct* vma;
@@ -292,8 +292,8 @@ out_unlock:
 	return count;
 }
 
-static int FASTCALL(swap_out(unsigned int priority, unsigned int gfp_mask, zone_t * classzone));
-static int swap_out(unsigned int priority, unsigned int gfp_mask, zone_t * classzone)
+static int FASTCALL(swap_out(unsigned int priority, unsigned int gfp_mask, struct pm_zone * classzone));
+static int swap_out(unsigned int priority, unsigned int gfp_mask, struct pm_zone * classzone)
 {
 	int counter, nr_pages = SWAP_CLUSTER_MAX;
 	struct mm_struct *mm;
@@ -334,8 +334,8 @@ empty:
 	return 0;
 }
 
-static int FASTCALL(shrink_cache(int nr_pages, zone_t * classzone, unsigned int gfp_mask, int priority));
-static int shrink_cache(int nr_pages, zone_t * classzone, unsigned int gfp_mask, int priority)
+static int FASTCALL(shrink_cache(int nr_pages, struct pm_zone * classzone, unsigned int gfp_mask, int priority));
+static int shrink_cache(int nr_pages, struct pm_zone * classzone, unsigned int gfp_mask, int priority)
 {
 	struct list_head * entry;
 	int max_scan = nr_inactive_pages / priority;
@@ -556,8 +556,8 @@ static void refill_inactive(int nr_pages)
 	spin_unlock(&pagemap_lru_lock);
 }
 
-static int FASTCALL(shrink_caches(zone_t * classzone, int priority, unsigned int gfp_mask, int nr_pages));
-static int shrink_caches(zone_t * classzone, int priority, unsigned int gfp_mask, int nr_pages)
+static int FASTCALL(shrink_caches(struct pm_zone * classzone, int priority, unsigned int gfp_mask, int nr_pages));
+static int shrink_caches(struct pm_zone * classzone, int priority, unsigned int gfp_mask, int nr_pages)
 {
 	int chunk_size = nr_pages;
 	unsigned long ratio;
@@ -584,7 +584,7 @@ static int shrink_caches(zone_t * classzone, int priority, unsigned int gfp_mask
 	return nr_pages;
 }
 
-int try_to_free_pages_zone(zone_t *classzone, unsigned int gfp_mask)
+int try_to_free_pages_zone(struct pm_zone *classzone, unsigned int gfp_mask)
 {
 	int priority = DEF_PRIORITY;
 	int nr_pages = SWAP_CLUSTER_MAX;
@@ -606,7 +606,7 @@ int try_to_free_pages_zone(zone_t *classzone, unsigned int gfp_mask)
 
 int try_to_free_pages(unsigned int gfp_mask)
 {
-	struct pg_node *pgnod;
+	struct pm_node *pmnod;
 	zonelist_t *zonelist;
 	unsigned long pf_free_pages;
 	int error = 0;
@@ -614,8 +614,8 @@ int try_to_free_pages(unsigned int gfp_mask)
 	pf_free_pages = current->flags & PF_FREE_PAGES;
 	current->flags &= ~PF_FREE_PAGES;
 
-	for_each_pgnod(pgnod) {
-		zonelist = pgnod->node_zonelists + (gfp_mask & GFP_ZONEMASK);
+	for_each_pmnod(pmnod) {
+		zonelist = pmnod->node_zonelists + (gfp_mask & GFP_ZONEMASK);
 		error |= try_to_free_pages_zone(zonelist->zones[0], gfp_mask);
 	}
 
@@ -625,11 +625,11 @@ int try_to_free_pages(unsigned int gfp_mask)
 
 DECLARE_WAIT_QUEUE_HEAD(kswapd_wait);
 
-static int check_classzone_need_balance(zone_t * classzone)
+static int check_classzone_need_balance(struct pm_zone * classzone)
 {
-	zone_t * first_classzone;
+	struct pm_zone * first_classzone;
 
-	first_classzone = classzone->zone_pgnod->node_zones;
+	first_classzone = classzone->zone_pmnod->node_zones;
 	while (classzone >= first_classzone) {
 		if (classzone->free_pages > classzone->pages_high)
 			return 0;
@@ -638,13 +638,13 @@ static int check_classzone_need_balance(zone_t * classzone)
 	return 1;
 }
 
-static int kswapd_balance_pgnod(struct pg_node * pgnod)
+static int kswapd_balance_pmnod(struct pm_node * pmnod)
 {
 	int need_more_balance = 0, i;
-	zone_t * zone;
+	struct pm_zone * zone;
 
-	for (i = pgnod->nr_zones-1; i >= 0; i--) {
-		zone = pgnod->node_zones + i;
+	for (i = pmnod->nr_zones-1; i >= 0; i--) {
+		zone = pmnod->node_zones + i;
 		if (unlikely(current->need_resched))
 			schedule();
 		if (!zone->need_balance)
@@ -667,23 +667,23 @@ static int kswapd_balance_pgnod(struct pg_node * pgnod)
 static void kswapd_balance(void)
 {
 	int need_more_balance;
-	struct pg_node * pgnod;
+	struct pm_node * pmnod;
 
 	do {
 		need_more_balance = 0;
 
-		for_each_pgnod(pgnod)
-			need_more_balance |= kswapd_balance_pgnod(pgnod);
+		for_each_pmnod(pmnod)
+			need_more_balance |= kswapd_balance_pmnod(pmnod);
 	} while (need_more_balance);
 }
 
-static int kswapd_can_sleep_pgnod(struct pg_node * pgnod)
+static int kswapd_can_sleep_pmnod(struct pm_node * pmnod)
 {
-	zone_t * zone;
+	struct pm_zone * zone;
 	int i;
 
-	for (i = pgnod->nr_zones-1; i >= 0; i--) {
-		zone = pgnod->node_zones + i;
+	for (i = pmnod->nr_zones-1; i >= 0; i--) {
+		zone = pmnod->node_zones + i;
 		if (!zone->need_balance)
 			continue;
 		return 0;
@@ -694,10 +694,10 @@ static int kswapd_can_sleep_pgnod(struct pg_node * pgnod)
 
 static int kswapd_can_sleep(void)
 {
-	struct pg_node * pgnod;
+	struct pm_node * pmnod;
 
-	for_each_pgnod(pgnod) {
-		if (!kswapd_can_sleep_pgnod(pgnod))
+	for_each_pmnod(pmnod) {
+		if (!kswapd_can_sleep_pmnod(pmnod))
 			return 0;
 	}
 

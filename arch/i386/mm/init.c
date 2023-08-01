@@ -102,14 +102,14 @@ void show_mem(void)
 	i = max_mapnr;
 	while (i-- > 0) {
 		total++;
-		if (PageHighMem(mem_map+i))
+		if (PageHighMem(pg_map+i))
 			highmem++;
-		if (PageReserved(mem_map+i))
+		if (PageReserved(pg_map+i))
 			reserved++;
-		else if (PageSwapCache(mem_map+i))
+		else if (PageSwapCache(pg_map+i))
 			cached++;
-		else if (page_count(mem_map+i))
-			shared += page_count(mem_map+i) - 1;
+		else if (page_count(pg_map+i))
+			shared += page_count(pg_map+i) - 1;
 	}
 	printk("%d pages of RAM\n", total);
 	printk("%d pages of HIGHMEM\n",highmem);
@@ -470,7 +470,7 @@ void __init one_highpage_init(struct page *page, int pfn, int bad_ppro)
 static void __init set_max_mapnr_init(void)
 {
 #ifdef CONFIG_HIGHMEM
-        highmem_start_page = mem_map + highstart_pfn;
+        highmem_start_page = pg_map + highstart_pfn;
         max_mapnr = num_physpages = highend_pfn;
         num_mappedpages = max_low_pfn;
 #else
@@ -493,12 +493,12 @@ static int __init free_pages_init(void)
 		/*
 		 * Only count reserved RAM pages
 		 */
-		if (page_is_ram(pfn) && PageReserved(mem_map+pfn))
+		if (page_is_ram(pfn) && PageReserved(pg_map+pfn))
 			reservedpages++;
 	}
 #ifdef CONFIG_HIGHMEM
 	for (pfn = highend_pfn-1; pfn >= highstart_pfn; pfn--)
-		one_highpage_init((struct page *) (mem_map + pfn), pfn, bad_ppro);
+		one_highpage_init((struct page *) (pg_map + pfn), pfn, bad_ppro);
 	totalram_pages += totalhigh_pages;
 #endif
 	return reservedpages;
@@ -508,7 +508,7 @@ void __init mem_init(void)
 {
 	int codesize, reservedpages, datasize, initsize;
 
-	if (!mem_map)
+	if (!pg_map)
 		BUG();
 	
 	set_max_mapnr_init();

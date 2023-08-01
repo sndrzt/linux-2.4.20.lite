@@ -47,7 +47,7 @@
  *
  * SMP synchronization:
  *  constructors and destructors are called without any locking.
- *  Several members in kmem_cache_t and slab_t never change, they
+ *  Several members in kmem_cache_t and struct slab never change, they
  *	are accessed without any locking.
  *  The per-cpu arrays are never accessed from the wrong cpu, no locking.
  *  The non-constant members are protected with a per-cache irq spinlock.
@@ -146,37 +146,37 @@ typedef unsigned int kmem_bufctl_t;
 static unsigned long offslab_limit;
 
 /*
- * slab_t
+ * struct slab
  *
  * Manages the objs in a slab. Placed either at the beginning of mem allocated
  * for a slab, or allocated from an general cache.
  * Slabs are chained into three list: fully used, partial, fully free slabs.
  */
-typedef struct slab_s {
+struct slab {
 	struct list_head	list;
 	unsigned long		colouroff;
 	void			*s_mem;		/* including colour offset */
 	unsigned int		inuse;		/* num of objs active in slab */
 	kmem_bufctl_t		free;
-} slab_t;
+};
 
 #define slab_bufctl(slabp) \
-	((kmem_bufctl_t *)(((slab_t*)slabp)+1))
+	((kmem_bufctl_t *)(((struct slab*)slabp)+1))
 
 /*
- * cpucache_t
+ * struct cpu_cache
  *
  * Per cpu structures
  * The limit is stored in the per-cpu structure to reduce the data cache
  * footprint.
  */
-typedef struct cpucache_s {
+struct cpu_cache {
 	unsigned int avail;
 	unsigned int limit;
-} cpucache_t;
+};
 
 #define cc_entry(cpucache) \
-	((void **)(((cpucache_t*)(cpucache))+1))
+	((void **)(((struct cpu_cache*)(cpucache))+1))
 #define cc_data(cachep) \
 	((cachep)->cpudata[smp_processor_id()])
 /*
@@ -228,7 +228,7 @@ struct kmem_cache_s {
 	struct list_head	next;
 #ifdef CONFIG_SMP
 /* 4) per-cpu data */
-	cpucache_t		*cpudata[NR_CPUS];
+	struct cpu_cache		*cpudata[NR_CPUS];
 #endif
 #if STATS
 	unsigned long		num_active;
@@ -319,13 +319,13 @@ static int slab_break_gfp_order = BREAK_GFP_ORDER_LO;
 
 
 /* Macros for storing/retrieving the cachep and or slab from the
- * global 'mem_map'. These are used to find the slab an obj belongs to.
+ * global 'pg_map'. These are used to find the slab an obj belongs to.
  * With kfree(), these are used to find the cache which an obj belongs to.
  */
 #define	SET_PAGE_CACHE(pg,x)  ((pg)->list.next = (struct list_head *)(x))
 #define	GET_PAGE_CACHE(pg)    ((kmem_cache_t *)(pg)->list.next)
 #define	SET_PAGE_SLAB(pg,x)   ((pg)->list.prev = (struct list_head *)(x))
-#define	GET_PAGE_SLAB(pg)     ((slab_t *)(pg)->list.prev)
+#define	GET_PAGE_SLAB(pg)     ((struct slab *)(pg)->list.prev)
 
 /* Size description struct for general caches. */
 typedef struct cache_sizes {
@@ -394,7 +394,7 @@ static void kmem_cache_estimate (unsigned long gfporder, size_t size,
 	size_t base = 0;
 
 	if (!(flags & CFLGS_OFF_SLAB)) {
-		base = sizeof(slab_t);
+		base = sizeof(struct slab);
 		extra = sizeof(kmem_bufctl_t);
 	}
 	i = 0;
@@ -458,7 +458,7 @@ void __init kmem_cache_sizes_init(void)
 
 		/* Inc off-slab bufctl limit until the ceiling is hit. */
 		if (!(OFF_SLAB(sizes->cs_cachep))) {
-			offslab_limit = sizes->cs_size-sizeof(slab_t);
+			offslab_limit = sizes->cs_size-sizeof(struct slab);
 			offslab_limit /= 2;
 		}
 		snprintf(name, sizeof(name), "size-%Zd(DMA)",sizes->cs_size);
@@ -552,7 +552,7 @@ static inline int kmem_check_poison_obj (kmem_cache_t *cachep, void *addr)
  * Before calling the slab must have been unlinked from the cache.
  * The cache-lock is not held/needed.
  */
-static void kmem_slab_destroy (kmem_cache_t *cachep, slab_t *slabp)
+static void kmem_slab_destroy (kmem_cache_t *cachep, struct slab *slabp)
 {
 	if (cachep->dtor
 #if DEBUG
@@ -758,7 +758,7 @@ next:
 		cachep = NULL;
 		goto opps;
 	}
-	slab_size = L1_CACHE_ALIGN(cachep->num*sizeof(kmem_bufctl_t)+sizeof(slab_t));
+	slab_size = L1_CACHE_ALIGN(cachep->num*sizeof(kmem_bufctl_t)+sizeof(struct slab));
 
 	/*
 	 * If the slab has been placed off-slab, and we have enough space then
@@ -868,13 +868,13 @@ static void smp_call_function_all_cpus(void (*func) (void *arg), void *arg)
 typedef struct ccupdate_struct_s
 {
 	kmem_cache_t *cachep;
-	cpucache_t *new[NR_CPUS];
+	struct cpu_cache *new[NR_CPUS];
 } ccupdate_struct_t;
 
 static void do_ccupdate_local(void *info)
 {
 	ccupdate_struct_t *new = (ccupdate_struct_t *)info;
-	cpucache_t *old = cc_data(new->cachep);
+	struct cpu_cache *old = cc_data(new->cachep);
 	
 	cc_data(new->cachep) = new->new[smp_processor_id()];
 	new->new[smp_processor_id()] = old;
@@ -895,7 +895,7 @@ static void drain_cpu_caches(kmem_cache_t *cachep)
 	smp_call_function_all_cpus(do_ccupdate_local, (void *)&new);
 
 	for (i = 0; i < smp_num_cpus; i++) {
-		cpucache_t* ccold = new.new[cpu_logical_map(i)];
+		struct cpu_cache* ccold = new.new[cpu_logical_map(i)];
 		if (!ccold || (ccold->avail == 0))
 			continue;
 		local_irq_disable();
@@ -916,7 +916,7 @@ static void drain_cpu_caches(kmem_cache_t *cachep)
  */
 static int __kmem_cache_shrink_locked(kmem_cache_t *cachep)
 {
-	slab_t *slabp;
+	struct slab *slabp;
 	int ret = 0;
 
 	/* If the cache is growing, stop shrinking. */
@@ -927,7 +927,7 @@ static int __kmem_cache_shrink_locked(kmem_cache_t *cachep)
 		if (p == &cachep->slabs_free)
 			break;
 
-		slabp = list_entry(cachep->slabs_free.prev, slab_t, list);
+		slabp = list_entry(cachep->slabs_free.prev, struct slab, list);
 #if DEBUG
 		if (slabp->inuse)
 			BUG();
@@ -1027,10 +1027,10 @@ int kmem_cache_destroy (kmem_cache_t * cachep)
 }
 
 /* Get the memory for a slab management obj. */
-static inline slab_t * kmem_cache_slabmgmt (kmem_cache_t *cachep,
+static inline struct slab * kmem_cache_slabmgmt (kmem_cache_t *cachep,
 			void *objp, int colour_off, int local_flags)
 {
-	slab_t *slabp;
+	struct slab *slabp;
 	
 	if (OFF_SLAB(cachep)) {
 		/* Slab management obj is off-slab. */
@@ -1044,7 +1044,7 @@ static inline slab_t * kmem_cache_slabmgmt (kmem_cache_t *cachep,
 		 */
 		slabp = objp+colour_off;
 		colour_off += L1_CACHE_ALIGN(cachep->num *
-				sizeof(kmem_bufctl_t) + sizeof(slab_t));
+				sizeof(kmem_bufctl_t) + sizeof(struct slab));
 	}
 	slabp->inuse = 0;
 	slabp->colouroff = colour_off;
@@ -1054,7 +1054,7 @@ static inline slab_t * kmem_cache_slabmgmt (kmem_cache_t *cachep,
 }
 
 static inline void kmem_cache_init_objs (kmem_cache_t * cachep,
-			slab_t * slabp, unsigned long ctor_flags)
+			struct slab * slabp, unsigned long ctor_flags)
 {
 	int i;
 
@@ -1102,7 +1102,7 @@ static inline void kmem_cache_init_objs (kmem_cache_t * cachep,
  */
 static int kmem_cache_grow (kmem_cache_t * cachep, int flags)
 {
-	slab_t	*slabp;
+	struct slab	*slabp;
 	struct page	*page;
 	void		*objp;
 	size_t		 offset;
@@ -1207,7 +1207,7 @@ failed:
 
 #if DEBUG
 static int kmem_extra_free_checks (kmem_cache_t * cachep,
-			slab_t *slabp, void * objp)
+			struct slab *slabp, void * objp)
 {
 	int i;
 	unsigned int objnr = (objp-slabp->s_mem)/cachep->objsize;
@@ -1238,7 +1238,7 @@ static inline void kmem_cache_alloc_head(kmem_cache_t *cachep, int flags)
 }
 
 static inline void * kmem_cache_alloc_one_tail (kmem_cache_t *cachep,
-						slab_t *slabp)
+						struct slab *slabp)
 {
 	void *objp;
 
@@ -1281,7 +1281,7 @@ static inline void * kmem_cache_alloc_one_tail (kmem_cache_t *cachep,
 #define kmem_cache_alloc_one(cachep)				\
 ({								\
 	struct list_head * slabs_partial, * entry;		\
-	slab_t *slabp;						\
+	struct slab *slabp;						\
 								\
 	slabs_partial = &(cachep)->slabs_partial;		\
 	entry = slabs_partial->next;				\
@@ -1295,19 +1295,19 @@ static inline void * kmem_cache_alloc_one_tail (kmem_cache_t *cachep,
 		list_add(entry, slabs_partial);			\
 	}							\
 								\
-	slabp = list_entry(entry, slab_t, list);		\
+	slabp = list_entry(entry, struct slab, list);		\
 	kmem_cache_alloc_one_tail(cachep, slabp);		\
 })
 
 #ifdef CONFIG_SMP
-void* kmem_cache_alloc_batch(kmem_cache_t* cachep, cpucache_t* cc, int flags)
+void* kmem_cache_alloc_batch(kmem_cache_t* cachep, struct cpu_cache* cc, int flags)
 {
 	int batchcount = cachep->batchcount;
 
 	spin_lock(&cachep->spinlock);
 	while (batchcount--) {
 		struct list_head * slabs_partial, * entry;
-		slab_t *slabp;
+		struct slab *slabp;
 		/* Get slab alloc is to come from. */
 		slabs_partial = &(cachep)->slabs_partial;
 		entry = slabs_partial->next;
@@ -1321,7 +1321,7 @@ void* kmem_cache_alloc_batch(kmem_cache_t* cachep, cpucache_t* cc, int flags)
 			list_add(entry, slabs_partial);
 		}
 
-		slabp = list_entry(entry, slab_t, list);
+		slabp = list_entry(entry, struct slab, list);
 		cc_entry(cc)[cc->avail++] =
 				kmem_cache_alloc_one_tail(cachep, slabp);
 	}
@@ -1343,7 +1343,7 @@ try_again:
 	local_irq_save(save_flags);
 #ifdef CONFIG_SMP
 	{
-		cpucache_t *cc = cc_data(cachep);
+		struct cpu_cache *cc = cc_data(cachep);
 
 		if (cc) {
 			if (cc->avail) {
@@ -1411,7 +1411,7 @@ alloc_new_slab_nolock:
 
 static inline void kmem_cache_free_one(kmem_cache_t *cachep, void *objp)
 {
-	slab_t* slabp;
+	struct slab* slabp;
 
 	CHECK_PAGE(virt_to_page(objp));
 	/* reduces memory footprint
@@ -1491,7 +1491,7 @@ static void free_block (kmem_cache_t* cachep, void** objpp, int len)
 static inline void __kmem_cache_free (kmem_cache_t *cachep, void* objp)
 {
 #ifdef CONFIG_SMP
-	cpucache_t *cc = cc_data(cachep);
+	struct cpu_cache *cc = cc_data(cachep);
 
 	CHECK_PAGE(virt_to_page(objp));
 	if (cc) {
@@ -1654,10 +1654,10 @@ static int kmem_tune_cpucache (kmem_cache_t* cachep, int limit, int batchcount)
 	memset(&new.new,0,sizeof(new.new));
 	if (limit) {
 		for (i = 0; i< smp_num_cpus; i++) {
-			cpucache_t* ccnew;
+			struct cpu_cache* ccnew;
 
 			ccnew = kmalloc(sizeof(void*)*limit+
-					sizeof(cpucache_t), GFP_KERNEL);
+					sizeof(struct cpu_cache), GFP_KERNEL);
 			if (!ccnew)
 				goto oom;
 			ccnew->limit = limit;
@@ -1673,7 +1673,7 @@ static int kmem_tune_cpucache (kmem_cache_t* cachep, int limit, int batchcount)
 	smp_call_function_all_cpus(do_ccupdate_local, (void *)&new);
 
 	for (i = 0; i < smp_num_cpus; i++) {
-		cpucache_t* ccold = new.new[cpu_logical_map(i)];
+		struct cpu_cache* ccold = new.new[cpu_logical_map(i)];
 		if (!ccold)
 			continue;
 		local_irq_disable();
@@ -1735,7 +1735,7 @@ static void enable_all_cpucaches (void)
  */
 int kmem_cache_reap (int gfp_mask)
 {
-	slab_t *slabp;
+	struct slab *slabp;
 	kmem_cache_t *searchp;
 	kmem_cache_t *best_cachep;
 	unsigned int best_pages;
@@ -1771,7 +1771,7 @@ int kmem_cache_reap (int gfp_mask)
 		}
 #ifdef CONFIG_SMP
 		{
-			cpucache_t *cc = cc_data(searchp);
+			struct cpu_cache *cc = cc_data(searchp);
 			if (cc && cc->avail) {
 				__free_block(searchp, cc_entry(cc), cc->avail);
 				cc->avail = 0;
@@ -1782,7 +1782,7 @@ int kmem_cache_reap (int gfp_mask)
 		full_free = 0;
 		p = searchp->slabs_free.next;
 		while (p != &searchp->slabs_free) {
-			slabp = list_entry(p, slab_t, list);
+			slabp = list_entry(p, struct slab, list);
 #if DEBUG
 			if (slabp->inuse)
 				BUG();
@@ -1835,7 +1835,7 @@ perfect:
 		p = best_cachep->slabs_free.prev;
 		if (p == &best_cachep->slabs_free)
 			break;
-		slabp = list_entry(p,slab_t,list);
+		slabp = list_entry(p,struct slab,list);
 #if DEBUG
 		if (slabp->inuse)
 			BUG();
@@ -1895,7 +1895,7 @@ static int s_show(struct seq_file *m, void *p)
 {
 	kmem_cache_t *cachep = p;
 	struct list_head *q;
-	slab_t		*slabp;
+	struct slab		*slabp;
 	unsigned long	active_objs;
 	unsigned long	num_objs;
 	unsigned long	active_slabs = 0;
@@ -1922,21 +1922,21 @@ static int s_show(struct seq_file *m, void *p)
 	active_objs = 0;
 	num_slabs = 0;
 	list_for_each(q,&cachep->slabs_full) {
-		slabp = list_entry(q, slab_t, list);
+		slabp = list_entry(q, struct slab, list);
 		if (slabp->inuse != cachep->num)
 			BUG();
 		active_objs += cachep->num;
 		active_slabs++;
 	}
 	list_for_each(q,&cachep->slabs_partial) {
-		slabp = list_entry(q, slab_t, list);
+		slabp = list_entry(q, struct slab, list);
 		if (slabp->inuse == cachep->num || !slabp->inuse)
 			BUG();
 		active_objs += slabp->inuse;
 		active_slabs++;
 	}
 	list_for_each(q,&cachep->slabs_free) {
-		slabp = list_entry(q, slab_t, list);
+		slabp = list_entry(q, struct slab, list);
 		if (slabp->inuse)
 			BUG();
 		num_slabs++;
@@ -1969,7 +1969,7 @@ static int s_show(struct seq_file *m, void *p)
 #endif
 #ifdef CONFIG_SMP
 	{
-		cpucache_t *cc = cc_data(cachep);
+		struct cpu_cache *cc = cc_data(cachep);
 		unsigned int batchcount = cachep->batchcount;
 		unsigned int limit;
 

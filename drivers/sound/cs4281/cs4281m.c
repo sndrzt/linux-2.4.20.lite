@@ -1754,7 +1754,7 @@ extern void dealloc_dmabuf(struct cs4281_state *s, struct dmabuf *db)
 		mapend = virt_to_page(db->rawbuf + 
 			(PAGE_SIZE << db->buforder) - 1);
 		for (map = virt_to_page(db->rawbuf); map <= mapend; map++)
-			cs4x_mem_map_unreserve(map);
+			cs4x_pg_map_unreserve(map);
 		pci_free_consistent(s->pcidev, PAGE_SIZE << db->buforder, 
 			    db->rawbuf, db->dmaaddr);
 	}
@@ -1763,7 +1763,7 @@ extern void dealloc_dmabuf(struct cs4281_state *s, struct dmabuf *db)
 		mapend = virt_to_page(s->tmpbuff +
 			 (PAGE_SIZE << s->buforder_tmpbuff) - 1);
 		for (map = virt_to_page(s->tmpbuff); map <= mapend; map++)
-			cs4x_mem_map_unreserve(map);
+			cs4x_pg_map_unreserve(map);
 		pci_free_consistent(s->pcidev, PAGE_SIZE << s->buforder_tmpbuff,
 				    s->tmpbuff, s->dmaaddr_tmpbuff);
 	}
@@ -1807,13 +1807,13 @@ static int prog_dmabuf(struct cs4281_state *s, struct dmabuf *db)
 		db->buforder = order;
 		// Now mark the pages as reserved; otherwise the 
 		// remap_page_range() in cs4281_mmap doesn't work.
-		// 1. get index to last page in mem_map array for rawbuf.
+		// 1. get index to last page in pg_map array for rawbuf.
 		mapend = virt_to_page(db->rawbuf + 
 			(PAGE_SIZE << db->buforder) - 1);
 
 		// 2. mark each physical page in range as 'reserved'.
 		for (map = virt_to_page(db->rawbuf); map <= mapend; map++)
-			cs4x_mem_map_reserve(map);
+			cs4x_pg_map_reserve(map);
 	}
 	if (!s->tmpbuff && (db->type == CS_TYPE_ADC)) {
 		for (order = df; order >= DMABUF_MINORDER;
@@ -1830,13 +1830,13 @@ static int prog_dmabuf(struct cs4281_state *s, struct dmabuf *db)
 		s->buforder_tmpbuff = order;
 		// Now mark the pages as reserved; otherwise the 
 		// remap_page_range() in cs4281_mmap doesn't work.
-		// 1. get index to last page in mem_map array for rawbuf.
+		// 1. get index to last page in pg_map array for rawbuf.
 		mapend = virt_to_page(s->tmpbuff + 
 				(PAGE_SIZE << s->buforder_tmpbuff) - 1);
 
 		// 2. mark each physical page in range as 'reserved'.
 		for (map = virt_to_page(s->tmpbuff); map <= mapend; map++)
-			cs4x_mem_map_reserve(map);
+			cs4x_pg_map_reserve(map);
 	}
 	if (db->type == CS_TYPE_DAC) {
 		if (s->prop_dac.fmt & (AFMT_S16_LE | AFMT_U16_LE))

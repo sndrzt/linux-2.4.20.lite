@@ -27,15 +27,15 @@ int nr_active_pages;
 int nr_inactive_pages;
 LIST_HEAD(inactive_list);
 LIST_HEAD(active_list);
-struct pg_node *pg_list;
+struct pm_node *nod_list;
 
 /*
  *
- * The zone_table array is used to look up the address of the
+ * The struct pm_zoneable array is used to look up the address of the
  * struct zone corresponding to a given zone number (ZONE_DMA,
  * ZONE_NORMAL, or ZONE_HIGHMEM).
  */
-zone_t *zone_table[MAX_NR_ZONES*MAX_NR_NODES];
+struct pm_zone *zone_table[MAX_NR_ZONES*MAX_NR_NODES];
 EXPORT_SYMBOL(zone_table);
 
 static char *zone_names[MAX_NR_ZONES] = { "DMA", "Normal", "HighMem" };
@@ -48,8 +48,8 @@ static int zone_balance_max[MAX_NR_ZONES] __initdata = { 255 , 255, 255, };
  */
 #define BAD_RANGE(zone, page)						\
 (									\
-	(((page) - mem_map) >= ((zone)->zone_start_mapnr+(zone)->size))	\
-	|| (((page) - mem_map) < (zone)->zone_start_mapnr)		\
+	(((page) - pg_map) >= ((zone)->zone_start_mapnr+(zone)->size))	\
+	|| (((page) - pg_map) < (zone)->zone_start_mapnr)		\
 	|| ((zone) != page_zone(page))					\
 )
 
@@ -82,9 +82,9 @@ static void FASTCALL(__free_pages_ok (struct page *page, unsigned int order));
 static void __free_pages_ok (struct page *page, unsigned int order)
 {
 	unsigned long index, page_idx, mask, flags;
-	free_area_t *area;
+	struct free_area *area;
 	struct page *base;
-	zone_t *zone;
+	struct pm_zone *zone;
 
 	/*
 	 * Yes, think what happens when other parts of the kernel take 
@@ -115,7 +115,7 @@ static void __free_pages_ok (struct page *page, unsigned int order)
 	zone = page_zone(page);
 
 	mask = (~0UL) << order;
-	base = zone->zone_mem_map;
+	base = zone->zone_pg_map;
 	page_idx = page - base;
 	if (page_idx & ~mask)
 		BUG();
@@ -174,8 +174,8 @@ static void __free_pages_ok (struct page *page, unsigned int order)
 #define MARK_USED(index, order, area) \
 	__change_bit((index) >> (1+(order)), (area)->map)
 
-static inline struct page * expand (zone_t *zone, struct page *page,
-	 unsigned long index, int low, int high, free_area_t * area)
+static inline struct page * expand (struct pm_zone *zone, struct page *page,
+	 unsigned long index, int low, int high, struct free_area * area)
 {
 	unsigned long size = 1 << high;
 
@@ -195,10 +195,10 @@ static inline struct page * expand (zone_t *zone, struct page *page,
 	return page;
 }
 
-static FASTCALL(struct page * rmqueue(zone_t *zone, unsigned int order));
-static struct page * rmqueue(zone_t *zone, unsigned int order)
+static FASTCALL(struct page * rmqueue(struct pm_zone *zone, unsigned int order));
+static struct page * rmqueue(struct pm_zone *zone, unsigned int order)
 {
-	free_area_t * area = zone->free_area + order;
+	struct free_area * area = zone->free_area + order;
 	unsigned int curr_order = order;
 	struct list_head *head, *curr;
 	unsigned long flags;
@@ -216,7 +216,7 @@ static struct page * rmqueue(zone_t *zone, unsigned int order)
 			if (BAD_RANGE(zone,page))
 				BUG();
 			list_del(curr);
-			index = page - zone->zone_mem_map;
+			index = page - zone->zone_pg_map;
 			if (curr_order != MAX_ORDER-1)
 				MARK_USED(index, curr_order, area);
 			zone->free_pages -= 1UL << order;
@@ -245,12 +245,12 @@ static struct page * rmqueue(zone_t *zone, unsigned int order)
 struct page *_alloc_pages(unsigned int gfp_mask, unsigned int order)
 {
 	return __alloc_pages(gfp_mask, order,
-		contig_page_data.node_zonelists+(gfp_mask & GFP_ZONEMASK));
+		contig_pm_node.node_zonelists+(gfp_mask & GFP_ZONEMASK));
 }
 #endif
 
-static struct page * FASTCALL(balance_classzone(zone_t *, unsigned int, unsigned int, int *));
-static struct page * balance_classzone(zone_t * classzone, unsigned int gfp_mask, unsigned int order, int * freed)
+static struct page * FASTCALL(balance_classzone(struct pm_zone *, unsigned int, unsigned int, int *));
+static struct page * balance_classzone(struct pm_zone * classzone, unsigned int gfp_mask, unsigned int order, int * freed)
 {
 	struct page * page = NULL;
 	int __freed = 0;
@@ -327,7 +327,7 @@ static struct page * balance_classzone(zone_t * classzone, unsigned int gfp_mask
 struct page * __alloc_pages(unsigned int gfp_mask, unsigned int order, zonelist_t *zonelist)
 {
 	unsigned long min;
-	zone_t **zone, * classzone;
+	struct pm_zone **zone, * classzone;
 	struct page * page;
 	int freed;
 
@@ -337,7 +337,7 @@ struct page * __alloc_pages(unsigned int gfp_mask, unsigned int order, zonelist_
 		return NULL;
 	min = 1UL << order;
 	for (;;) {
-		zone_t *z = *(zone++);
+		struct pm_zone *z = *(zone++);
 		if (!z)
 			break;
 
@@ -358,7 +358,7 @@ struct page * __alloc_pages(unsigned int gfp_mask, unsigned int order, zonelist_
 	min = 1UL << order;
 	for (;;) {
 		unsigned long local_min;
-		zone_t *z = *(zone++);
+		struct pm_zone *z = *(zone++);
 		if (!z)
 			break;
 
@@ -379,7 +379,7 @@ rebalance:
 	if (current->flags & (PF_MEMALLOC | PF_MEMDIE)) {
 		zone = zonelist->zones;
 		for (;;) {
-			zone_t *z = *(zone++);
+			struct pm_zone *z = *(zone++);
 			if (!z)
 				break;
 
@@ -401,7 +401,7 @@ rebalance:
 	zone = zonelist->zones;
 	min = 1UL << order;
 	for (;;) {
-		zone_t *z = *(zone++);
+		struct pm_zone *z = *(zone++);
 		if (!z)
 			break;
 
@@ -466,7 +466,7 @@ void free_pages(unsigned long addr, unsigned int order)
 unsigned int nr_free_pages (void)
 {
 	unsigned int sum = 0;
-	zone_t *zone;
+	struct pm_zone *zone;
 
 	for_each_zone(zone)
 		sum += zone->free_pages;
@@ -479,13 +479,13 @@ unsigned int nr_free_pages (void)
  */
 unsigned int nr_free_buffer_pages (void)
 {
-	struct pg_node *pgnod;
+	struct pm_node *pmnod;
 	unsigned int sum = 0;
 
-	for_each_pgnod(pgnod) {
-		zonelist_t *zonelist = pgnod->node_zonelists + (GFP_USER & GFP_ZONEMASK);
-		zone_t **zonep = zonelist->zones;
-		zone_t *zone;
+	for_each_pmnod(pmnod) {
+		zonelist_t *zonelist = pmnod->node_zonelists + (GFP_USER & GFP_ZONEMASK);
+		struct pm_zone **zonep = zonelist->zones;
+		struct pm_zone *zone;
 
 		for (zone = *zonep++; zone; zone = *zonep++) {
 			unsigned long size = zone->size;
@@ -501,11 +501,11 @@ unsigned int nr_free_buffer_pages (void)
 #if CONFIG_HIGHMEM
 unsigned int nr_free_highpages (void)
 {
-	struct pg_node *pgnod;
+	struct pm_node *pmnod;
 	unsigned int pages = 0;
 
-	for_each_pgnod(pgnod)
-		pages += pgnod->node_zones[ZONE_HIGHMEM].free_pages;
+	for_each_pmnod(pmnod)
+		pages += pmnod->node_zones[ZONE_HIGHMEM].free_pages;
 
 	return pages;
 }
@@ -518,18 +518,18 @@ unsigned int nr_free_highpages (void)
  * We also calculate the percentage fragmentation. We do this by counting the
  * memory on each free list with the exception of the first item on the list.
  */
-void show_free_areas_core(struct pg_node *pgnod)
+void show_free_areas_core(struct pm_node *pmnod)
 {
  	unsigned int order;
 	unsigned type;
-	struct pg_node *tmpdat = pgnod;
+	struct pm_node *tmpdat = pmnod;
 
 	printk("Free pages:      %6dkB (%6dkB HighMem)\n",
 		K(nr_free_pages()),
 		K(nr_free_highpages()));
 
 	while (tmpdat) {
-		zone_t *zone;
+		struct pm_zone *zone;
 		for (zone = tmpdat->node_zones;
 			       	zone < tmpdat->node_zones + MAX_NR_ZONES; zone++)
 			printk("Zone:%s freepages:%6lukB min:%6lukB low:%6lukB " 
@@ -550,7 +550,7 @@ void show_free_areas_core(struct pg_node *pgnod)
 
 	for (type = 0; type < MAX_NR_ZONES; type++) {
 		struct list_head *head, *curr;
-		zone_t *zone = pgnod->node_zones + type;
+		struct pm_zone *zone = pmnod->node_zones + type;
  		unsigned long nr, total, flags;
 
 		total = 0;
@@ -580,21 +580,21 @@ void show_free_areas_core(struct pg_node *pgnod)
 
 void show_free_areas(void)
 {
-	show_free_areas_core(pg_list);
+	show_free_areas_core(nod_list);
 }
 
 /*
  * Builds allocation fallback zone lists.
  */
-static inline void build_zonelists(struct pg_node *pgnod)
+static inline void build_zonelists(struct pm_node *pmnod)
 {
 	int i, j, k;
 
 	for (i = 0; i <= GFP_ZONEMASK; i++) {
 		zonelist_t *zonelist;
-		zone_t *zone;
+		struct pm_zone *zone;
 
-		zonelist = pgnod->node_zonelists + i;
+		zonelist = pmnod->node_zonelists + i;
 		memset(zonelist, 0, sizeof(*zonelist));
 
 		j = 0;
@@ -611,7 +611,7 @@ static inline void build_zonelists(struct pg_node *pgnod)
 			 * fallthrough:
 			 */
 			case ZONE_HIGHMEM:
-				zone = pgnod->node_zones + ZONE_HIGHMEM;
+				zone = pmnod->node_zones + ZONE_HIGHMEM;
 				if (zone->size) {
 #ifndef CONFIG_HIGHMEM
 					BUG();
@@ -619,11 +619,11 @@ static inline void build_zonelists(struct pg_node *pgnod)
 					zonelist->zones[j++] = zone;
 				}
 			case ZONE_NORMAL:
-				zone = pgnod->node_zones + ZONE_NORMAL;
+				zone = pmnod->node_zones + ZONE_NORMAL;
 				if (zone->size)
 					zonelist->zones[j++] = zone;
 			case ZONE_DMA:
-				zone = pgnod->node_zones + ZONE_DMA;
+				zone = pmnod->node_zones + ZONE_DMA;
 				if (zone->size)
 					zonelist->zones[j++] = zone;
 		}
@@ -681,9 +681,9 @@ static inline unsigned long wait_table_bits(unsigned long size)
  *   - mark all memory queues empty
  *   - clear the memory bitmaps
  */
-void __init free_area_init_core(int nid, struct pg_node *pgnod, struct page **gmap,
+void __init free_area_init_core(int nid, struct pm_node *pmnod, struct page **gmap,
 	unsigned long *zones_size, unsigned long zone_start_paddr, 
-	unsigned long *zholes_size, struct page *lmem_map)
+	unsigned long *zholes_size, struct page *lpg_map)
 {
 	unsigned long i, j;
 	unsigned long map_size;
@@ -707,26 +707,26 @@ void __init free_area_init_core(int nid, struct pg_node *pgnod, struct page **gm
 
 	/*
 	 * Some architectures (with lots of mem and discontinous memory
-	 * maps) have to search for a good mem_map area:
+	 * maps) have to search for a good pg_map area:
 	 * For discontigmem, the conceptual mem map array starts from 
 	 * PAGE_OFFSET, we need to align the actual array onto a mem map 
 	 * boundary, so that MAP_NR works.
 	 */
 	map_size = (totalpages + 1)*sizeof(struct page);
-	if (lmem_map == (struct page *)0) {
-		lmem_map = (struct page *) alloc_bootmem_node(pgnod, map_size);
-		lmem_map = (struct page *)(PAGE_OFFSET + 
-			MAP_ALIGN((unsigned long)lmem_map - PAGE_OFFSET));
+	if (lpg_map == (struct page *)0) {
+		lpg_map = (struct page *) alloc_bootmem_node(pmnod, map_size);
+		lpg_map = (struct page *)(PAGE_OFFSET + 
+			MAP_ALIGN((unsigned long)lpg_map - PAGE_OFFSET));
 	}
-	*gmap = pgnod->node_mem_map = lmem_map;
-	pgnod->node_size = totalpages;
-	pgnod->node_start_paddr = zone_start_paddr;
-	pgnod->node_start_mapnr = (lmem_map - mem_map);
-	pgnod->nr_zones = 0;
+	*gmap = pmnod->pg_map = lpg_map;
+	pmnod->node_size = totalpages;
+	pmnod->node_start_paddr = zone_start_paddr;
+	pmnod->node_start_mapnr = (lpg_map - pg_map);
+	pmnod->nr_zones = 0;
 
-	offset = lmem_map - mem_map;	
+	offset = lpg_map - pg_map;	
 	for (j = 0; j < MAX_NR_ZONES; j++) {
-		zone_t *zone = pgnod->node_zones + j;
+		struct pm_zone *zone = pmnod->node_zones + j;
 		unsigned long mask;
 		unsigned long size, realsize;
 
@@ -739,7 +739,7 @@ void __init free_area_init_core(int nid, struct pg_node *pgnod, struct page **gm
 		zone->size = size;
 		zone->name = zone_names[j];
 		zone->lock = SPIN_LOCK_UNLOCKED;
-		zone->zone_pgnod = pgnod;
+		zone->zone_pmnod = pmnod;
 		zone->free_pages = 0;
 		zone->need_balance = 0;
 		if (!size)
@@ -752,14 +752,14 @@ void __init free_area_init_core(int nid, struct pg_node *pgnod, struct page **gm
 		zone->wait_table_size = wait_table_size(size);
 		zone->wait_table_shift =
 			BITS_PER_LONG - wait_table_bits(zone->wait_table_size);
-		zone->wait_table = (wait_queue_head_t *)
-			alloc_bootmem_node(pgnod, zone->wait_table_size
+		zone->wait_tbl = (wait_queue_head_t *)
+			alloc_bootmem_node(pmnod, zone->wait_table_size
 						* sizeof(wait_queue_head_t));
 
 		for(i = 0; i < zone->wait_table_size; ++i)
-			init_waitqueue_head(zone->wait_table + i);
+			init_waitqueue_head(zone->wait_tbl + i);
 
-		pgnod->nr_zones = j+1;
+		pmnod->nr_zones = j+1;
 
 		mask = (realsize / zone_balance_ratio[j]);
 		if (mask < zone_balance_min[j])
@@ -770,7 +770,7 @@ void __init free_area_init_core(int nid, struct pg_node *pgnod, struct page **gm
 		zone->pages_low = mask*2;
 		zone->pages_high = mask*3;
 
-		zone->zone_mem_map = mem_map + offset;
+		zone->zone_pg_map = pg_map + offset;
 		zone->zone_start_mapnr = offset;
 		zone->zone_start_paddr = zone_start_paddr;
 
@@ -783,7 +783,7 @@ void __init free_area_init_core(int nid, struct pg_node *pgnod, struct page **gm
 		 * done. Non-atomic initialization, single-pass.
 		 */
 		for (i = 0; i < size; i++) {
-			struct page *page = mem_map + offset + i;
+			struct page *page = pg_map + offset + i;
 			set_page_zone(page, nid * MAX_NR_ZONES + j);
 			set_page_count(page, 0);
 			SetPageReserved(page);
@@ -829,15 +829,15 @@ void __init free_area_init_core(int nid, struct pg_node *pgnod, struct page **gm
 			bitmap_size = (size-1) >> (i+4);
 			bitmap_size = LONG_ALIGN(bitmap_size+1);
 			zone->free_area[i].map = 
-			  (unsigned long *) alloc_bootmem_node(pgnod, bitmap_size);
+			  (unsigned long *) alloc_bootmem_node(pmnod, bitmap_size);
 		}
 	}
-	build_zonelists(pgnod);
+	build_zonelists(pmnod);
 }
 
 void __init free_area_init(unsigned long *zones_size)
 {
-	free_area_init_core(0, &contig_page_data, &mem_map, zones_size, 0, 0, 0);
+	free_area_init_core(0, &contig_pm_node, &pg_map, zones_size, 0, 0, 0);
 }
 
 static int __init setup_mem_frac(char *str)

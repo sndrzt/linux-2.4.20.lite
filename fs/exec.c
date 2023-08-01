@@ -284,7 +284,7 @@ void put_dirty_page(struct task_struct * tsk, struct page *page, unsigned long a
 	pte_t * pte;
 
 	if (page_count(page) != 1)
-		printk(KERN_ERR "mem_map disagrees with %p at %08lx\n", page, address);
+		printk(KERN_ERR "pg_map disagrees with %p at %08lx\n", page, address);
 	pgd = pgd_offset(tsk->mm, address);
 
 	spin_lock(&tsk->mm->page_table_lock);

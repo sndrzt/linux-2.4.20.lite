@@ -44,7 +44,7 @@ r_base = .
 	cli			# We should be safe anyway
 
 	movl	$0xA5A5A5A5, trampoline_data - r_base
-				# write marker for master knows we're running
+				# write marker for master knows we`re running
 
 	lidt	idt_48 - r_base	# load idt with 0, 0
 	lgdt	gdt_48 - r_base	# load gdt with whatever is appropriate

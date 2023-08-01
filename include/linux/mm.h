@@ -461,7 +461,7 @@ extern void FASTCALL(free_pages(unsigned long addr, unsigned int order));
 #define free_page(addr) free_pages((addr),0)
 
 extern void show_free_areas(void);
-extern void show_free_areas_node(pg_data_t *pgdat);
+extern void show_free_areas_node(struct pg_node *pgnod);
 
 extern void clear_page_tables(struct mm_struct *, unsigned long, int);
 
@@ -508,7 +508,7 @@ extern int pgt_cache_water[2];
 extern int check_pgt_cache(void);
 
 extern void free_area_init(unsigned long * zones_size);
-extern void free_area_init_node(int nid, pg_data_t *pgdat, struct page *pmap,
+extern void free_area_init_node(int nid, struct pg_node *pgnod, struct page *pmap,
 	unsigned long * zones_size, unsigned long zone_start_paddr, 
 	unsigned long *zholes_size);
 extern void mem_init(void);

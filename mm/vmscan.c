@@ -606,7 +606,7 @@ int try_to_free_pages_zone(zone_t *classzone, unsigned int gfp_mask)
 
 int try_to_free_pages(unsigned int gfp_mask)
 {
-	pg_data_t *pgdat;
+	struct pg_node *pgnod;
 	zonelist_t *zonelist;
 	unsigned long pf_free_pages;
 	int error = 0;
@@ -614,8 +614,8 @@ int try_to_free_pages(unsigned int gfp_mask)
 	pf_free_pages = current->flags & PF_FREE_PAGES;
 	current->flags &= ~PF_FREE_PAGES;
 
-	for_each_pgdat(pgdat) {
-		zonelist = pgdat->node_zonelists + (gfp_mask & GFP_ZONEMASK);
+	for_each_pgnod(pgnod) {
+		zonelist = pgnod->node_zonelists + (gfp_mask & GFP_ZONEMASK);
 		error |= try_to_free_pages_zone(zonelist->zones[0], gfp_mask);
 	}
 
@@ -629,7 +629,7 @@ static int check_classzone_need_balance(zone_t * classzone)
 {
 	zone_t * first_classzone;
 
-	first_classzone = classzone->zone_pgdat->node_zones;
+	first_classzone = classzone->zone_pgnod->node_zones;
 	while (classzone >= first_classzone) {
 		if (classzone->free_pages > classzone->pages_high)
 			return 0;
@@ -638,13 +638,13 @@ static int check_classzone_need_balance(zone_t * classzone)
 	return 1;
 }
 
-static int kswapd_balance_pgdat(pg_data_t * pgdat)
+static int kswapd_balance_pgnod(struct pg_node * pgnod)
 {
 	int need_more_balance = 0, i;
 	zone_t * zone;
 
-	for (i = pgdat->nr_zones-1; i >= 0; i--) {
-		zone = pgdat->node_zones + i;
+	for (i = pgnod->nr_zones-1; i >= 0; i--) {
+		zone = pgnod->node_zones + i;
 		if (unlikely(current->need_resched))
 			schedule();
 		if (!zone->need_balance)
@@ -667,23 +667,23 @@ static int kswapd_balance_pgdat(pg_data_t * pgdat)
 static void kswapd_balance(void)
 {
 	int need_more_balance;
-	pg_data_t * pgdat;
+	struct pg_node * pgnod;
 
 	do {
 		need_more_balance = 0;
 
-		for_each_pgdat(pgdat)
-			need_more_balance |= kswapd_balance_pgdat(pgdat);
+		for_each_pgnod(pgnod)
+			need_more_balance |= kswapd_balance_pgnod(pgnod);
 	} while (need_more_balance);
 }
 
-static int kswapd_can_sleep_pgdat(pg_data_t * pgdat)
+static int kswapd_can_sleep_pgnod(struct pg_node * pgnod)
 {
 	zone_t * zone;
 	int i;
 
-	for (i = pgdat->nr_zones-1; i >= 0; i--) {
-		zone = pgdat->node_zones + i;
+	for (i = pgnod->nr_zones-1; i >= 0; i--) {
+		zone = pgnod->node_zones + i;
 		if (!zone->need_balance)
 			continue;
 		return 0;
@@ -694,10 +694,10 @@ static int kswapd_can_sleep_pgdat(pg_data_t * pgdat)
 
 static int kswapd_can_sleep(void)
 {
-	pg_data_t * pgdat;
+	struct pg_node * pgnod;
 
-	for_each_pgdat(pgdat) {
-		if (!kswapd_can_sleep_pgdat(pgdat))
+	for_each_pgnod(pgnod) {
+		if (!kswapd_can_sleep_pgnod(pgnod))
 			return 0;
 	}
 

@@ -74,7 +74,7 @@ _start:
 	ljmp	$INITSEG, $go
 
 # bde - changed 0xff00 to 0x4000 to use debugger at 0x6400 up (bde).  We
-# wouldn't have to worry about this if we checked the top of memory.  Also
+# wouldn`t have to worry about this if we checked the top of memory.  Also
 # my BIOS can be configured to put the wini drive tables in high memory
 # instead of in the vector table.  The old stack might have clobbered the
 # drive table.
@@ -87,7 +87,7 @@ go:	movw	$0x4000-12, %di		# 0x4000 is an arbitrary value >=
 	movw	%ax, %ss
 	movw	%di, %sp		# put stack at INITSEG:0x4000-12.
 
-# Many BIOS's default disk parameter tables will not recognize
+# Many BIOS`s default disk parameter tables will not recognize
 # multi-sector reads beyond the maximum sector number specified
 # in the default diskette parameter tables - this may mean 7
 # sectors in some cases.
@@ -97,7 +97,7 @@ go:	movw	$0x4000-12, %di		# 0x4000 is an arbitrary value >=
 # (for the first disk) in RAM.  We will set the maximum sector
 # count to 36 - the most we will encounter on an ED 2.88.  
 #
-# High doesn't hurt.  Low does.
+# High doesn`t hurt.  Low does.
 #
 # Segments are as follows: %cs = %ds = %es = %ss = INITSEG, %fs = 0,
 # and %gs is unused.
@@ -108,7 +108,7 @@ go:	movw	$0x4000-12, %di		# 0x4000 is an arbitrary value >=
 	ldsw	%fs:(%bx), %si		# %ds:%si is source
 	movb	$6, %cl			# copy 12 bytes
 	pushw	%di			# %di = 0x4000-12.
-	rep				# don't worry about cld
+	rep				# don`t worry about cld
 	movsw				# already done above
 	popw	%di
 	popw	%ds
@@ -144,11 +144,11 @@ got_sectors:
 	int	$0x10
 	movw	$9, %cx
 	movb	$0x07, %bl		# page 0, attribute 7 (normal)
-					# %bh is set above; int10 doesn't
+					# %bh is set above; int10 doesn`t
 					# modify it
 	movw	$msg1, %bp
 	movw	$0x1301, %ax		# write string, move cursor
-	int	$0x10			# tell the user we're loading..
+	int	$0x10			# tell the user we`re loading..
 
 # Load the setup-sectors directly after the moved bootblock (at 0x90200).
 # We should know the drive geometry to do it, as setup may exceed first
@@ -391,8 +391,8 @@ print_digit:
 
 # This procedure turns off the floppy drive motor, so
 # that we enter the kernel in a known state, and
-# don't have to worry about it later.
-# NOTE: Doesn't save %ax or %dx; do it yourself if you need to.
+# don`t have to worry about it later.
+# NOTE: Doesn`t save %ax or %dx; do it yourself if you need to.
 
 kill_motor:
 #if 1

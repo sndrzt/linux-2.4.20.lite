@@ -1,12 +1,3 @@
-/*
- *  linux/arch/i386/head.S -- the 32-bit startup code.
- *
- *  Copyright (C) 1991, 1992  Linus Torvalds
- *
- *  Enhanced CPU detection and feature setting code by Mike Jagdis
- *  and Martin Mares, November 1997.
- */
-
 .text
 #include <linux/config.h>
 #include <linux/threads.h>
@@ -22,10 +13,6 @@
 #define OLD_CL_OFFSET		0x90022
 #define NEW_CL_POINTER		0x228	/* Relative to real mode data */
 
-/*
- * References to members of the boot_cpu_data structure.
- */
-
 #define CPU_PARAMS	SYMBOL_NAME(boot_cpu_data)
 #define X86		CPU_PARAMS+0
 #define X86_VENDOR	CPU_PARAMS+1
@@ -36,15 +23,7 @@
 #define X86_CAPABILITY	CPU_PARAMS+12
 #define X86_VENDOR_ID	CPU_PARAMS+28
 
-/*
- * swapper_pg_dir is the main page directory, address 0x00101000
- *
- * On entry, %esi points to the real-mode code as a 32-bit pointer.
- */
 startup_32:
-/*
- * Set segments to known values
- */
 	cld
 	movl $(__KERNEL_DS),%eax
 	movl %eax,%ds
@@ -55,32 +34,15 @@ startup_32:
 	orw %bx,%bx
 	jz 1f
 
-/*
- *	New page tables may be in 4Mbyte page mode and may
- *	be using the global pages. 
- *
- *	NOTE! If we are on a 486 we may have no cr4 at all!
- *	So we do not try to touch it unless we really have
- *	some bits in it to set.  This won't work if the BSP
- *	implements cr4 but this AP does not -- very unlikely
- *	but be warned!  The same applies to the pse feature
- *	if not equally supported. --macro
- *
- *	NOTE! We have to correct for the fact that we're
- *	not yet offset PAGE_OFFSET..
- */
 #define cr4_bits mmu_cr4_features-__PAGE_OFFSET
 	cmpl $0,cr4_bits
 	je 3f
-	movl %cr4,%eax		# Turn on paging options (PSE,PAE,..)
+	movl %cr4,%eax
 	orl cr4_bits,%eax
 	movl %eax,%cr4
 	jmp 3f
 1:
 #endif
-/*
- * Initialize page tables
- */
 	movl $pg0-__PAGE_OFFSET,%edi /* initialize page tables */
 	movl $007,%eax		/* "007" doesn't mean with right to kill, but
 				   PRESENT+RW+USER */
@@ -196,7 +158,7 @@ checkCPUtype:
 	xorl $0x200000,%eax	# check ID flag
 	pushl %eax
 	popfl			# if we are on a straight 486DX, SX, or
-	pushfl			# 487SX we can't change it
+	pushfl			# 487SX we can`t change it
 	popl %eax
 	xorl %ecx,%eax
 	pushl %ecx		# restore original EFLAGS

@@ -40,7 +40,7 @@ startup_32:
 	lss SYMBOL_NAME(stack_start),%esp
 	xorl %eax,%eax
 1:	incl %eax		# check that A20 really IS enabled
-	movl %eax,0x000000	# loop forever if it isn't
+	movl %eax,0x000000	# loop forever if it isn`t
 	cmpl %eax,0x100000
 	je 1b
 
@@ -100,7 +100,7 @@ startup_32:
 	popl %edx	# high_buffer_start
 	popl %eax	# hcount
 	movl $0x100000,%edi
-	cli		# make sure we don't get interrupted
+	cli		# make sure we don`t get interrupted
 	ljmp $(__KERNEL_CS), $0x1000 # and jump to the move routine
 
 /*
@@ -117,7 +117,7 @@ move_routine_start:
 	rep
 	movsb
 	movl %edx,%esi
-	movl %eax,%ecx	# NOTE: rep movsb won't move if %ecx == 0
+	movl %eax,%ecx	# NOTE: rep movsb won`t move if %ecx == 0
 	addl $3,%ecx
 	shrl $2,%ecx
 	rep

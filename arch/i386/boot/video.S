@@ -1,62 +1,20 @@
-/*	video.S
- *
- *	Display adapter & video mode setup, version 2.13 (14-May-99)
- *
- *	Copyright (C) 1995 -- 1998 Martin Mares <mj@ucw.cz>
- *	Based on the original setup.S code (C) Linus Torvalds and Mats Anderson
- *
- *	Rewritten to use GNU 'as' by Chris Noe <stiker@northlink.com> May 1999
- *
- *	For further information, look at Documentation/svga.txt.
- *
- */
+#include <linux/config.h>
 
-#include <linux/config.h> /* for CONFIG_VIDEO_* */
-
-/* Enable autodetection of SVGA adapters and modes. */
 #undef CONFIG_VIDEO_SVGA
 
-/* Enable autodetection of VESA modes */
 #define CONFIG_VIDEO_VESA
-
-/* Enable compacting of mode table */
 #define CONFIG_VIDEO_COMPACT
-
-/* Retain screen contents when switching modes */
 #define CONFIG_VIDEO_RETAIN
-
-/* Enable local mode list */
 #undef CONFIG_VIDEO_LOCAL
-
-/* Force 400 scan lines for standard modes (hack to fix bad BIOS behaviour */
 #undef CONFIG_VIDEO_400_HACK
-
-/* Hack that lets you force specific BIOS mode ID and specific dimensions */
 #undef CONFIG_VIDEO_GFX_HACK
-#define VIDEO_GFX_BIOS_AX 0x4f02	/* 800x600 on ThinkPad */
+#define VIDEO_GFX_BIOS_AX 0x4f02
 #define VIDEO_GFX_BIOS_BX 0x0102
-#define VIDEO_GFX_DUMMY_RESOLUTION 0x6425	/* 100x37 */
-
-/* This code uses an extended set of video mode numbers. These include:
- * Aliases for standard modes
- *	NORMAL_VGA (-1)
- *	EXTENDED_VGA (-2)
- *	ASK_VGA (-3)
- * Video modes numbered by menu position -- NOT RECOMMENDED because of lack
- * of compatibility when extending the table. These are between 0x00 and 0xff.
- */
+#define VIDEO_GFX_DUMMY_RESOLUTION 0x6425
 #define VIDEO_FIRST_MENU 0x0000
-
-/* Standard BIOS video modes (BIOS number + 0x0100) */
 #define VIDEO_FIRST_BIOS 0x0100
-
-/* VESA BIOS video modes (VESA number + 0x0200) */
 #define VIDEO_FIRST_VESA 0x0200
-
-/* Video7 special modes (BIOS number + 0x0900) */
 #define VIDEO_FIRST_V7 0x0900
-
-/* Special video modes */
 #define VIDEO_FIRST_SPECIAL 0x0f00
 #define VIDEO_80x25 0x0f00
 #define VIDEO_8POINT 0x0f01
@@ -68,15 +26,9 @@
 #define VIDEO_80x60 0x0f07
 #define VIDEO_GFX_HACK 0x0f08
 #define VIDEO_LAST_SPECIAL 0x0f09
-
-/* Video modes given by resolution */
 #define VIDEO_FIRST_RESOLUTION 0x1000
-
-/* The "recalculate timings" flag */
 #define VIDEO_RECALC 0x8000
 
-/* Positions of various video parameters passed to the kernel */
-/* (see also include/linux/tty.h) */
 #define PARAM_CURSOR_POS	0x00
 #define PARAM_VIDEO_PAGE	0x04
 #define PARAM_VIDEO_MODE	0x06
@@ -97,91 +49,82 @@
 #define PARAM_VESAPM_OFF	0x30
 #define PARAM_LFB_PAGES		0x32
 
-
-/* Define DO_STORE according to CONFIG_VIDEO_RETAIN */
 #ifdef CONFIG_VIDEO_RETAIN
 #define DO_STORE call store_screen
 #else
 #define DO_STORE
 #endif /* CONFIG_VIDEO_RETAIN */
 
-# This is the main entry point called by setup.S
-# %ds *must* be pointing to the bootsector
-video:	pushw	%ds		# We use different segments
-	pushw	%ds		# FS contains original DS
+video:	pushw	%ds
+	pushw	%ds
 	popw	%fs
-	pushw	%cs		# DS is equal to CS
+	pushw	%cs
 	popw	%ds
-	pushw	%cs		# ES is equal to CS
+	pushw	%cs
 	popw	%es
 	xorw	%ax, %ax
-	movw	%ax, %gs	# GS is zero
+	movw	%ax, %gs
 	cld
-	call	basic_detect	# Basic adapter type testing (EGA/VGA/MDA/CGA)
+	call	basic_detect
 #ifdef CONFIG_VIDEO_SELECT
-	movw	%fs:(0x01fa), %ax		# User selected video mode
-	cmpw	$ASK_VGA, %ax			# Bring up the menu
+	movw	%fs:(0x01fa), %ax
+	cmpw	$ASK_VGA, %ax
 	jz	vid2
 
-	call	mode_set			# Set the mode
+	call	mode_set
 	jc	vid1
 
-	leaw	badmdt, %si			# Invalid mode ID
+	leaw	badmdt, %si
 	call	prtstr
 vid2:	call	mode_menu
 vid1:
 #ifdef CONFIG_VIDEO_RETAIN
-	call	restore_screen			# Restore screen contents
-#endif /* CONFIG_VIDEO_RETAIN */
-#endif /* CONFIG_VIDEO_SELECT */
-	call	mode_params			# Store mode parameters
-	popw	%ds				# Restore original DS
+	call	restore_screen
+#endif
+#endif
+	call	mode_params
+	popw	%ds
 	ret
 
-# Detect if we have CGA, MDA, EGA or VGA and pass it to the kernel.
 basic_detect:
 	movb	$0, %fs:(PARAM_HAVE_VGA)
 	movb	$0x12, %ah	# Check EGA/VGA
 	movb	$0x10, %bl
 	int	$0x10
-	movw	%bx, %fs:(PARAM_VIDEO_EGA_BX)	# Identifies EGA to the kernel
-	cmpb	$0x10, %bl			# No, it's a CGA/MDA/HGA card.
+	movw	%bx, %fs:(PARAM_VIDEO_EGA_BX)
+	cmpb	$0x10, %bl
 	je	basret
 
 	incb	adapter
-	movw	$0x1a00, %ax			# Check EGA or VGA?
+	movw	$0x1a00, %ax
 	int	$0x10
-	cmpb	$0x1a, %al			# 1a means VGA...
-	jne	basret				# anything else is EGA.
+	cmpb	$0x1a, %al
+	jne	basret
 	
-	incb	%fs:(PARAM_HAVE_VGA)		# We've detected a VGA
+	incb	%fs:(PARAM_HAVE_VGA)
 	incb	adapter
 basret:	ret
 
-# Store the video mode parameters for later usage by the kernel.
-# This is done by asking the BIOS except for the rows/columns
-# parameters in the default 80x25 mode -- these are set directly,
-# because some very obscure BIOSes supply insane values.
 mode_params:
 #ifdef CONFIG_VIDEO_SELECT
 	cmpb	$0, graphic_mode
 	jnz	mopar_gr
 #endif
-	movb	$0x03, %ah			# Read cursor position
+	movb	$0x03, %ah
 	xorb	%bh, %bh
 	int	$0x10
 	movw	%dx, %fs:(PARAM_CURSOR_POS)
-	movb	$0x0f, %ah			# Read page/mode/width
+	movb	$0x0f, %ah
 	int	$0x10
 	movw	%bx, %fs:(PARAM_VIDEO_PAGE)
-	movw	%ax, %fs:(PARAM_VIDEO_MODE)	# Video mode and screen width
-	cmpb	$0x7, %al			# MDA/HGA => segment differs
+	movw	%ax, %fs:(PARAM_VIDEO_MODE)
+	cmpb	$0x7, %al
 	jnz	mopar0
 
 	movw	$0xb000, video_segment
-mopar0: movw	%gs:(0x485), %ax		# Font size
-	movw	%ax, %fs:(PARAM_FONT_POINTS)	# (valid only on EGA/VGA)
-	movw	force_size, %ax			# Forced size?
+mopar0: movw	%gs:(0x485), %ax
+	movw	%ax, %fs:(PARAM_FONT_POINTS)
+	movw	force_size, %ax
 	orw	%ax, %ax
 	jz	mopar1
 
@@ -190,16 +133,15 @@ mopar0: movw	%gs:(0x485), %ax		# Font size
 	ret
 
 mopar1:	movb	$25, %al
-	cmpb	$0, adapter			# If we are on CGA/MDA/HGA, the
-	jz	mopar2				# screen must have 25 lines.
+	cmpb	$0, adapter
+	jz	mopar2
 
-	movb	%gs:(0x484), %al		# On EGA/VGA, use the EGA+ BIOS
-	incb	%al				# location of max lines.
+	movb	%gs:(0x484), %al
+	incb	%al
 mopar2: movb	%al, %fs:(PARAM_VIDEO_LINES)
 	ret
 
 #ifdef CONFIG_VIDEO_SELECT
-# Fetching of VESA frame buffer parameters
 mopar_gr:
 	leaw	modelist+1024, %di
 	movb	$0x23, %fs:(PARAM_HAVE_VGA)
@@ -222,14 +164,13 @@ mopar_gr:
 	movl	35(%di), %eax
 	movl	%eax, %fs:(PARAM_LFB_COLORS+4)
 
-# get video mem size
 	leaw	modelist+1024, %di
 	movw	$0x4f00, %ax
 	int	$0x10
 	xorl	%eax, %eax
 	movw	18(%di), %ax
 	movl	%eax, %fs:(PARAM_LFB_SIZE)
-# get protected mode interface informations
+
 	movw	$0x4f0a, %ax
 	xorw	%bx, %bx
 	xorw	%di, %di
@@ -241,26 +182,25 @@ mopar_gr:
 	movw	%di, %fs:(PARAM_VESAPM_OFF)
 no_pm:	ret
 
-# The video mode menu
 mode_menu:
-	leaw	keymsg, %si			# "Return/Space/Timeout" message
+	leaw	keymsg, %si
 	call	prtstr
 	call	flush
 nokey:	call	getkt
 
-	cmpb	$0x0d, %al			# ENTER ?
-	je	listm				# yes - manual mode selection
+	cmpb	$0x0d, %al
+	je	listm
 
-	cmpb	$0x20, %al			# SPACE ?
-	je	defmd1				# no - repeat
+	cmpb	$0x20, %al
+	je	defmd1
 
 	call 	beep
 	jmp	nokey
 
-defmd1:	ret					# No mode chosen? Default 80x25
+defmd1:	ret
 
-listm:	call	mode_table			# List mode table
-listm0:	leaw	name_bann, %si			# Print adapter name
+listm:	call	mode_table
+listm0:	leaw	name_bann, %si
 	call	prtstr
 	movw	card_name, %si
 	orw	%si, %si
@@ -281,57 +221,57 @@ listm0:	leaw	name_bann, %si			# Print adapter name
 an2:	call	prtstr
 	leaw	svga_name, %si
 an1:	call	prtstr
-	leaw	listhdr, %si			# Table header
+	leaw	listhdr, %si
 	call	prtstr
-	movb	$0x30, %dl			# DL holds mode number
+	movb	$0x30, %dl
 	leaw	modelist, %si
-lm1:	cmpw	$ASK_VGA, (%si)			# End?
+lm1:	cmpw	$ASK_VGA, (%si)
 	jz	lm2
 
-	movb	%dl, %al			# Menu selection number
+	movb	%dl, %al
 	call	prtchr
 	call	prtsp2
 	lodsw
-	call	prthw				# Mode ID
+	call	prthw
 	call	prtsp2
 	movb	0x1(%si), %al
-	call	prtdec				# Rows
-	movb	$0x78, %al			# the letter 'x'
+	call	prtdec
+	movb	$0x78, %al
 	call	prtchr
 	lodsw
-	call	prtdec				# Columns
-	movb	$0x0d, %al			# New line
+	call	prtdec
+	movb	$0x0d, %al
 	call	prtchr
 	movb	$0x0a, %al
 	call	prtchr
-	incb	%dl				# Next character
+	incb	%dl
 	cmpb	$0x3a, %dl
 	jnz	lm1
 
 	movb	$0x61, %dl
 	jmp	lm1
 
-lm2:	leaw	prompt, %si			# Mode prompt
+lm2:	leaw	prompt, %si
 	call	prtstr
-	leaw	edit_buf, %di			# Editor buffer
+	leaw	edit_buf, %di
 lm3:	call	getkey
-	cmpb	$0x0d, %al			# Enter?
+	cmpb	$0x0d, %al
 	jz	lment
 
-	cmpb	$0x08, %al			# Backspace?
+	cmpb	$0x08, %al
 	jz	lmbs
 
-	cmpb	$0x20, %al			# Printable?
+	cmpb	$0x20, %al
 	jc	lm3
 
-	cmpw	$edit_buf+4, %di		# Enough space?
+	cmpw	$edit_buf+4, %di
 	jz	lm3
 
 	stosb
 	call	prtchr
 	jmp	lm3
 
-lmbs:	cmpw	$edit_buf, %di			# Backspace
+lmbs:	cmpw	$edit_buf, %di
 	jz	lm3
 
 	decw	%di
@@ -346,19 +286,19 @@ lment:	movb	$0, (%di)
 	leaw	crlft, %si
 	call	prtstr
 	leaw	edit_buf, %si
-	cmpb	$0, (%si)			# Empty string = default mode
+	cmpb	$0, (%si)
 	jz	lmdef
 
-	cmpb	$0, 1(%si)			# One character = menu selection
+	cmpb	$0, 1(%si)
 	jz	mnusel
 
-	cmpw	$0x6373, (%si)			# "scan" => mode scanning
+	cmpw	$0x6373, (%si)
 	jnz	lmhx
 
 	cmpw	$0x6e61, 2(%si)
 	jz	lmscan
 
-lmhx:	xorw	%bx, %bx			# Else => mode ID in hex
+lmhx:	xorw	%bx, %bx
 lmhex:	lodsb
 	orb	%al, %al
 	jz	lmuse1
@@ -384,7 +324,7 @@ lmhx1:	shlw	$4, %bx
 lmuse1:	movw	%bx, %ax
 	jmp	lmuse
 
-mnusel:	lodsb					# Menu selection
+mnusel:	lodsb
 	xorb	%ah, %ah
 	subb	$0x30, %al
 	jc	lmbad
@@ -405,17 +345,16 @@ lmuse:	call	mode_set
 lmbad:	leaw	unknt, %si
 	call	prtstr
 	jmp	lm2
-lmscan:	cmpb	$0, adapter			# Scanning only on EGA/VGA
+lmscan:	cmpb	$0, adapter
 	jz	lmbad
 
-	movw	$0, mt_end			# Scanning of modes is
-	movb	$1, scanning			# done as new autodetection.
+	movw	$0, mt_end
+	movb	$1, scanning
 	call	mode_table
 	jmp	listm0
 lmdef:	ret
 
-# Additional parts of mode_set... (relative jumps, you know)
-setv7:						# Video7 extended modes
+setv7:
 	DO_STORE
 	subb	$VIDEO_FIRST_V7>>8, %bh
 	movw	$0x6f05, %ax
@@ -423,10 +362,9 @@ setv7:						# Video7 extended modes
 	stc
 	ret
 
-_setrec:	jmp	setrec			# Ugly...
+_setrec:	jmp	setrec
 _set_80x25:	jmp	set_80x25
 
-# Aliases for backward compatibility.
 setalias:
 	movw	$VIDEO_80x25, %ax
 	incw	%bx
@@ -436,7 +374,6 @@ setalias:
 	incw	%bx
 	jnz	setbad				# Fall-through!
 
-# Setting of user mode (AX=mode ID) => CF=success
 mode_set:
 	movw	%ax, %bx
 	cmpb	$0xff, %ah
@@ -464,25 +401,25 @@ mode_set:
 	jz	setbios
 
 setbad:	clc
-	movb	$0, do_restore			# The screen needn't be restored
+	movb	$0, do_restore
 	ret
 
 setvesa:
 	DO_STORE
 	subb	$VIDEO_FIRST_VESA>>8, %bh
-	movw	$0x4f02, %ax			# VESA BIOS mode set call
+	movw	$0x4f02, %ax
 	int	$0x10
-	cmpw	$0x004f, %ax			# AL=4f if implemented
-	jnz	setbad				# AH=0 if OK
+	cmpw	$0x004f, %ax
+	jnz	setbad
 
 	stc
 	ret
 
 setbios:
 	DO_STORE
-	int	$0x10				# Standard BIOS mode set call
+	int	$0x10
 	pushw	%bx
-	movb	$0x0f, %ah			# Check if really set
+	movb	$0x0f, %ah
 	int	$0x10
 	popw	%bx
 	cmpb	%bl, %al
@@ -491,7 +428,7 @@ setbios:
 	stc
 	ret
 
-setspc:	xorb	%bh, %bh			# Set special mode
+setspc:	xorb	%bh, %bh
 	cmpb	$VIDEO_LAST_SPECIAL-VIDEO_FIRST_SPECIAL, %bl
 	jnc	setbad
 	
@@ -499,88 +436,84 @@ setspc:	xorb	%bh, %bh			# Set special mode
 	jmp	*spec_inits(%bx)
 
 setmenu:
-	orb	%al, %al			# 80x25 is an exception
+	orb	%al, %al
 	jz	_set_80x25
 	
-	pushw	%bx				# Set mode chosen from menu
-	call	mode_table			# Build the mode table
+	pushw	%bx
+	call	mode_table
 	popw	%ax
 	shlw	$2, %ax
 	addw	%ax, %si
 	cmpw	%di, %si
 	jnc	setbad
 	
-	movw	(%si), %ax			# Fetch mode ID
+	movw	(%si), %ax
 _m_s:	jmp	mode_set
 
-setres:	pushw	%bx				# Set mode chosen by resolution
+setres:	pushw	%bx
 	call	mode_table
 	popw	%bx
 	xchgb	%bl, %bh
 setr1:	lodsw
-	cmpw	$ASK_VGA, %ax			# End of the list?
+	cmpw	$ASK_VGA, %ax
 	jz	setbad
 	
 	lodsw
 	cmpw	%bx, %ax
 	jnz	setr1
 	
-	movw	-4(%si), %ax			# Fetch mode ID
+	movw	-4(%si), %ax
 	jmp	_m_s
 
 check_vesa:
 	leaw	modelist+1024, %di
 	subb	$VIDEO_FIRST_VESA>>8, %bh
-	movw	%bx, %cx			# Get mode information structure
+	movw	%bx, %cx
 	movw	$0x4f01, %ax
 	int	$0x10
 	addb	$VIDEO_FIRST_VESA>>8, %bh
 	cmpw	$0x004f, %ax
 	jnz	setbad
 
-	movb	(%di), %al			# Check capabilities.
+	movb	(%di), %al
 	andb	$0x19, %al
 	cmpb	$0x09, %al
-	jz	setvesa				# This is a text mode
+	jz	setvesa
 
-	movb	(%di), %al			# Check capabilities.
+	movb	(%di), %al
 	andb	$0x99, %al
 	cmpb	$0x99, %al
-	jnz	_setbad				# Doh! No linear frame buffer.
+	jnz	_setbad
 
 	subb	$VIDEO_FIRST_VESA>>8, %bh
-	orw	$0x4000, %bx			# Use linear frame buffer
-	movw	$0x4f02, %ax			# VESA BIOS mode set call
+	orw	$0x4000, %bx
+	movw	$0x4f02, %ax
 	int	$0x10
-	cmpw	$0x004f, %ax			# AL=4f if implemented
-	jnz	_setbad				# AH=0 if OK
+	cmpw	$0x004f, %ax
+	jnz	_setbad
 
-	movb	$1, graphic_mode		# flag graphic mode
-	movb	$0, do_restore			# no screen restore
+	movb	$1, graphic_mode
+	movb	$0, do_restore
 	stc
 	ret
 
-_setbad:	jmp	setbad          	# Ugly...
+_setbad:	jmp	setbad
 
-# Recalculate vertical display end registers -- this fixes various
-# inconsistencies of extended modes on many adapters. Called when
-# the VIDEO_RECALC flag is set in the mode ID.
-
-setrec:	subb	$VIDEO_RECALC>>8, %ah		# Set the base mode
+setrec:	subb	$VIDEO_RECALC>>8, %ah
 	call	mode_set
 	jnc	rct3
 
-	movw	%gs:(0x485), %ax		# Font size in pixels
-	movb	%gs:(0x484), %bl		# Number of rows
+	movw	%gs:(0x485), %ax
+	movb	%gs:(0x484), %bl
 	incb	%bl
-	mulb	%bl				# Number of visible
-	decw	%ax				# scan lines - 1
+	mulb	%bl
+	decw	%ax
 	movw	$0x3d4, %dx
 	movw	%ax, %bx
-	movb	$0x12, %al			# Lower 8 bits
+	movb	$0x12, %al
 	movb	%bl, %ah
 	outw	%ax, %dx
-	movb	$0x07, %al		# Bits 8 and 9 in the overflow register
+	movb	$0x07, %al
 	call	inidx
 	xchgb	%al, %ah
 	andb	$0xbd, %ah
@@ -595,7 +528,6 @@ rct2:	movb	$0x07, %al
 	stc
 rct3:	ret
 
-# Table of routines for setting of the special modes.
 spec_inits:
 	.word	set_80x25
 	.word	set_8pixel
@@ -607,141 +539,131 @@ spec_inits:
 	.word	set_80x60
 	.word	set_gfx
 
-# Set the 80x25 mode. If already set, do nothing.
 set_80x25:
-	movw	$0x5019, force_size		# Override possibly broken BIOS
+	movw	$0x5019, force_size
 use_80x25:
 #ifdef CONFIG_VIDEO_400_HACK
-	movw	$0x1202, %ax			# Force 400 scan lines
+	movw	$0x1202, %ax
 	movb	$0x30, %bl
 	int	$0x10
 #else
-	movb	$0x0f, %ah			# Get current mode ID
+	movb	$0x0f, %ah
 	int	$0x10
-	cmpw	$0x5007, %ax	# Mode 7 (80x25 mono) is the only one available
-	jz	st80		# on CGA/MDA/HGA and is also available on EGAM
+	cmpw	$0x5007, %ax
+	jz	st80
 
-	cmpw	$0x5003, %ax	# Unknown mode, force 80x25 color
+	cmpw	$0x5003, %ax
 	jnz	force3
 
-st80:	cmpb	$0, adapter	# CGA/MDA/HGA => mode 3/7 is always 80x25
+st80:	cmpb	$0, adapter
 	jz	set80
 
-	movb	%gs:(0x0484), %al	# This is EGA+ -- beware of 80x50 etc.
-	orb	%al, %al		# Some buggy BIOS'es set 0 rows
+	movb	%gs:(0x0484), %al
+	orb	%al, %al
 	jz	set80
 	
-	cmpb	$24, %al		# It's hopefully correct
+	cmpb	$24, %al
 	jz	set80
-#endif /* CONFIG_VIDEO_400_HACK */
+#endif
 force3:	DO_STORE
-	movw	$0x0003, %ax			# Forced set
+	movw	$0x0003, %ax
 	int	$0x10
 set80:	stc
 	ret
 
-# Set the 80x50/80x43 8-pixel mode. Simple BIOS calls.
 set_8pixel:
 	DO_STORE
-	call	use_80x25			# The base is 80x25
+	call	use_80x25
 set_8pt:
-	movw	$0x1112, %ax			# Use 8x8 font
+	movw	$0x1112, %ax
 	xorb	%bl, %bl
 	int	$0x10
-	movw	$0x1200, %ax			# Use alternate print screen
+	movw	$0x1200, %ax
 	movb	$0x20, %bl
 	int	$0x10
-	movw	$0x1201, %ax			# Turn off cursor emulation
+	movw	$0x1201, %ax
 	movb	$0x34, %bl
 	int	$0x10
-	movb	$0x01, %ah			# Define cursor scan lines 6-7
+	movb	$0x01, %ah
 	movw	$0x0607, %cx
 	int	$0x10
 set_current:
 	stc
 	ret
 
-# Set the 80x28 mode. This mode works on all VGA's, because it's a standard
-# 80x25 mode with 14-point fonts instead of 16-point.
 set_80x28:
 	DO_STORE
-	call	use_80x25			# The base is 80x25
-set14:	movw	$0x1111, %ax			# Use 9x14 font
+	call	use_80x25
+set14:	movw	$0x1111, %ax
 	xorb	%bl, %bl
 	int	$0x10
-	movb	$0x01, %ah			# Define cursor scan lines 11-12
+	movb	$0x01, %ah
 	movw	$0x0b0c, %cx
 	int	$0x10
 	stc
 	ret
 
-# Set the 80x43 mode. This mode is works on all VGA's.
-# It's a 350-scanline mode with 8-pixel font.
 set_80x43:
 	DO_STORE
-	movw	$0x1201, %ax			# Set 350 scans
+	movw	$0x1201, %ax
 	movb	$0x30, %bl
 	int	$0x10
-	movw	$0x0003, %ax			# Reset video mode
+	movw	$0x0003, %ax
 	int	$0x10
-	jmp	set_8pt				# Use 8-pixel font
+	jmp	set_8pt
 
-# Set the 80x30 mode (all VGA's). 480 scanlines, 16-pixel font.
 set_80x30:
-	call	use_80x25			# Start with real 80x25
+	call	use_80x25
 	DO_STORE
-	movw	$0x3cc, %dx			# Get CRTC port
+	movw	$0x3cc, %dx
 	inb	%dx, %al
 	movb	$0xd4, %dl
-	rorb	%al				# Mono or color?
+	rorb	%al
 	jc	set48a
 
 	movb	$0xb4, %dl
-set48a:	movw	$0x0c11, %ax		# Vertical sync end (also unlocks CR0-7)
+set48a:	movw	$0x0c11, %ax
  	call	outidx
-	movw	$0x0b06, %ax			# Vertical total
+	movw	$0x0b06, %ax
  	call	outidx
-	movw	$0x3e07, %ax			# (Vertical) overflow
+	movw	$0x3e07, %ax
  	call	outidx
-	movw	$0xea10, %ax			# Vertical sync start
+	movw	$0xea10, %ax
  	call	outidx
-	movw	$0xdf12, %ax			# Vertical display end
+	movw	$0xdf12, %ax
 	call	outidx
-	movw	$0xe715, %ax			# Vertical blank start
+	movw	$0xe715, %ax
  	call	outidx
-	movw	$0x0416, %ax			# Vertical blank end
+	movw	$0x0416, %ax
  	call	outidx
 	pushw	%dx
-	movb	$0xcc, %dl			# Misc output register (read)
+	movb	$0xcc, %dl
  	inb	%dx, %al
- 	movb	$0xc2, %dl			# (write)
- 	andb	$0x0d, %al	# Preserve clock select bits and color bit
- 	orb	$0xe2, %al			# Set correct sync polarity
+ 	movb	$0xc2, %dl
+ 	andb	$0x0d, %al
+ 	orb	$0xe2, %al
  	outb	%al, %dx
 	popw	%dx
 	movw	$0x501e, force_size
-	stc					# That's all.
+	stc
 	ret
 
-# Set the 80x34 mode (all VGA's). 480 scans, 14-pixel font.
 set_80x34:
-	call	set_80x30			# Set 480 scans
-	call	set14				# And 14-pt font
-	movw	$0xdb12, %ax			# VGA vertical display end
+	call	set_80x30
+	call	set14
+	movw	$0xdb12, %ax
 	movw	$0x5022, force_size
 setvde:	call	outidx
 	stc
 	ret
 
-# Set the 80x60 mode (all VGA's). 480 scans, 8-pixel font.
 set_80x60:
-	call	set_80x30			# Set 480 scans
-	call	set_8pt				# And 8-pt font
-	movw	$0xdf12, %ax			# VGA vertical display end
+	call	set_80x30
+	call	set_8pt	
+	movw	$0xdf12, %ax
 	movw	$0x503c, force_size
 	jmp	setvde
 
-# Special hack for ThinkPad graphics
 set_gfx:
 #ifdef CONFIG_VIDEO_GFX_HACK
 	movw	$VIDEO_GFX_BIOS_AX, %ax
@@ -754,56 +676,54 @@ set_gfx:
 
 #ifdef CONFIG_VIDEO_RETAIN
 
-# Store screen contents to temporary buffer.
 store_screen:
-	cmpb	$0, do_restore			# Already stored?
+	cmpb	$0, do_restore
 	jnz	stsr
 
-	testb	$CAN_USE_HEAP, loadflags	# Have we space for storing?
+	testb	$CAN_USE_HEAP, loadflags
 	jz	stsr
 	
 	pushw	%ax
 	pushw	%bx
-	pushw	force_size			# Don't force specific size
+	pushw	force_size
 	movw	$0, force_size
-	call	mode_params			# Obtain params of current mode
+	call	mode_params
 	popw	force_size
 	movb	%fs:(PARAM_VIDEO_LINES), %ah
 	movb	%fs:(PARAM_VIDEO_COLS), %al
-	movw	%ax, %bx			# BX=dimensions
+	movw	%ax, %bx
 	mulb	%ah
-	movw	%ax, %cx			# CX=number of characters
-	addw	%ax, %ax			# Calculate image size
+	movw	%ax, %cx
+	addw	%ax, %ax
 	addw	$modelist+1024+4, %ax
 	cmpw	heap_end_ptr, %ax
-	jnc	sts1				# Unfortunately, out of memory
+	jnc	sts1
 
-	movw	%fs:(PARAM_CURSOR_POS), %ax	# Store mode params
+	movw	%fs:(PARAM_CURSOR_POS), %ax
 	leaw	modelist+1024, %di
 	stosw
 	movw	%bx, %ax
 	stosw
-	pushw	%ds				# Store the screen
+	pushw	%ds
 	movw	video_segment, %ds
 	xorw	%si, %si
 	rep
 	movsw
 	popw	%ds
-	incb	do_restore			# Screen will be restored later
+	incb	do_restore
 sts1:	popw	%bx
 	popw	%ax
 stsr:	ret
 
-# Restore screen contents from temporary buffer.
 restore_screen:
-	cmpb	$0, do_restore			# Has the screen been stored?
+	cmpb	$0, do_restore
 	jz	res1
 
-	call	mode_params			# Get parameters of current mode
+	call	mode_params
 	movb	%fs:(PARAM_VIDEO_LINES), %cl
 	movb	%fs:(PARAM_VIDEO_COLS), %ch
-	leaw	modelist+1024, %si		# Screen buffer
-	lodsw					# Set cursor position
+	leaw	modelist+1024, %si
+	lodsw
 	movw	%ax, %dx
 	cmpb	%cl, %dh
 	jc	res2
@@ -818,11 +738,11 @@ res2:	cmpb	%ch, %dl
 res3:	movb	$0x02, %ah
 	movb	$0x00, %bh
 	int	$0x10
-	lodsw					# Display size
-	movb	%ah, %dl			# DL=number of lines
-	movb	$0, %ah				# BX=phys. length of orig. line
+	lodsw
+	movb	%ah, %dl
+	movb	$0, %ah
 	movw	%ax, %bx
-	cmpb	%cl, %dl			# Too many?
+	cmpb	%cl, %dl
 	jc	res4
 
 	pushw	%ax
@@ -833,17 +753,17 @@ res3:	movb	$0x02, %ah
 	addw	%ax, %si
 	popw	%ax
 	movb	%cl, %dl
-res4:	cmpb	%ch, %al			# Too wide?
+res4:	cmpb	%ch, %al
 	jc	res5
 	
-	movb	%ch, %al			# AX=width of src. line
+	movb	%ch, %al
 res5:	movb	$0, %cl
 	xchgb	%ch, %cl
-	movw	%cx, %bp			# BP=width of dest. line
+	movw	%cx, %bp
 	pushw	%es
 	movw	video_segment, %es
-	xorw	%di, %di			# Move the data
-	addw	%bx, %bx			# Convert BX and BP to _bytes_
+	xorw	%di, %di
+	addw	%bx, %bx
 	addw	%bp, %bp
 res6:	pushw	%si
 	pushw	%di
@@ -861,7 +781,6 @@ res6:	pushw	%si
 res1:	ret
 #endif /* CONFIG_VIDEO_RETAIN */
 
-# Write to indexed VGA register (AL=index, AH=data, DX=index reg. port)
 outidx:	outb	%al, %dx
 	pushw	%ax
 	movb	%ah, %al
@@ -871,40 +790,33 @@ outidx:	outb	%al, %dx
 	popw	%ax
 	ret
 
-# Build the table of video modes (stored after the setup.S code at the
-# `modelist' label. Each video mode record looks like:
-#	.word	MODE-ID		(our special mode ID (see above))
-#	.byte	rows		(number of rows)
-#	.byte	columns		(number of columns)
-# Returns address of the end of the table in DI, the end is marked
-# with a ASK_VGA ID.
 mode_table:
-	movw	mt_end, %di			# Already filled?
+	movw	mt_end, %di
 	orw	%di, %di
 	jnz	mtab1x
 	
-	leaw	modelist, %di			# Store standard modes:
-	movl	$VIDEO_80x25 + 0x50190000, %eax	# The 80x25 mode (ALL)
+	leaw	modelist, %di
+	movl	$VIDEO_80x25 + 0x50190000, %eax
 	stosl
-	movb	adapter, %al			# CGA/MDA/HGA -- no more modes
+	movb	adapter, %al
 	orb	%al, %al
 	jz	mtabe
 	
 	decb	%al
 	jnz	mtabv
 	
-	movl	$VIDEO_8POINT + 0x502b0000, %eax	# The 80x43 EGA mode
+	movl	$VIDEO_8POINT + 0x502b0000, %eax
 	stosl
 	jmp	mtabe
 
 mtab1x:	jmp	mtab1
 
-mtabv:	leaw	vga_modes, %si			# All modes for std VGA
+mtabv:	leaw	vga_modes, %si
 	movw	$vga_modes_end-vga_modes, %cx
-	rep	# I'm unable to use movsw as I don't know how to store a half
-	movsb	# of the expression above to cx without using explicit shr.
+	rep
+	movsb
 
-	cmpb	$0, scanning			# Mode scan requested?
+	cmpb	$0, scanning
 	jz	mscan1
 	
 	call	mode_scan
@@ -912,19 +824,19 @@ mscan1:
 
 #ifdef CONFIG_VIDEO_LOCAL
 	call	local_modes
-#endif /* CONFIG_VIDEO_LOCAL */
+#endif
 
 #ifdef CONFIG_VIDEO_VESA
-	call	vesa_modes			# Detect VESA VGA modes
-#endif /* CONFIG_VIDEO_VESA */
+	call	vesa_modes
+#endif
 
 #ifdef CONFIG_VIDEO_SVGA
-	cmpb	$0, scanning			# Bypass when scanning
+	cmpb	$0, scanning
 	jnz	mscan2
 	
-	call	svga_modes			# Detect SVGA cards & modes
+	call	svga_modes
 mscan2:
-#endif /* CONFIG_VIDEO_SVGA */
+#endif
 
 mtabe:
 
@@ -932,67 +844,65 @@ mtabe:
 	leaw	modelist, %si
 	movw	%di, %dx
 	movw	%si, %di
-cmt1:	cmpw	%dx, %si			# Scan all modes
+cmt1:	cmpw	%dx, %si
 	jz	cmt2
 
-	leaw	modelist, %bx			# Find in previous entries
+	leaw	modelist, %bx
 	movw	2(%si), %cx
 cmt3:	cmpw	%bx, %si
 	jz	cmt4
 
-	cmpw	2(%bx), %cx			# Found => don't copy this entry
+	cmpw	2(%bx), %cx
 	jz	cmt5
 
 	addw	$4, %bx
 	jmp	cmt3
 
-cmt4:	movsl					# Copy entry
+cmt4:	movsl
 	jmp	cmt1
 
-cmt5:	addw	$4, %si				# Skip entry
+cmt5:	addw	$4, %si
 	jmp	cmt1
 
 cmt2:
-#endif	/* CONFIG_VIDEO_COMPACT */
+#endif
 
-	movw	$ASK_VGA, (%di)			# End marker
+	movw	$ASK_VGA, (%di)
 	movw	%di, mt_end
-mtab1:	leaw	modelist, %si			# SI=mode list, DI=list end
+mtab1:	leaw	modelist, %si
 ret0:	ret
 
-# Modes usable on all standard VGAs
 vga_modes:
 	.word	VIDEO_8POINT
-	.word	0x5032				# 80x50
+	.word	0x5032
 	.word	VIDEO_80x43
-	.word	0x502b				# 80x43
+	.word	0x502b
 	.word	VIDEO_80x28
-	.word	0x501c				# 80x28
+	.word	0x501c
 	.word	VIDEO_80x30
-	.word	0x501e				# 80x30
+	.word	0x501e
 	.word	VIDEO_80x34
-	.word	0x5022				# 80x34
+	.word	0x5022
 	.word	VIDEO_80x60
-	.word	0x503c				# 80x60
+	.word	0x503c
 #ifdef CONFIG_VIDEO_GFX_HACK
 	.word	VIDEO_GFX_HACK
 	.word	VIDEO_GFX_DUMMY_RESOLUTION
 #endif
 
 vga_modes_end:
-# Detect VESA modes.
 
 #ifdef CONFIG_VIDEO_VESA
 vesa_modes:
-	cmpb	$2, adapter			# VGA only
+	cmpb	$2, adapter
 	jnz	ret0
 
-	movw	%di, %bp			# BP=original mode table end
-	addw	$0x200, %di			# Buffer space
-	movw	$0x4f00, %ax			# VESA Get card info call
+	movw	%di, %bp
+	addw	$0x200, %di
+	movw	$0x4f00, %ax
 	int	$0x10
 	movw	%bp, %di
-	cmpw	$0x004f, %ax			# Successful?
+	cmpw	$0x004f, %ax
 	jnz	ret0
 	
 	cmpw	$0x4556, 0x200(%di)
@@ -1001,165 +911,158 @@ vesa_modes:
 	cmpw	$0x4153, 0x202(%di)
 	jnz	ret0
 	
-	movw	$vesa_name, card_name		# Set name to "VESA VGA"
+	movw	$vesa_name, card_name
 	pushw	%gs
-	lgsw	0x20e(%di), %si			# GS:SI=mode list
-	movw	$128, %cx			# Iteration limit
+	lgsw	0x20e(%di), %si
+	movw	$128, %cx
 vesa1:
-# gas version 2.9.1, using BFD version 2.9.1.0.23 buggers the next inst.
-# XXX:	lodsw	%gs:(%si), %ax			# Get next mode in the list
 	gs; lodsw
-	cmpw	$0xffff, %ax			# End of the table?
+	cmpw	$0xffff, %ax
 	jz	vesar
 	
-	cmpw	$0x0080, %ax			# Check validity of mode ID
+	cmpw	$0x0080, %ax
 	jc	vesa2
 	
-	orb	%ah, %ah		# Valid IDs: 0x0000-0x007f/0x0100-0x07ff
-	jz	vesan			# Certain BIOSes report 0x80-0xff!
+	orb	%ah, %ah
+	jz	vesan
 
 	cmpw	$0x0800, %ax
 	jnc	vesae
 
 vesa2:	pushw	%cx
-	movw	%ax, %cx			# Get mode information structure
+	movw	%ax, %cx
 	movw	$0x4f01, %ax
 	int	$0x10
-	movw	%cx, %bx			# BX=mode number
+	movw	%cx, %bx
 	addb	$VIDEO_FIRST_VESA>>8, %bh
 	popw	%cx
 	cmpw	$0x004f, %ax
-	jnz	vesan			# Don't report errors (buggy BIOSES)
+	jnz	vesan
 
-	movb	(%di), %al			# Check capabilities. We require
-	andb	$0x19, %al			# a color text mode.
+	movb	(%di), %al
+	andb	$0x19, %al
 	cmpb	$0x09, %al
 	jnz	vesan
 	
-	cmpw	$0xb800, 8(%di)		# Standard video memory address required
+	cmpw	$0xb800, 8(%di)
 	jnz	vesan
 
-	testb	$2, (%di)			# Mode characteristics supplied?
-	movw	%bx, (%di)			# Store mode number
+	testb	$2, (%di)
+	movw	%bx, (%di)
 	jz	vesa3
 	
 	xorw	%dx, %dx
-	movw	0x12(%di), %bx			# Width
+	movw	0x12(%di), %bx
 	orb	%bh, %bh
 	jnz	vesan
 	
 	movb	%bl, 0x3(%di)
-	movw	0x14(%di), %ax			# Height
+	movw	0x14(%di), %ax
 	orb	%ah, %ah
 	jnz	vesan
 	
 	movb	%al, 2(%di)
 	mulb	%bl
-	cmpw	$8193, %ax		# Small enough for Linux console driver?
+	cmpw	$8193, %ax
 	jnc	vesan
 
 	jmp	vesaok
 
-vesa3:	subw	$0x8108, %bx	# This mode has no detailed info specified,
-	jc	vesan		# so it must be a standard VESA mode.
+vesa3:	subw	$0x8108, %bx
+	jc	vesan
 
 	cmpw	$5, %bx
 	jnc	vesan
 
 	movw	vesa_text_mode_table(%bx), %ax
 	movw	%ax, 2(%di)
-vesaok:	addw	$4, %di				# The mode is valid. Store it.
-vesan:	loop	vesa1			# Next mode. Limit exceeded => error
+vesaok:	addw	$4, %di
+vesan:	loop	vesa1
 vesae:	leaw	vesaer, %si
 	call	prtstr
-	movw	%bp, %di			# Discard already found modes.
+	movw	%bp, %di
 vesar:	popw	%gs
 	ret
 
-# Dimensions of standard VESA text modes
 vesa_text_mode_table:
 	.byte	60, 80				# 0108
 	.byte	25, 132				# 0109
 	.byte	43, 132				# 010A
 	.byte	50, 132				# 010B
 	.byte	60, 132				# 010C
-#endif	/* CONFIG_VIDEO_VESA */
+#endif
 
-# Scan for video modes. A bit dirty, but should work.
 mode_scan:
-	movw	$0x0100, %cx			# Start with mode 0
-scm1:	movb	$0, %ah				# Test the mode
+	movw	$0x0100, %cx
+scm1:	movb	$0, %ah
 	movb	%cl, %al
 	int	$0x10
 	movb	$0x0f, %ah
 	int	$0x10
 	cmpb	%cl, %al
-	jnz	scm2				# Mode not set
+	jnz	scm2
 
-	movw	$0x3c0, %dx			# Test if it's a text mode
-	movb	$0x10, %al			# Mode bits
+	movw	$0x3c0, %dx
+	movb	$0x10, %al
 	call	inidx
 	andb	$0x03, %al
 	jnz	scm2
 	
-	movb	$0xce, %dl			# Another set of mode bits
+	movb	$0xce, %dl
 	movb	$0x06, %al
 	call	inidx
 	shrb	%al
 	jc	scm2
 	
-	movb	$0xd4, %dl			# Cursor location
+	movb	$0xd4, %dl
 	movb	$0x0f, %al
 	call	inidx
 	orb	%al, %al
 	jnz	scm2
 	
-	movw	%cx, %ax			# Ok, store the mode
+	movw	%cx, %ax
 	stosw
-	movb	%gs:(0x484), %al		# Number of rows
+	movb	%gs:(0x484), %al
 	incb	%al
 	stosb
-	movw	%gs:(0x44a), %ax		# Number of columns
+	movw	%gs:(0x44a), %ax
 	stosb
 scm2:	incb	%cl
 	jns	scm1
 	
-	movw	$0x0003, %ax			# Return back to mode 3
+	movw	$0x0003, %ax
 	int	$0x10
 	ret
 
-tstidx:	outw	%ax, %dx			# OUT DX,AX and inidx
-inidx:	outb	%al, %dx			# Read from indexed VGA register
-	incw	%dx			# AL=index, DX=index reg port -> AL=data
+tstidx:	outw	%ax, %dx
+inidx:	outb	%al, %dx
+	incw	%dx
 	inb	%dx, %al
 	decw	%dx
 	ret
 
-# Try to detect type of SVGA card and supply (usually approximate) video
-# mode table for it.
-
 #ifdef CONFIG_VIDEO_SVGA
 svga_modes:
-	leaw	svga_table, %si			# Test all known SVGA adapters
+	leaw	svga_table, %si
 dosvga:	lodsw
-	movw	%ax, %bp			# Default mode table
+	movw	%ax, %bp
 	orw	%ax, %ax
 	jz	didsv1
 
-	lodsw					# Pointer to test routine
+	lodsw
 	pushw	%si
 	pushw	%di
 	pushw	%es
 	movw	$0xc000, %bx
 	movw	%bx, %es
-	call	*%ax				# Call test routine
+	call	*%ax
 	popw	%es
 	popw	%di
 	popw	%si
 	orw	%bp, %bp
 	jz	dosvga
 	
-	movw	%bp, %si			# Found, copy the modes
+	movw	%bp, %si
 	movb	svga_prefix, %ah
 cpsvga:	lodsb
 	orb	%al, %al
@@ -1169,13 +1072,9 @@ cpsvga:	lodsb
 	movsw
 	jmp	cpsvga
 
-didsv:	movw	%si, card_name			# Store pointer to card name
+didsv:	movw	%si, card_name
 didsv1:	ret
 
-# Table of all known SVGA cards. For each card, we store a pointer to
-# a table of video modes supported by the card and a pointer to a routine
-# used for testing of presence of the card. The video mode table is always
-# followed by the name of the card or the chipset.
 svga_table:
 	.word	ati_md, ati_test
 	.word	oak_md, oak_test
@@ -1194,50 +1093,15 @@ svga_table:
 	.word	tseng_md, tseng_test
 	.word	0
 
-# Test routines and mode tables:
-
-# S3 - The test algorithm was taken from the SuperProbe package
-# for XFree86 1.2.1. Report bugs to Christoph.Niemann@linux.org
 s3_test:
-	movw	$0x0f35, %cx	# we store some constants in cl/ch
+	movw	$0x0f35, %cx
 	movw	$0x03d4, %dx
 	movb	$0x38, %al
 	call	inidx
-	movb	%al, %bh	# store current CRT-register 0x38
+	movb	%al, %bh
 	movw	$0x0038, %ax
-	call	outidx		# disable writing to special regs
-	movb	%cl, %al	# check whether we can write special reg 0x35
-	call	inidx
-	movb	%al, %bl	# save the current value of CRT reg 0x35
-	andb	$0xf0, %al	# clear bits 0-3
-	movb	%al, %ah
-	movb	%cl, %al	# and write it to CRT reg 0x35
 	call	outidx
-	call	inidx		# now read it back
-	andb	%ch, %al	# clear the upper 4 bits
-	jz	s3_2		# the first test failed. But we have a
-
-	movb	%bl, %ah	# second chance
 	movb	%cl, %al
-	call	outidx
-	jmp	s3_1		# do the other tests
-
-s3_2:	movw	%cx, %ax	# load ah with 0xf and al with 0x35
-	orb	%bl, %ah	# set the upper 4 bits of ah with the orig value
-	call	outidx		# write ...
-	call	inidx		# ... and reread 
-	andb	%cl, %al	# turn off the upper 4 bits
-	pushw	%ax
-	movb	%bl, %ah	# restore old value in register 0x35
-	movb	%cl, %al
-	call	outidx
-	popw	%ax
-	cmpb	%ch, %al	# setting lower 4 bits was successful => bad
-	je	no_s3		# writing is allowed => this is not an S3
-
-s3_1:	movw	$0x4838, %ax	# allow writing to special regs by putting
-	call	outidx		# magic number into CRT-register 0x38
-	movb	%cl, %al	# check whether we can write special reg 0x35
 	call	inidx
 	movb	%al, %bl
 	andb	$0xf0, %al
@@ -1246,7 +1110,38 @@ s3_1:	movw	$0x4838, %ax	# allow writing to special regs by putting
 	call	outidx
 	call	inidx
 	andb	%ch, %al
-	jnz	no_s3		# no, we can't write => no S3
+	jz	s3_2
+
+	movb	%bl, %ah
+	movb	%cl, %al
+	call	outidx
+	jmp	s3_1
+
+s3_2:	movw	%cx, %ax
+	orb	%bl, %ah
+	call	outidx
+	call	inidx
+	andb	%cl, %al
+	pushw	%ax
+	movb	%bl, %ah
+	movb	%cl, %al
+	call	outidx
+	popw	%ax
+	cmpb	%ch, %al
+	je	no_s3
+
+s3_1:	movw	$0x4838, %ax
+	call	outidx
+	movb	%cl, %al
+	call	inidx
+	movb	%al, %bl
+	andb	$0xf0, %al
+	movb	%al, %ah
+	movb	%cl, %al
+	call	outidx
+	call	inidx
+	andb	%ch, %al
+	jnz	no_s3
 
 	movw	%cx, %ax
 	orb	%bl, %ah
@@ -1254,14 +1149,14 @@ s3_1:	movw	$0x4838, %ax	# allow writing to special regs by putting
 	call	inidx
 	andb	%ch, %al
 	pushw	%ax
-	movb	%bl, %ah	# restore old value in register 0x35
+	movb	%bl, %ah
 	movb	%cl, %al
 	call	outidx
 	popw	%ax
 	cmpb	%ch, %al
-	jne	no_s31		# writing not possible => no S3
+	jne	no_s31
 	movb	$0x30, %al
-	call	inidx		# now get the S3 id ...
+	call	inidx
 	leaw	idS3, %di
 	movw	$0x10, %cx
 	repne
@@ -1272,12 +1167,12 @@ s3_1:	movw	$0x4838, %ax	# allow writing to special regs by putting
 	movb	$0x38, %al
 	jmp	s3rest
 
-no_s3:	movb	$0x35, %al	# restore CRT register 0x35
+no_s3:	movb	$0x35, %al
 	movb	%bl, %ah
 	call	outidx
-no_s31:	xorw	%bp, %bp	# Detection failed
+no_s31:	xorw	%bp, %bp
 s3rest:	movb	%bh, %ah
-	movb	$0x38, %al	# restore old value of CRT register 0x38
+	movb	$0x38, %al
 	jmp	outidx
 
 idS3:	.byte	0x81, 0x82, 0x90, 0x91, 0x92, 0x93, 0x94, 0x95
@@ -1289,7 +1184,6 @@ s3_md:	.byte	0x54, 0x2b, 0x84
 	.ascii	"S3"
 	.byte	0
 
-# ATI cards.
 ati_test:
 	leaw 	idati, %si
 	movw	$0x31, %di
@@ -1313,7 +1207,6 @@ ati_md:	.byte	0x23, 0x19, 0x84
 	.ascii	"ATI"
 	.byte	0
 
-# AHEAD
 ahead_test:
 	movw	$0x200f, %ax
 	movw	$0x3ce, %dx
@@ -1340,7 +1233,6 @@ ahead_md:
 	.ascii	"Ahead"
 	.byte	0
 
-# Chips & Tech.
 chips_test:
 	movw	$0x3c3, %dx
 	inb	%dx, %al
@@ -1366,7 +1258,6 @@ chips_md:
 	.ascii	"Chips & Technologies"
 	.byte	0
 
-# Cirrus Logic 5X0
 cirrus1_test:
 	movw	$0x3d4, %dx
 	movb	$0x0c, %al
@@ -1422,12 +1313,11 @@ cirrus1_md:
 	.ascii	"Cirrus Logic 5X0"
 	.byte	0
 
-# Cirrus Logic 54XX
 cirrus5_test:
 	movw	$0x3c4, %dx
 	movb	$6, %al
 	call	inidx
-	movb	%al, %bl			# BL=backup
+	movb	%al, %bl
 	movw	$6, %ax
 	call	tstidx
 	cmpb	$0x0f, %al
@@ -1474,13 +1364,11 @@ cirrus5_md:
 	.ascii	"Cirrus Logic 54XX"
 	.byte	0
 
-# Cirrus Logic 64XX -- no known extra modes, but must be identified, because
-# it's misidentified by the Ahead test.
 cirrus6_test:
 	movw	$0x3ce, %dx
 	movb	$0x0a, %al
 	call	inidx
-	movb	%al, %bl	# BL=backup
+	movb	%al, %bl
 	movw	$0xce0a, %ax
 	call	tstidx
 	orb	%al, %al
@@ -1492,7 +1380,7 @@ cirrus6_test:
 	jne	c2fail
 	
 	movb	$0xaa, %al
-	call	inidx		# 4X, 5X, 7X and 8X are valid 64XX chip ID's. 
+	call	inidx
 	shrb	$4, %al
 	subb	$4, %al
 	jz	c6done
@@ -1517,7 +1405,6 @@ cirrus6_md:
 	.ascii	"Cirrus Logic 64XX"
 	.byte	0
 
-# Everex / Trident
 everex_test:
 	movw	$0x7000, %ax
 	xorw	%bx, %bx
@@ -1553,9 +1440,8 @@ everex_md:
 	.ascii	"Everex/Trident"
 	.byte	0
 
-# Genoa.
 genoa_test:
-	leaw	idgenoa, %si			# Check Genoa 'clues'
+	leaw	idgenoa, %si
 	xorw	%ax, %ax
 	movb	%es:(0x37), %al
 	movw	%ax, %di
@@ -1594,7 +1480,6 @@ genoa_md:
 	.ascii	"Genoa"
 	.byte	0
 
-# OAK
 oak_test:
 	leaw	idoakvga, %si
 	movw	$0x08, %di
@@ -1616,7 +1501,6 @@ oak_md: .byte	0x4e, 0x3c, 0x50
 	.ascii	"OAK"
 	.byte	0
 
-# WD Paradise.
 paradise_test:
 	leaw	idparadise, %si
 	movw	$0x7d, %di
@@ -1639,7 +1523,6 @@ paradise_md:
 	.ascii	"Paradise"
 	.byte	0
 
-# Trident.
 trident_test:
 	movw	$0x3c4, %dx
 	movb	$0x0e, %al
@@ -1651,10 +1534,9 @@ trident_test:
 	outb	%al, %dx
 	inb	%dx, %al
 	xchgb	%ah, %al
-	movb	%al, %bl	# Strange thing ... in the book this wasn't
-	andb	$0x02, %bl	# necessary but it worked on my card which
-	jz	setb2		# is a trident. Without it the screen goes
-				# blurred ...
+	movb	%al, %bl
+	andb	$0x02, %bl
+	jz	setb2
 	andb	$0xfd, %al
 	jmp	clrb2		
 
@@ -1679,7 +1561,6 @@ trident_md:
 	.ascii	"Trident"
 	.byte	0
 
-# Tseng.
 tseng_test:
 	movw	$0x3cd, %dx
 	inb	%dx, %al	# Could things be this simple ! :-)
@@ -1707,7 +1588,6 @@ tseng_md:
 	.ascii	"Tseng"
 	.byte	0
 
-# Video7.
 video7_test:
 	movw	$0x3cc, %dx
 	inb	%dx, %al
@@ -1741,7 +1621,7 @@ even7:	movb	$0x0c, %al
 	cmpb	%bh, %al
 	jne	isnot
 	
-	movb	$VIDEO_FIRST_V7>>8, svga_prefix # Use special mode switching
+	movb	$VIDEO_FIRST_V7>>8, svga_prefix
 	ret
 
 video7_md:
@@ -1755,7 +1635,6 @@ video7_md:
 	.ascii	"Video 7"
 	.byte	0
 
-# Realtek VGA
 realtek_test:
 	leaw	idrtvga, %si
 	movw	$0x45, %di
@@ -1779,9 +1658,8 @@ realtek_md:
 	.ascii	"REALTEK"
 	.byte	0
 
-#endif	/* CONFIG_VIDEO_SVGA */
+#endif
 
-# User-defined local mode table (VGA only)
 #ifdef CONFIG_VIDEO_LOCAL
 local_modes:
 	leaw	local_mode_table, %si
@@ -1795,29 +1673,20 @@ locm1:	lodsw
 
 locm2:	ret
 
-# This is the table of local video modes which can be supplied manually
-# by the user. Each entry consists of mode ID (word) and dimensions
-# (byte for column count and another byte for row count). These modes
-# are placed before all SVGA and VESA modes and override them if table
-# compacting is enabled. The table must end with a zero word followed
-# by NUL-terminated video adapter name.
 local_mode_table:
-	.word	0x0100				# Example: 40x25
+	.word	0x0100
 	.byte	25,40
 	.word	0
 	.ascii	"Local"
 	.byte	0
-#endif	/* CONFIG_VIDEO_LOCAL */
+#endif
 
-# Read a key and return the ASCII code in al, scan code in ah
 getkey:	xorb	%ah, %ah
 	int	$0x16
 	ret
 
-# Read a key with a timeout of 30 seconds.
-# The hardware clock is used to get the time.
 getkt:	call	gettime
-	addb	$30, %al			# Wait 30 seconds
+	addb	$30, %al
 	cmpb	$60, %al
 	jl	lminute
 
@@ -1826,16 +1695,15 @@ lminute:
 	movb	%al, %cl
 again:	movb	$0x01, %ah
 	int	$0x16
-	jnz	getkey				# key pressed, so get it
+	jnz	getkey
 
 	call	gettime
 	cmpb	%cl, %al
 	jne	again
 
-	movb	$0x20, %al			# timeout, return `space'
+	movb	$0x20, %al
 	ret
 
-# Flush the keyboard buffer
 flush:	movb	$0x01, %ah
 	int	$0x16
 	jz	empty
@@ -1846,7 +1714,6 @@ flush:	movb	$0x01, %ah
 
 empty:	ret
 
-# Print hexadecimal number.
 prthw:	pushw	%ax
 	movb	%ah, %al
 	call	prthb
@@ -1863,7 +1730,6 @@ prthn:	cmpb	$0x0a, %al
 prth1:	addb	$0x30, %al
 	jmp	prtchr
 
-# Print decimal number in al
 prtdec:	pushw	%ax
 	pushw	%cx
 	xorb	%ah, %ah
@@ -1884,16 +1750,14 @@ skip10:	movb	%ah, %al
 	popw	%ax
 	ret
 
-# VIDEO_SELECT-only variables
-mt_end:		.word	0	# End of video mode table if built
-edit_buf:	.space	6	# Line editor buffer
-card_name:	.word	0	# Pointer to adapter name
-scanning:	.byte	0	# Performing mode scan
-do_restore:	.byte	0	# Screen contents altered during mode change
-svga_prefix:	.byte	VIDEO_FIRST_BIOS>>8	# Default prefix for BIOS modes
-graphic_mode:	.byte	0	# Graphic mode with a linear frame buffer
+mt_end:		.word	0
+edit_buf:	.space	6
+card_name:	.word	0
+scanning:	.byte	0
+do_restore:	.byte	0
+svga_prefix:	.byte	VIDEO_FIRST_BIOS>>8
+graphic_mode:	.byte	0
 
-# Status messages
 keymsg:		.ascii	"Press <RETURN> to see video modes available, "
 		.ascii	"<SPACE> to continue or wait 30 secs"
 		.byte	0x0d, 0x0a, 0
@@ -1926,9 +1790,8 @@ vga_name:	.asciz	"VGA"
 vesa_name:	.asciz	"VESA"
 
 name_bann:	.asciz	"Video adapter: "
-#endif /* CONFIG_VIDEO_SELECT */
+#endif
 
-# Other variables:
 adapter:	.byte	0	# Video adapter: 0=CGA/MDA/HGA,1=EGA,2=VGA
-video_segment:	.word	0xb800	# Video memory segment
-force_size:	.word	0	# Use this size instead of the one in BIOS vars
+video_segment:	.word	0xb800
+force_size:	.word	0

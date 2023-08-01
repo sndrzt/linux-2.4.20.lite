@@ -24,7 +24,7 @@ typedef struct free_area_struct {
 	unsigned long		*map;
 } free_area_t;
 
-struct pglist_data;
+struct pg_node;
 
 /*
  * On machines where it is needed (eg PCs) we divide physical memory
@@ -80,7 +80,7 @@ typedef struct zone_struct {
 	/*
 	 * Discontig memory support fields.
 	 */
-	struct pglist_data	*zone_pgdat;
+	struct pg_node	*zone_pgnod;
 	struct page		*zone_mem_map;
 	unsigned long		zone_start_paddr;
 	unsigned long		zone_start_mapnr;
@@ -115,18 +115,18 @@ typedef struct zonelist_struct {
 #define GFP_ZONEMASK	0x0f
 
 /*
- * The pg_data_t structure is used in machines with CONFIG_DISCONTIGMEM
+ * The pg_node structure is used in machines with CONFIG_DISCONTIGMEM
  * (mostly NUMA machines?) to denote a higher-level memory zone than the
  * zone_struct denotes.
  *
- * On NUMA machines, each NUMA node would have a pg_data_t to describe
+ * On NUMA machines, each NUMA node would have a struct pg_node to describe
  * it's memory layout.
  *
  * XXX: we need to move the global memory statistics (active_list, ...)
- *      into the pg_data_t to properly support NUMA.
+ *      into the struct pg_node to properly support NUMA.
  */
 struct bootmem_data;
-typedef struct pglist_data {
+typedef struct pg_node {
 	zone_t node_zones[MAX_NR_ZONES];
 	zonelist_t node_zonelists[GFP_ZONEMASK+1];
 	int nr_zones;
@@ -137,13 +137,13 @@ typedef struct pglist_data {
 	unsigned long node_start_mapnr;
 	unsigned long node_size;
 	int node_id;
-	struct pglist_data *node_next;
+	struct pg_node *node_next;
 } pg_data_t;
 
 extern int numnodes;
-extern pg_data_t *pgdat_list;
+extern struct pg_node *pg_list;
 
-#define memclass(pgzone, classzone)	(((pgzone)->zone_pgdat == (classzone)->zone_pgdat) \
+#define memclass(pgzone, classzone)	(((pgzone)->zone_pgnod == (classzone)->zone_pgnod) \
 			&& ((pgzone) <= (classzone)))
 
 /*
@@ -151,26 +151,26 @@ extern pg_data_t *pgdat_list;
  * prototypes for the discontig memory code.
  */
 struct page;
-extern void show_free_areas_core(pg_data_t *pgdat);
-extern void free_area_init_core(int nid, pg_data_t *pgdat, struct page **gmap,
+extern void show_free_areas_core(struct pg_node *pgnod);
+extern void free_area_init_core(int nid, struct pg_node *pgnod, struct page **gmap,
   unsigned long *zones_size, unsigned long paddr, unsigned long *zholes_size,
   struct page *pmap);
 
-extern pg_data_t contig_page_data;
+extern struct pg_node contig_page_data;
 
 /**
- * for_each_pgdat - helper macro to iterate over all nodes
- * @pgdat - pg_data_t * variable
+ * for_each_pgnod - helper macro to iterate over all nodes
+ * @pgnod - struct pg_node * variable
  *
  * Meant to help with common loops of the form
- * pgdat = pgdat_list;
- * while(pgdat) {
+ * pgnod = pg_list;
+ * while(pgnod) {
  * 	...
- * 	pgdat = pgdat->node_next;
+ * 	pgnod = pgnod->node_next;
  * }
  */
-#define for_each_pgdat(pgdat) \
-	for (pgdat = pgdat_list; pgdat; pgdat = pgdat->node_next)
+#define for_each_pgnod(pgnod) \
+	for (pgnod = pg_list; pgnod; pgnod = pgnod->node_next)
 
 
 /*
@@ -179,14 +179,14 @@ extern pg_data_t contig_page_data;
  */
 static inline zone_t *next_zone(zone_t *zone)
 {
-	pg_data_t *pgdat = zone->zone_pgdat;
+	struct pg_node *pgnod = zone->zone_pgnod;
 
-	if (zone - pgdat->node_zones < MAX_NR_ZONES - 1)
+	if (zone - pgnod->node_zones < MAX_NR_ZONES - 1)
 		zone++;
 
-	else if (pgdat->node_next) {
-		pgdat = pgdat->node_next;
-		zone = pgdat->node_zones;
+	else if (pgnod->node_next) {
+		pgnod = pgnod->node_next;
+		zone = pgnod->node_zones;
 	} else
 		zone = NULL;
 
@@ -201,15 +201,15 @@ static inline zone_t *next_zone(zone_t *zone)
  * fills it in. This basically means for_each_zone() is an
  * easier to read version of this piece of code:
  *
- * for(pgdat = pgdat_list; pgdat; pgdat = pgdat->node_next)
+ * for(pgnod = pg_list; pgnod; pgnod = pgnod->node_next)
  * 	for(i = 0; i < MAX_NR_ZONES; ++i) {
- * 		zone_t * z = pgdat->node_zones + i;
+ * 		zone_t * z = pgnod->node_zones + i;
  * 		...
  * 	}
  * }
  */
 #define for_each_zone(zone) \
-	for(zone = pgdat_list->node_zones; zone; zone = next_zone(zone))
+	for(zone = pg_list->node_zones; zone; zone = next_zone(zone))
 
 
 #ifndef CONFIG_DISCONTIGMEM

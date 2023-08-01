@@ -43,14 +43,14 @@ unsigned long __init bootmem_bootmap_pages (unsigned long pages)
 /*
  * Called once to set up the allocator itself.
  */
-static unsigned long __init init_bootmem_core (pg_data_t *pgdat,
+static unsigned long __init init_bootmem_core (struct pg_node *pgnod,
 	unsigned long mapstart, unsigned long start, unsigned long end)
 {
-	bootmem_data_t *bdata = pgdat->bdata;
+	bootmem_data_t *bdata = pgnod->bdata;
 	unsigned long mapsize = ((end - start)+7)/8;
 
-	pgdat->node_next = pgdat_list;
-	pgdat_list = pgdat;
+	pg_list->node_next = pg_list;
+	pg_list = pgnod;
 
 	mapsize = (mapsize + (sizeof(long) - 1UL)) & ~(sizeof(long) - 1UL);
 	bdata->node_bootmem_map = phys_to_virt(mapstart << PAGE_SHIFT);
@@ -242,10 +242,10 @@ found:
 	return ret;
 }
 
-static unsigned long __init free_all_bootmem_core(pg_data_t *pgdat)
+static unsigned long __init free_all_bootmem_core(struct pg_node *pgnod)
 {
-	struct page *page = pgdat->node_mem_map;
-	bootmem_data_t *bdata = pgdat->bdata;
+	struct page *page = pgnod->node_mem_map;
+	bootmem_data_t *bdata = pgnod->bdata;
 	unsigned long i, count, total = 0;
 	unsigned long idx;
 
@@ -281,24 +281,24 @@ static unsigned long __init free_all_bootmem_core(pg_data_t *pgdat)
 	return total;
 }
 
-unsigned long __init init_bootmem_node (pg_data_t *pgdat, unsigned long freepfn, unsigned long startpfn, unsigned long endpfn)
+unsigned long __init init_bootmem_node (struct pg_node *pgnod, unsigned long freepfn, unsigned long startpfn, unsigned long endpfn)
 {
-	return(init_bootmem_core(pgdat, freepfn, startpfn, endpfn));
+	return(init_bootmem_core(pgnod, freepfn, startpfn, endpfn));
 }
 
-void __init reserve_bootmem_node (pg_data_t *pgdat, unsigned long physaddr, unsigned long size)
+void __init reserve_bootmem_node (struct pg_node *pgnod, unsigned long physaddr, unsigned long size)
 {
-	reserve_bootmem_core(pgdat->bdata, physaddr, size);
+	reserve_bootmem_core(pgnod->bdata, physaddr, size);
 }
 
-void __init free_bootmem_node (pg_data_t *pgdat, unsigned long physaddr, unsigned long size)
+void __init free_bootmem_node (struct pg_node *pgnod, unsigned long physaddr, unsigned long size)
 {
-	return(free_bootmem_core(pgdat->bdata, physaddr, size));
+	return(free_bootmem_core(pgnod->bdata, physaddr, size));
 }
 
-unsigned long __init free_all_bootmem_node (pg_data_t *pgdat)
+unsigned long __init free_all_bootmem_node (struct pg_node *pgnod)
 {
-	return(free_all_bootmem_core(pgdat));
+	return(free_all_bootmem_core(pgnod));
 }
 
 unsigned long __init init_bootmem (unsigned long start, unsigned long pages)
@@ -325,11 +325,11 @@ unsigned long __init free_all_bootmem (void)
 
 void * __init __alloc_bootmem (unsigned long size, unsigned long align, unsigned long goal)
 {
-	pg_data_t *pgdat;
+	struct pg_node *pgnod;
 	void *ptr;
 
-	for_each_pgdat(pgdat)
-		if ((ptr = __alloc_bootmem_core(pgdat->bdata, size,
+	for_each_pgnod(pgnod)
+		if ((ptr = __alloc_bootmem_core(pgnod->bdata, size,
 						align, goal)))
 			return(ptr);
 
@@ -341,11 +341,11 @@ void * __init __alloc_bootmem (unsigned long size, unsigned long align, unsigned
 	return NULL;
 }
 
-void * __init __alloc_bootmem_node (pg_data_t *pgdat, unsigned long size, unsigned long align, unsigned long goal)
+void * __init __alloc_bootmem_node (struct pg_node *pgnod, unsigned long size, unsigned long align, unsigned long goal)
 {
 	void *ptr;
 
-	ptr = __alloc_bootmem_core(pgdat->bdata, size, align, goal);
+	ptr = __alloc_bootmem_core(pgnod->bdata, size, align, goal);
 	if (ptr)
 		return (ptr);
 

@@ -43,7 +43,7 @@ struct shmid_kernel /* private to the kernel */
 #define shm_flags	shm_perm.mode
 
 static struct file_operations shm_file_operations;
-static struct vm_operations_struct shm_vm_ops;
+static struct vm_oprs shm_vm_ops;
 
 static struct ipc_ids shm_ids;
 
@@ -169,10 +169,10 @@ static struct file_operations shm_file_operations = {
 	mmap:	shm_mmap
 };
 
-static struct vm_operations_struct shm_vm_ops = {
-	open:	shm_open,	/* callback for a new vm-area open */
-	close:	shm_close,	/* callback for when the vm-area is released */
-	nopage:	shmem_nopage,
+static struct vm_oprs shm_vm_ops = {
+	vopen:	shm_open,	/* callback for a new vm-area open */
+	vclose:	shm_close,	/* callback for when the vm-area is released */
+	vnopage:	shmem_nopage,
 };
 
 static int newseg (key_t key, int shmflg, size_t size)

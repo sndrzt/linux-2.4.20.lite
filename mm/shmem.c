@@ -50,7 +50,7 @@ static struct address_space_operations shmem_aops;
 static struct file_operations shmem_file_operations;
 static struct inode_operations shmem_inode_operations;
 static struct inode_operations shmem_dir_inode_operations;
-static struct vm_operations_struct shmem_vm_ops;
+static struct vm_oprs shmem_vm_ops;
 
 LIST_HEAD (shmem_inodes);
 static spinlock_t shmem_ilock = SPIN_LOCK_UNLOCKED;
@@ -688,7 +688,7 @@ void shmem_lock(struct file * file, int lock)
 
 static int shmem_mmap(struct file * file, struct vm_area_struct * vma)
 {
-	struct vm_operations_struct * ops;
+	struct vm_oprs * ops;
 	struct inode *inode = file->f_dentry->d_inode;
 
 	ops = &shmem_vm_ops;
@@ -1423,8 +1423,8 @@ static struct super_operations shmem_ops = {
 	put_inode:	force_delete,	
 };
 
-static struct vm_operations_struct shmem_vm_ops = {
-	nopage:	shmem_nopage,
+static struct vm_oprs shmem_vm_ops = {
+	vnopage:	shmem_nopage,
 };
 
 #ifdef CONFIG_TMPFS

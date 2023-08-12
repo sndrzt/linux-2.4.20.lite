@@ -64,7 +64,7 @@ struct vm_area_struct {
 	struct vm_area_struct **vm_pprev_share;
 
 	/* Function pointers to deal with this struct. */
-	struct vm_operations_struct * vm_ops;
+	struct vm_oprs * vm_ops;
 
 	/* Information about our backing store: */
 	unsigned long vm_pgoff;		/* Offset (within vm_file) in PAGE_SIZE
@@ -128,10 +128,10 @@ extern pgprot_t protection_map[16];
  * unmapping it (needed to keep files on disk up-to-date etc), pointer
  * to the functions called when a no-page or a wp-page exception occurs. 
  */
-struct vm_operations_struct {
-	void (*open)(struct vm_area_struct * area);
-	void (*close)(struct vm_area_struct * area);
-	struct page * (*nopage)(struct vm_area_struct * area, unsigned long address, int unused);
+struct vm_oprs {
+	void (*vopen)(struct vm_area_struct * area);
+	void (*vclose)(struct vm_area_struct * area);
+	struct page * (*vnopage)(struct vm_area_struct * area, unsigned long address, int unused);
 };
 
 /*

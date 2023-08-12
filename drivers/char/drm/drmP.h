@@ -723,7 +723,7 @@ extern unsigned int  DRM(poll)(struct file *filp,
 			       struct poll_table_struct *wait);
 
 				/* Mapping support (drm_vm.h) */
-extern struct page *DRM(vm_nopage)(struct vm_area_struct *vma,
+extern struct page *DRM(vnopage)(struct vm_area_struct *vma,
 				   unsigned long address,
 				   int unused);
 extern struct page *DRM(vm_shm_nopage)(struct vm_area_struct *vma,

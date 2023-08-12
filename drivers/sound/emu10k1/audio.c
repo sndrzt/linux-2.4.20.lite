@@ -1020,8 +1020,8 @@ static struct page *emu10k1_mm_nopage (struct vm_area_struct * vma, unsigned lon
 	return dmapage;
 }
 
-struct vm_operations_struct emu10k1_mm_ops = {
-	nopage:         emu10k1_mm_nopage,
+struct vm_oprs emu10k1_mm_ops = {
+	vnopage:         emu10k1_mm_nopage,
 };
 
 static int emu10k1_audio_mmap(struct file *file, struct vm_area_struct *vma)

@@ -1901,8 +1901,8 @@ static int via_mm_swapout (struct page *page, struct file *filp)
 #endif /* VM_RESERVED */
 
 
-struct vm_operations_struct via_mm_ops = {
-	nopage:		via_mm_nopage,
+struct vm_oprs via_mm_ops = {
+	vnopage:		via_mm_nopage,
 
 #ifndef VM_RESERVED
 	swapout:	via_mm_swapout,

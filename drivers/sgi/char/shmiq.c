@@ -308,8 +308,8 @@ shmiq_nopage (struct vm_area_struct *vma, unsigned long address,
 	return NULL;
 }
 
-static struct vm_operations_struct qcntl_mmap = {
-	nopage:	shmiq_nopage,		/* our magic no-page fault handler */
+static struct vm_oprs qcntl_mmap = {
+	vnopage:	shmiq_nopage,		/* our magic no-page fault handler */
 };
 
 static int

@@ -257,8 +257,8 @@ sgi_graphics_nopage (struct vm_area_struct *vma, unsigned long address, int
  *
  */
 
-static struct vm_operations_struct graphics_mmap = {
-	nopage:	sgi_graphics_nopage,	/* our magic no-page fault handler */
+static struct vm_oprs graphics_mmap = {
+	vnopage:	sgi_graphics_nopage,	/* our magic no-page fault handler */
 };
 
 int

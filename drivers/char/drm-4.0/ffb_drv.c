@@ -784,9 +784,9 @@ int ffb_unlock(struct inode *inode, struct file *filp, unsigned int cmd, unsigne
 	return 0;
 }
 
-extern struct vm_operations_struct drm_vm_ops;
-extern struct vm_operations_struct drm_vm_shm_ops;
-extern struct vm_operations_struct drm_vm_shm_lock_ops;
+extern struct vm_oprs drm_vm_ops;
+extern struct vm_oprs drm_vm_shm_ops;
+extern struct vm_oprs drm_vm_shm_lock_ops;
 
 static int ffb_mmap(struct file *filp, struct vm_area_struct *vma)
 {

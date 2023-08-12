@@ -32,28 +32,28 @@
 #define __NO_VERSION__
 #include "drmP.h"
 
-struct vm_operations_struct   drm_vm_ops = {
-	nopage:	 drm_vm_nopage,
-	open:	 drm_vm_open,
-	close:	 drm_vm_close,
+struct vm_oprs   drm_vm_ops = {
+	vm_nopage:	 drm_vm_nopage,
+	vm_open:	 drm_vm_open,
+	vm_close:	 drm_vm_close,
 };
 
-struct vm_operations_struct   drm_vm_shm_ops = {
-	nopage:	 drm_vm_shm_nopage,
-	open:	 drm_vm_open,
-	close:	 drm_vm_close,
+struct vm_oprs   drm_vm_shm_ops = {
+	vm_nopage:	 drm_vm_shm_nopage,
+	vm_open:	 drm_vm_open,
+	vm_close:	 drm_vm_close,
 };
 
-struct vm_operations_struct   drm_vm_shm_lock_ops = {
-	nopage:	 drm_vm_shm_nopage_lock,
-	open:	 drm_vm_open,
-	close:	 drm_vm_close,
+struct vm_oprs   drm_vm_shm_lock_ops = {
+	vm_nopage:	 drm_vm_shm_nopage_lock,
+	vm_open:	 drm_vm_open,
+	vm_close:	 drm_vm_close,
 };
 
-struct vm_operations_struct   drm_vm_dma_ops = {
-	nopage:	 drm_vm_dma_nopage,
-	open:	 drm_vm_open,
-	close:	 drm_vm_close,
+struct vm_oprs   drm_vm_dma_ops = {
+	vm_nopage:	 drm_vm_dma_nopage,
+	vm_open:	 drm_vm_open,
+	vm_close:	 drm_vm_close,
 };
 
 #if LINUX_VERSION_CODE < 0x020317

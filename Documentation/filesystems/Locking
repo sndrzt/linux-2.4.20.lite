@@ -305,11 +305,11 @@ free_block:	yes
 free_inode:	yes
 transfer:	no
 
---------------------------- vm_operations_struct -----------------------------
+--------------------------- vm_oprs -----------------------------
 prototypes:
-	void (*open)(struct vm_area_struct*);
-	void (*close)(struct vm_area_struct*);
-	struct page *(*nopage)(struct vm_area_struct*, unsigned long, int);
+	void (*vm_open)(struct vm_area_struct*);
+	void (*vm_close)(struct vm_area_struct*);
+	struct page *(*vm_nopage)(struct vm_area_struct*, unsigned long, int);
 
 locking rules:
 		BKL	mmap_sem

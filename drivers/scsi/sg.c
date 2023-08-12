@@ -1137,8 +1137,8 @@ static struct page * sg_vma_nopage(struct vm_area_struct *vma,
     return page;
 }
 
-static struct vm_operations_struct sg_mmap_vm_ops = {
-    nopage : sg_vma_nopage,
+static struct vm_oprs sg_mmap_vm_ops = {
+    vnopage : sg_vma_nopage,
 };
 
 static int sg_mmap(struct file * filp, struct vm_area_struct *vma)

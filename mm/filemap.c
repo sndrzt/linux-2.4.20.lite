@@ -2175,8 +2175,8 @@ int filemap_sync(struct vm_area_struct * vma, unsigned long address,
 	return error;
 }
 
-static struct vm_operations_struct generic_file_vm_ops = {
-	nopage:		filemap_nopage,
+static struct vm_oprs generic_file_vm_ops = {
+	vnopage:		filemap_nopage,
 };
 
 /* This is used for a general mmap of a disk file */

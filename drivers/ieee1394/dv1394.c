@@ -1463,8 +1463,8 @@ static struct page * dv1394_nopage(struct vm_area_struct * area, unsigned long a
 	return ret;
 }
 
-static struct vm_operations_struct dv1394_vm_ops = {
-	.nopage = dv1394_nopage
+static struct vm_oprs dv1394_vm_ops = {
+	.vnopage = dv1394_nopage
 };
 
 /*

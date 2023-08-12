@@ -324,7 +324,7 @@ static struct page * balance_classzone(struct pm_zone * classzone, unsigned int 
 /*
  * This is the 'heart' of the zoned buddy allocator:
  */
-struct page * __alloc_pages(unsigned int gfp_mask, unsigned int order, zonelist_t *zonelist)
+struct page * __alloc_pages(unsigned int gfp_mask, unsigned int order, struct pm_zonelist *zonelist)
 {
 	unsigned long min;
 	struct pm_zone **zone, * classzone;
@@ -483,7 +483,7 @@ unsigned int nr_free_buffer_pages (void)
 	unsigned int sum = 0;
 
 	for_each_pmnod(pmnod) {
-		zonelist_t *zonelist = pmnod->node_zonelists + (GFP_USER & GFP_ZONEMASK);
+		struct pm_zonelist *zonelist = pmnod->node_zonelists + (GFP_USER & GFP_ZONEMASK);
 		struct pm_zone **zonep = zonelist->zones;
 		struct pm_zone *zone;
 
@@ -591,7 +591,7 @@ static inline void build_zonelists(struct pm_node *pmnod)
 	int i, j, k;
 
 	for (i = 0; i <= GFP_ZONEMASK; i++) {
-		zonelist_t *zonelist;
+		struct pm_zonelist *zonelist;
 		struct pm_zone *zone;
 
 		zonelist = pmnod->node_zonelists + i;

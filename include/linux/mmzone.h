@@ -108,9 +108,9 @@ struct pm_zone {
  * so despite the zonelist table being relatively big, the cache
  * footprint of this construct is very small.
  */
-typedef struct zonelist_struct {
+struct pm_zonelist {
 	struct pm_zone * zones [MAX_NR_ZONES+1]; // NULL delimited
-} zonelist_t;
+};
 
 #define GFP_ZONEMASK	0x0f
 
@@ -128,7 +128,7 @@ typedef struct zonelist_struct {
 struct bootmem_data;
 typedef struct pm_node {
 	struct pm_zone node_zones[MAX_NR_ZONES];
-	zonelist_t node_zonelists[GFP_ZONEMASK+1];
+	struct pm_zonelist node_zonelists[GFP_ZONEMASK+1];
 	int nr_zones;
 	struct page *pg_map;
 	unsigned long *valid_addr_bitmap;
@@ -138,7 +138,7 @@ typedef struct pm_node {
 	unsigned long node_size;
 	int node_id;
 	struct pm_node *node_next;
-} pg_data_t;
+};
 
 extern int numnodes;
 extern struct pm_node *nod_list;

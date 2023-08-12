@@ -607,7 +607,7 @@ int try_to_free_pages_zone(struct pm_zone *classzone, unsigned int gfp_mask)
 int try_to_free_pages(unsigned int gfp_mask)
 {
 	struct pm_node *pmnod;
-	zonelist_t *zonelist;
+	struct pm_zonelist *zonelist;
 	unsigned long pf_free_pages;
 	int error = 0;
 

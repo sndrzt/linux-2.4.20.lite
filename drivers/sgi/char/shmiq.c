@@ -247,7 +247,7 @@ static int
 qcntl_ioctl (struct inode *inode, struct file *filp, unsigned int cmd, unsigned long arg, int minor)
 {
 	struct shmiqreq req;
-	struct vm_area_struct *vma;
+	struct vm_area *vma;
 	int v;
 
 	switch (cmd) {
@@ -301,7 +301,7 @@ qcntl_ioctl (struct inode *inode, struct file *filp, unsigned int cmd, unsigned 
 }
 
 struct page *
-shmiq_nopage (struct vm_area_struct *vma, unsigned long address,
+shmiq_nopage (struct vm_area *vma, unsigned long address,
               int write_access)
 {
 	/* Do not allow for mremap to expand us */
@@ -313,7 +313,7 @@ static struct vm_oprs qcntl_mmap = {
 };
 
 static int
-shmiq_qcntl_mmap (struct file *file, struct vm_area_struct *vma)
+shmiq_qcntl_mmap (struct file *file, struct vm_area *vma)
 {
 	int           minor = MINOR (file->f_dentry->d_inode->i_rdev), error;
 	unsigned int  size;

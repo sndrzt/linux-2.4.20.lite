@@ -218,7 +218,7 @@ static int video_ioctl(struct inode *inode, struct file *file,
  *	We need to do MMAP support
  */
   
-int video_mmap(struct file *file, struct vm_area_struct *vma)
+int video_mmap(struct file *file, struct vm_area *vma)
 {
 	int ret = -EINVAL;
 	struct video_device *vfl = video_devdata(file);

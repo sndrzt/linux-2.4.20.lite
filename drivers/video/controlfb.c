@@ -152,7 +152,7 @@ static int control_get_cmap(struct fb_cmap *cmap, int kspc, int con,
 static int control_set_cmap(struct fb_cmap *cmap, int kspc, int con,
 	struct fb_info *info);
 static int control_mmap(struct fb_info *info, struct file *file,
-	struct vm_area_struct *vma);
+	struct vm_area *vma);
 
 /*
  * low level fbcon ops
@@ -412,7 +412,7 @@ static int control_set_cmap(struct fb_cmap *cmap, int kspc, int con,
  * Note there's no locking in here; it's done in fb_mmap() in fbmem.c.
  */
 static int control_mmap(struct fb_info *info, struct file *file,
-                       struct vm_area_struct *vma)
+                       struct vm_area *vma)
 {
        struct fb_ops *fb = info->fbops;
        struct fb_fix_screeninfo fix;

@@ -270,7 +270,7 @@ extern int GET_FB_IDX(kdev_t rdev);
 
 struct fb_info;
 struct fb_info_gen;
-struct vm_area_struct;
+struct vm_area;
 struct file;
 
     /*
@@ -304,7 +304,7 @@ struct fb_ops {
     int (*fb_ioctl)(struct inode *inode, struct file *file, unsigned int cmd,
 		    unsigned long arg, int con, struct fb_info *info);
     /* perform fb specific mmap */
-    int (*fb_mmap)(struct fb_info *info, struct file *file, struct vm_area_struct *vma);
+    int (*fb_mmap)(struct fb_info *info, struct file *file, struct vm_area *vma);
     /* switch to/from raster image mode */
     int (*fb_rasterimg)(struct fb_info *info, int start);
 };

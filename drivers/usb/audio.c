@@ -2319,7 +2319,7 @@ static unsigned int usb_audio_poll(struct file *file, struct poll_table_struct *
 	return mask;
 }
 
-static int usb_audio_mmap(struct file *file, struct vm_area_struct *vma)
+static int usb_audio_mmap(struct file *file, struct vm_area *vma)
 {
 	struct usb_audiodev *as = (struct usb_audiodev *)file->private_data;
 	struct dmabuf *db;

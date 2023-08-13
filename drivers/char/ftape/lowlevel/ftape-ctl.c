@@ -695,7 +695,7 @@ static void ftape_munmap(void)
  *   We only check the caller doesn't map non-existent buffers. We
  *   don't check for multiple mappings.
  */
-int ftape_mmap(struct vm_area_struct *vma)
+int ftape_mmap(struct vm_area *vma)
 {
 	int num_buffers;
 	int i;

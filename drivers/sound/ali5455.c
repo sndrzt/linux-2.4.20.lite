@@ -1931,7 +1931,7 @@ static unsigned int ali_poll(struct file *file, struct poll_table_struct
 	return mask;
 }
 
-static int ali_mmap(struct file *file, struct vm_area_struct *vma)
+static int ali_mmap(struct file *file, struct vm_area *vma)
 {
 	struct ali_state *state = (struct ali_state *) file->private_data;
 	struct dmabuf *dmabuf = &state->dmabuf;

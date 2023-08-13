@@ -160,7 +160,7 @@ static int atyfb_ioctl(struct inode *inode, struct file *file, u_int cmd,
 		       u_long arg, int con, struct fb_info *info);
 #ifdef __sparc__
 static int atyfb_mmap(struct fb_info *info, struct file *file,
-		      struct vm_area_struct *vma);
+		      struct vm_area *vma);
 #endif
 static int atyfb_rasterimg(struct fb_info *info, int start);
 
@@ -1363,7 +1363,7 @@ static int atyfb_rasterimg(struct fb_info *info, int start)
 
 #ifdef __sparc__
 static int atyfb_mmap(struct fb_info *info, struct file *file,
-		      struct vm_area_struct *vma)
+		      struct vm_area *vma)
 {
 	struct fb_info_aty *fb = (struct fb_info_aty *)info;
 	unsigned int size, page, map_size = 0;

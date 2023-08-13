@@ -1290,7 +1290,7 @@ static unsigned int it8172_poll(struct file *file,
 	return mask;
 }
 
-static int it8172_mmap(struct file *file, struct vm_area_struct *vma)
+static int it8172_mmap(struct file *file, struct vm_area *vma)
 {
 	struct it8172_state *s = (struct it8172_state *)file->private_data;
 	struct dmabuf *db;

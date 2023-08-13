@@ -470,7 +470,7 @@ static int jsfd_ioctl(struct inode *inode, struct file *file,
 	return -ENOTTY;
 }
 
-static int jsf_mmap(struct file * file, struct vm_area_struct * vma)
+static int jsf_mmap(struct file * file, struct vm_area * vma)
 {
 	return -ENXIO;
 }

@@ -381,7 +381,7 @@ typedef struct drm_magic_head {
 } drm_magic_head_t;
 
 typedef struct drm_vma_entry {
-	struct vm_area_struct *vma;
+	struct vm_area *vma;
 	struct drm_vma_entry  *next;
 	pid_t		      pid;
 } drm_vma_entry_t;
@@ -723,24 +723,24 @@ extern unsigned int  DRM(poll)(struct file *filp,
 			       struct poll_table_struct *wait);
 
 				/* Mapping support (drm_vm.h) */
-extern struct page *DRM(vnopage)(struct vm_area_struct *vma,
+extern struct page *DRM(vnopage)(struct vm_area *vma,
 				   unsigned long address,
 				   int unused);
-extern struct page *DRM(vm_shm_nopage)(struct vm_area_struct *vma,
+extern struct page *DRM(vm_shm_nopage)(struct vm_area *vma,
 				       unsigned long address,
 				       int unused);
-extern struct page *DRM(vm_dma_nopage)(struct vm_area_struct *vma,
+extern struct page *DRM(vm_dma_nopage)(struct vm_area *vma,
 				       unsigned long address,
 				       int unused);
-extern struct page *DRM(vm_sg_nopage)(struct vm_area_struct *vma,
+extern struct page *DRM(vm_sg_nopage)(struct vm_area *vma,
 				      unsigned long address,
 				      int unused);
-extern void	     DRM(vm_open)(struct vm_area_struct *vma);
-extern void	     DRM(vm_close)(struct vm_area_struct *vma);
-extern void	     DRM(vm_shm_close)(struct vm_area_struct *vma);
+extern void	     DRM(vopen)(struct vm_area *vma);
+extern void	     DRM(vclose)(struct vm_area *vma);
+extern void	     DRM(vm_shm_close)(struct vm_area *vma);
 extern int	     DRM(mmap_dma)(struct file *filp,
-				   struct vm_area_struct *vma);
-extern int	     DRM(mmap)(struct file *filp, struct vm_area_struct *vma);
+				   struct vm_area *vma);
+extern int	     DRM(mmap)(struct file *filp, struct vm_area *vma);
 
 				/* Memory management support (drm_memory.h) */
 extern void	     DRM(mem_init)(void);

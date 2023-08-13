@@ -772,7 +772,7 @@ static void initialize_dma_it_ctx(struct dma_iso_ctx *d, int sync_tag,
 }
 
 static int do_iso_mmap(struct ti_ohci *ohci, struct dma_iso_ctx *d,
-		       struct vm_area_struct *vma)
+		       struct vm_area *vma)
 {
         unsigned long start = vma->vm_start;
 	unsigned long size = vma->vm_end - vma->vm_start;
@@ -1247,7 +1247,7 @@ static int video1394_ioctl(struct inode *inode, struct file *file,
  *    But e.g. pte_alloc() does not work in modules ... :-(
  */
 
-int video1394_mmap(struct file *file, struct vm_area_struct *vma)
+int video1394_mmap(struct file *file, struct vm_area *vma)
 {
 	struct file_ctx *ctx = (struct file_ctx *)file->private_data;
 	struct video_card *video = ctx->video;

@@ -1441,7 +1441,7 @@ static int sisfb_ioctl(struct inode *inode, struct file *file,
 }
 
 static int sisfb_mmap(struct fb_info *info, struct file *file,
-		      struct vm_area_struct *vma)
+		      struct vm_area *vma)
 {
 #if LINUX_VERSION_CODE > KERNEL_VERSION(2,5,23)
 #define currcon info->currcon

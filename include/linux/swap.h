@@ -97,7 +97,7 @@ extern void __remove_inode_page(struct page *);
 
 /* Incomplete types for prototype declarations: */
 struct task_struct;
-struct vm_area_struct;
+struct vm_area;
 struct sysinfo;
 
 struct pm_zone;

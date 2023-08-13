@@ -88,7 +88,7 @@ static int  zft_open (struct inode *ino, struct file *filep);
 static int zft_close(struct inode *ino, struct file *filep);
 static int  zft_ioctl(struct inode *ino, struct file *filep,
 		      unsigned int command, unsigned long arg);
-static int  zft_mmap(struct file *filep, struct vm_area_struct *vma);
+static int  zft_mmap(struct file *filep, struct vm_area *vma);
 static ssize_t zft_read (struct file *fp, char *buff,
 			 size_t req_len, loff_t *ppos);
 static ssize_t zft_write(struct file *fp, const char *buff,
@@ -187,7 +187,7 @@ static int zft_ioctl(struct inode *ino, struct file *filep,
 
 /*      Ioctl for floppy tape device
  */
-static int  zft_mmap(struct file *filep, struct vm_area_struct *vma)
+static int  zft_mmap(struct file *filep, struct vm_area *vma)
 {
 	int result = -EIO;
 	sigset_t old_sigmask;

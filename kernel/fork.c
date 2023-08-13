@@ -141,7 +141,7 @@ nomorepids:
 
 static inline int dup_mmap(struct mm_struct * mm)
 {
-	struct vm_area_struct * mpnt, *tmp, **pprev;
+	struct vm_area * mpnt, *tmp, **pprev;
 	int retval;
 
 	flush_cache_mm(current->mm);
@@ -206,8 +206,8 @@ static inline int dup_mmap(struct mm_struct * mm)
 		retval = copy_page_range(mm, current->mm, tmp);
 		spin_unlock(&mm->page_table_lock);
 
-		if (tmp->vm_ops && tmp->vm_ops->open)
-			tmp->vm_ops->open(tmp);
+		if (tmp->vm_ops && tmp->vm_ops->vopen)
+			tmp->vm_ops->vopen(tmp);
 
 		if (retval)
 			goto fail_nomem;
@@ -790,7 +790,7 @@ kmem_cache_t *files_cachep;
 /* SLAB cache for fs_struct structures (tsk->fs) */
 kmem_cache_t *fs_cachep;
 
-/* SLAB cache for vm_area_struct structures */
+/* SLAB cache for vm_area structures */
 kmem_cache_t *vm_area_cachep;
 
 /* SLAB cache for mm_struct structures (tsk->mm) */
@@ -816,11 +816,11 @@ void __init proc_caches_init(void)
 	if (!fs_cachep) 
 		panic("Cannot create fs_struct SLAB cache");
  
-	vm_area_cachep = kmem_cache_create("vm_area_struct",
-			sizeof(struct vm_area_struct), 0,
+	vm_area_cachep = kmem_cache_create("vm_area",
+			sizeof(struct vm_area), 0,
 			SLAB_HWCACHE_ALIGN, NULL, NULL);
 	if(!vm_area_cachep)
-		panic("vma_init: Cannot alloc vm_area_struct SLAB cache");
+		panic("vma_init: Cannot alloc vm_area SLAB cache");
 
 	mm_cachep = kmem_cache_create("mm_struct",
 			sizeof(struct mm_struct), 0,

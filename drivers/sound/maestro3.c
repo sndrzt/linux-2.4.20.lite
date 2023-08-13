@@ -1523,7 +1523,7 @@ static unsigned int m3_poll(struct file *file, struct poll_table_struct *wait)
     return mask;
 }
 
-static int m3_mmap(struct file *file, struct vm_area_struct *vma)
+static int m3_mmap(struct file *file, struct vm_area *vma)
 {
     struct m3_state *s = (struct m3_state *)file->private_data;
     unsigned long max_size, size, start, offset;

@@ -320,7 +320,7 @@ typedef struct drm_magic_head {
 } drm_magic_head_t;
 
 typedef struct drm_vma_entry {
-	struct vm_area_struct *vma;
+	struct vm_area *vma;
 	struct drm_vma_entry  *next;
 	pid_t		      pid;
 } drm_vma_entry_t;
@@ -628,38 +628,38 @@ extern unsigned int  drm_poll(struct file *filp, struct poll_table_struct *wait)
 
 				/* Mapping support (vm.c) */
 #if LINUX_VERSION_CODE < 0x020317
-extern unsigned long drm_vm_nopage(struct vm_area_struct *vma,
+extern unsigned long drm_vm_nopage(struct vm_area *vma,
 				   unsigned long address,
 				   int write_access);
-extern unsigned long drm_vm_shm_nopage(struct vm_area_struct *vma,
+extern unsigned long drm_vm_shm_nopage(struct vm_area *vma,
 				       unsigned long address,
 				       int write_access);
-extern unsigned long drm_vm_shm_nopage_lock(struct vm_area_struct *vma,
+extern unsigned long drm_vm_shm_nopage_lock(struct vm_area *vma,
 					    unsigned long address,
 					    int write_access);
-extern unsigned long drm_vm_dma_nopage(struct vm_area_struct *vma,
+extern unsigned long drm_vm_dma_nopage(struct vm_area *vma,
 				       unsigned long address,
 				       int write_access);
 #else
 				/* Return type changed in 2.3.23 */
-extern struct page *drm_vm_nopage(struct vm_area_struct *vma,
+extern struct page *drm_vm_nopage(struct vm_area *vma,
 				  unsigned long address,
 				  int write_access);
-extern struct page *drm_vm_shm_nopage(struct vm_area_struct *vma,
+extern struct page *drm_vm_shm_nopage(struct vm_area *vma,
 				      unsigned long address,
 				      int write_access);
-extern struct page *drm_vm_shm_nopage_lock(struct vm_area_struct *vma,
+extern struct page *drm_vm_shm_nopage_lock(struct vm_area *vma,
 					   unsigned long address,
 					   int write_access);
-extern struct page *drm_vm_dma_nopage(struct vm_area_struct *vma,
+extern struct page *drm_vm_dma_nopage(struct vm_area *vma,
 				      unsigned long address,
 				      int write_access);
 #endif
-extern void	     drm_vm_open(struct vm_area_struct *vma);
-extern void	     drm_vm_close(struct vm_area_struct *vma);
+extern void	     drm_vm_open(struct vm_area *vma);
+extern void	     drm_vm_close(struct vm_area *vma);
 extern int	     drm_mmap_dma(struct file *filp,
-				  struct vm_area_struct *vma);
-extern int	     drm_mmap(struct file *filp, struct vm_area_struct *vma);
+				  struct vm_area *vma);
+extern int	     drm_mmap(struct file *filp, struct vm_area *vma);
 
 
 				/* Proc support (proc.c) */

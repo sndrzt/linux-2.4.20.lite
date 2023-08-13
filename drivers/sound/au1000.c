@@ -1315,7 +1315,7 @@ static unsigned int au1000_poll(struct file *file,
 	return mask;
 }
 
-static int au1000_mmap(struct file *file, struct vm_area_struct *vma)
+static int au1000_mmap(struct file *file, struct vm_area *vma)
 {
 	struct au1000_state *s = (struct au1000_state *)file->private_data;
 	struct dmabuf  *db;

@@ -869,7 +869,7 @@ extern int                      sock_no_recvmsg(struct socket *,
 						struct scm_cookie *);
 extern int			sock_no_mmap(struct file *file,
 					     struct socket *sock,
-					     struct vm_area_struct *vma);
+					     struct vm_area *vma);
 extern ssize_t			sock_no_sendpage(struct socket *sock,
 						struct page *page,
 						int offset, size_t size, 

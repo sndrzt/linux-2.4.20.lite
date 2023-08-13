@@ -34,7 +34,7 @@
 
 #define NFSDBG_FACILITY		NFSDBG_FILE
 
-static int  nfs_file_mmap(struct file *, struct vm_area_struct *);
+static int  nfs_file_mmap(struct file *, struct vm_area *);
 static ssize_t nfs_file_read(struct file *, char *, size_t, loff_t *);
 static ssize_t nfs_file_write(struct file *, const char *, size_t, loff_t *);
 static int  nfs_file_flush(struct file *);
@@ -106,7 +106,7 @@ nfs_file_read(struct file * file, char * buf, size_t count, loff_t *ppos)
 }
 
 static int
-nfs_file_mmap(struct file * file, struct vm_area_struct * vma)
+nfs_file_mmap(struct file * file, struct vm_area * vma)
 {
 	struct dentry *dentry = file->f_dentry;
 	struct inode *inode = dentry->d_inode;

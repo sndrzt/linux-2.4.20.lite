@@ -216,7 +216,7 @@ int permission(struct inode * inode,int mask)
  * MAP_DENYWRITE mmappings simultaneously. The i_writecount field of an inode
  * can have the following values:
  * 0: no writers, no VM_DENYWRITE mappings
- * < 0: (-i_writecount) vm_area_structs with VM_DENYWRITE set exist
+ * < 0: (-i_writecount) vm_area with VM_DENYWRITE set exist
  * > 0: (i_writecount) users are writing to the file.
  *
  * Normally we operate on that counter with atomic_{inc,dec} and it's safe

@@ -1650,7 +1650,7 @@ static ssize_t rme96xx_read(struct file *file, char *buffer, size_t count, loff_
 	return ret;
 }
 
-static int rm96xx_mmap(struct file *file, struct vm_area_struct *vma) {
+static int rm96xx_mmap(struct file *file, struct vm_area *vma) {
 	struct dmabuf *dma = (struct dmabuf *)file->private_data;
 	rme96xx_info* s = dma->s;
 	unsigned long size;

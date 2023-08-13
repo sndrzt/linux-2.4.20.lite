@@ -214,7 +214,7 @@ sgi_graphics_close (struct inode *inode, struct file *file)
  * This is the core of the direct rendering engine.
  */
 struct page *
-sgi_graphics_nopage (struct vm_area_struct *vma, unsigned long address, int
+sgi_graphics_nopage (struct vm_area *vma, unsigned long address, int
 		     no_share)
 {
 	pgd_t *pgd; pmd_t *pmd; pte_t *pte;
@@ -262,7 +262,7 @@ static struct vm_oprs graphics_mmap = {
 };
 
 int
-sgi_graphics_mmap (struct file *file, struct vm_area_struct *vma)
+sgi_graphics_mmap (struct file *file, struct vm_area *vma)
 {
 	uint size;
 

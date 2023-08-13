@@ -239,7 +239,7 @@ out:
 }
 
 static int
-smb_file_mmap(struct file * file, struct vm_area_struct * vma)
+smb_file_mmap(struct file * file, struct vm_area * vma)
 {
 	struct dentry * dentry = file->f_dentry;
 	int	status;

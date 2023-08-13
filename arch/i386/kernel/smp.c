@@ -451,7 +451,7 @@ void flush_tlb_mm (struct mm_struct * mm)
 		flush_tlb_others(cpu_mask, mm, FLUSH_ALL);
 }
 
-void flush_tlb_page(struct vm_area_struct * vma, unsigned long va)
+void flush_tlb_page(struct vm_area * vma, unsigned long va)
 {
 	struct mm_struct *mm = vma->vm_mm;
 	unsigned long cpu_mask = mm->cpu_vm_mask & ~(1 << smp_processor_id());

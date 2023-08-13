@@ -1528,7 +1528,7 @@ static unsigned int es1371_poll(struct file *file, struct poll_table_struct *wai
 	return mask;
 }
 
-static int es1371_mmap(struct file *file, struct vm_area_struct *vma)
+static int es1371_mmap(struct file *file, struct vm_area *vma)
 {
 	struct es1371_state *s = (struct es1371_state *)file->private_data;
 	struct dmabuf *db;
@@ -2112,7 +2112,7 @@ static unsigned int es1371_poll_dac(struct file *file, struct poll_table_struct 
 	return mask;
 }
 
-static int es1371_mmap_dac(struct file *file, struct vm_area_struct *vma)
+static int es1371_mmap_dac(struct file *file, struct vm_area *vma)
 {
 	struct es1371_state *s = (struct es1371_state *)file->private_data;
 	int ret;

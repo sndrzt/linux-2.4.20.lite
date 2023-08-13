@@ -362,7 +362,7 @@ void free_swap_and_cache(swp_entry_t entry)
  * what to do if a write is requested later.
  */
 /* mmlist_lock and vma->vm_mm->page_table_lock are held */
-static inline void unuse_pte(struct vm_area_struct * vma, unsigned long address,
+static inline void unuse_pte(struct vm_area * vma, unsigned long address,
 	pte_t *dir, swp_entry_t entry, struct page* page)
 {
 	pte_t pte = *dir;
@@ -378,7 +378,7 @@ static inline void unuse_pte(struct vm_area_struct * vma, unsigned long address,
 }
 
 /* mmlist_lock and vma->vm_mm->page_table_lock are held */
-static inline void unuse_pmd(struct vm_area_struct * vma, pmd_t *dir,
+static inline void unuse_pmd(struct vm_area * vma, pmd_t *dir,
 	unsigned long address, unsigned long size, unsigned long offset,
 	swp_entry_t entry, struct page* page)
 {
@@ -406,7 +406,7 @@ static inline void unuse_pmd(struct vm_area_struct * vma, pmd_t *dir,
 }
 
 /* mmlist_lock and vma->vm_mm->page_table_lock are held */
-static inline void unuse_pgd(struct vm_area_struct * vma, pgd_t *dir,
+static inline void unuse_pgd(struct vm_area * vma, pgd_t *dir,
 	unsigned long address, unsigned long size,
 	swp_entry_t entry, struct page* page)
 {
@@ -437,7 +437,7 @@ static inline void unuse_pgd(struct vm_area_struct * vma, pgd_t *dir,
 }
 
 /* mmlist_lock and vma->vm_mm->page_table_lock are held */
-static void unuse_vma(struct vm_area_struct * vma, pgd_t *pgdir,
+static void unuse_vma(struct vm_area * vma, pgd_t *pgdir,
 			swp_entry_t entry, struct page* page)
 {
 	unsigned long start = vma->vm_start, end = vma->vm_end;
@@ -454,7 +454,7 @@ static void unuse_vma(struct vm_area_struct * vma, pgd_t *pgdir,
 static void unuse_process(struct mm_struct * mm,
 			swp_entry_t entry, struct page* page)
 {
-	struct vm_area_struct* vma;
+	struct vm_area* vma;
 
 	/*
 	 * Go through process' page directory.

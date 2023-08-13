@@ -122,7 +122,7 @@ static int e1356fb_ioctl(struct inode* inode,
 			 struct fb_info* info);
 static int e1356fb_mmap(struct fb_info *info,
 			struct file *file,
-			struct vm_area_struct *vma);
+			struct vm_area *vma);
 
 /*
  *  Interface to the low level console driver
@@ -2033,7 +2033,7 @@ e1356fb_set_cmap(struct fb_cmap *cmap,
 static int
 e1356fb_mmap(struct fb_info *fb,
 	     struct file *file,
-	     struct vm_area_struct *vma)
+	     struct vm_area *vma)
 {
 	struct fb_info_e1356 *info = (struct fb_info_e1356*)fb;
 	unsigned int len;

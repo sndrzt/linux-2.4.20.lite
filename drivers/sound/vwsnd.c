@@ -2892,7 +2892,7 @@ static int vwsnd_audio_ioctl(struct inode *inode,
 
 /* No mmap. */
 
-static int vwsnd_audio_mmap(struct file *file, struct vm_area_struct *vma)
+static int vwsnd_audio_mmap(struct file *file, struct vm_area *vma)
 {
 	DBGE("(file=0x%p, vma=0x%p)\n", file, vma);
 	return -ENODEV;

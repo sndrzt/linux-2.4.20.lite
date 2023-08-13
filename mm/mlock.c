@@ -12,7 +12,7 @@
 #include <asm/uaccess.h>
 #include <asm/pgtable.h>
 
-static inline int mlock_fixup_all(struct vm_area_struct * vma, int newflags)
+static inline int mlock_fixup_all(struct vm_area * vma, int newflags)
 {
 	spin_lock(&vma->vm_mm->page_table_lock);
 	vma->vm_flags = newflags;
@@ -20,10 +20,10 @@ static inline int mlock_fixup_all(struct vm_area_struct * vma, int newflags)
 	return 0;
 }
 
-static inline int mlock_fixup_start(struct vm_area_struct * vma,
+static inline int mlock_fixup_start(struct vm_area * vma,
 	unsigned long end, int newflags)
 {
-	struct vm_area_struct * n;
+	struct vm_area * n;
 
 	n = kmem_cache_alloc(vm_area_cachep, SLAB_KERNEL);
 	if (!n)
@@ -34,8 +34,8 @@ static inline int mlock_fixup_start(struct vm_area_struct * vma,
 	n->vm_raend = 0;
 	if (n->vm_file)
 		get_file(n->vm_file);
-	if (n->vm_ops && n->vm_ops->open)
-		n->vm_ops->open(n);
+	if (n->vm_ops && n->vm_ops->vopen)
+		n->vm_ops->vopen(n);
 	vma->vm_pgoff += (end - vma->vm_start) >> PAGE_SHIFT;
 	lock_vma_mappings(vma);
 	spin_lock(&vma->vm_mm->page_table_lock);
@@ -46,10 +46,10 @@ static inline int mlock_fixup_start(struct vm_area_struct * vma,
 	return 0;
 }
 
-static inline int mlock_fixup_end(struct vm_area_struct * vma,
+static inline int mlock_fixup_end(struct vm_area * vma,
 	unsigned long start, int newflags)
 {
-	struct vm_area_struct * n;
+	struct vm_area * n;
 
 	n = kmem_cache_alloc(vm_area_cachep, SLAB_KERNEL);
 	if (!n)
@@ -61,8 +61,8 @@ static inline int mlock_fixup_end(struct vm_area_struct * vma,
 	n->vm_raend = 0;
 	if (n->vm_file)
 		get_file(n->vm_file);
-	if (n->vm_ops && n->vm_ops->open)
-		n->vm_ops->open(n);
+	if (n->vm_ops && n->vm_ops->vopen)
+		n->vm_ops->vopen(n);
 	lock_vma_mappings(vma);
 	spin_lock(&vma->vm_mm->page_table_lock);
 	vma->vm_end = start;
@@ -72,10 +72,10 @@ static inline int mlock_fixup_end(struct vm_area_struct * vma,
 	return 0;
 }
 
-static inline int mlock_fixup_middle(struct vm_area_struct * vma,
+static inline int mlock_fixup_middle(struct vm_area * vma,
 	unsigned long start, unsigned long end, int newflags)
 {
-	struct vm_area_struct * left, * right;
+	struct vm_area * left, * right;
 
 	left = kmem_cache_alloc(vm_area_cachep, SLAB_KERNEL);
 	if (!left)
@@ -96,9 +96,9 @@ static inline int mlock_fixup_middle(struct vm_area_struct * vma,
 	if (vma->vm_file)
 		atomic_add(2, &vma->vm_file->f_count);
 
-	if (vma->vm_ops && vma->vm_ops->open) {
-		vma->vm_ops->open(left);
-		vma->vm_ops->open(right);
+	if (vma->vm_ops && vma->vm_ops->vopen) {
+		vma->vm_ops->vopen(left);
+		vma->vm_ops->vopen(right);
 	}
 	vma->vm_raend = 0;
 	vma->vm_pgoff += (start - vma->vm_start) >> PAGE_SHIFT;
@@ -114,7 +114,7 @@ static inline int mlock_fixup_middle(struct vm_area_struct * vma,
 	return 0;
 }
 
-static int mlock_fixup(struct vm_area_struct * vma, 
+static int mlock_fixup(struct vm_area * vma, 
 	unsigned long start, unsigned long end, unsigned int newflags)
 {
 	int pages, retval;
@@ -148,7 +148,7 @@ static int mlock_fixup(struct vm_area_struct * vma,
 static int do_mlock(unsigned long start, size_t len, int on)
 {
 	unsigned long nstart, end, tmp;
-	struct vm_area_struct * vma, * next;
+	struct vm_area * vma, * next;
 	int error;
 
 	if (on && !capable(CAP_IPC_LOCK))
@@ -239,7 +239,7 @@ static int do_mlockall(int flags)
 {
 	int error;
 	unsigned int def_flags;
-	struct vm_area_struct * vma;
+	struct vm_area * vma;
 
 	if (!capable(CAP_IPC_LOCK))
 		return -EPERM;

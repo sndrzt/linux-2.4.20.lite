@@ -1663,7 +1663,7 @@ static unsigned int i810_poll(struct file *file, struct poll_table_struct *wait)
 	return mask;
 }
 
-static int i810_mmap(struct file *file, struct vm_area_struct *vma)
+static int i810_mmap(struct file *file, struct vm_area *vma)
 {
 	struct i810_state *state = (struct i810_state *)file->private_data;
 	struct dmabuf *dmabuf = &state->dmabuf;

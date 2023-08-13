@@ -34,7 +34,7 @@ static int  ffb_lock(struct inode *inode, struct file *filp,
 		     unsigned int cmd, unsigned long arg);
 static int  ffb_unlock(struct inode *inode, struct file *filp,
 		       unsigned int cmd, unsigned long arg);
-static int ffb_mmap(struct file *filp, struct vm_area_struct *vma);
+static int ffb_mmap(struct file *filp, struct vm_area *vma);
 static unsigned long ffb_get_unmapped_area(struct file *, unsigned long, unsigned long, unsigned long, unsigned long);
 
 /* From ffb_context.c */
@@ -788,7 +788,7 @@ extern struct vm_oprs drm_vm_ops;
 extern struct vm_oprs drm_vm_shm_ops;
 extern struct vm_oprs drm_vm_shm_lock_ops;
 
-static int ffb_mmap(struct file *filp, struct vm_area_struct *vma)
+static int ffb_mmap(struct file *filp, struct vm_area *vma)
 {
 	drm_file_t	*priv	= filp->private_data;
 	drm_device_t	*dev	= priv->dev;

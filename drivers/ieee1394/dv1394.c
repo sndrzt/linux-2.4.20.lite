@@ -1434,7 +1434,7 @@ static int do_dv1394_shutdown(struct video_card *video, int free_user_buf)
 	page faults are taken by the user.
 */
 
-static struct page * dv1394_nopage(struct vm_area_struct * area, unsigned long address, int write_access)
+static struct page * dv1394_nopage(struct vm_area * area, unsigned long address, int write_access)
 {
 	unsigned long offset;
 	unsigned long kernel_virt_addr;
@@ -1473,7 +1473,7 @@ static struct vm_oprs dv1394_vm_ops = {
   by the user.
 */
 
-int dv1394_mmap(struct file *file, struct vm_area_struct *vma)
+int dv1394_mmap(struct file *file, struct vm_area *vma)
 {
 	struct video_card *video = file_to_video_card(file);
 	unsigned long size;

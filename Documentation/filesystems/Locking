@@ -228,7 +228,7 @@ prototypes:
 	int (*readdir) (struct file *, void *, filldir_t);
 	unsigned int (*poll) (struct file *, struct poll_table_struct *);
 	int (*ioctl) (struct inode *, struct file *, unsigned int, unsigned long);
-	int (*mmap) (struct file *, struct vm_area_struct *);
+	int (*mmap) (struct file *, struct vm_area *);
 	int (*open) (struct inode *, struct file *);
 	int (*flush) (struct file *);
 	int (*release) (struct inode *, struct file *);
@@ -307,9 +307,9 @@ transfer:	no
 
 --------------------------- vm_oprs -----------------------------
 prototypes:
-	void (*vm_open)(struct vm_area_struct*);
-	void (*vm_close)(struct vm_area_struct*);
-	struct page *(*vm_nopage)(struct vm_area_struct*, unsigned long, int);
+	void (*vopen)(struct vm_area*);
+	void (*vclose)(struct vm_area*);
+	struct page *(*vnopage)(struct vm_area*, unsigned long, int);
 
 locking rules:
 		BKL	mmap_sem

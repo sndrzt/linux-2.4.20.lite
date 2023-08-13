@@ -1726,7 +1726,7 @@ static unsigned int cm_poll(struct file *file, struct poll_table_struct *wait)
 	return mask;
 }
 
-static int cm_mmap(struct file *file, struct vm_area_struct *vma)
+static int cm_mmap(struct file *file, struct vm_area *vma)
 {
 	struct cm_state *s = (struct cm_state *)file->private_data;
 	struct dmabuf *db;

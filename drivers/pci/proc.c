@@ -238,7 +238,7 @@ static int proc_bus_pci_ioctl(struct inode *inode, struct file *file, unsigned i
 }
 
 #ifdef HAVE_PCI_MMAP
-static int proc_bus_pci_mmap(struct file *file, struct vm_area_struct *vma)
+static int proc_bus_pci_mmap(struct file *file, struct vm_area *vma)
 {
 	struct inode *inode = file->f_dentry->d_inode;
 	const struct proc_dir_entry *dp = inode->u.generic_ip;

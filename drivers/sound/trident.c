@@ -2083,7 +2083,7 @@ static unsigned int trident_poll(struct file *file, struct poll_table_struct *wa
 	return mask;
 }
 
-static int trident_mmap(struct file *file, struct vm_area_struct *vma)
+static int trident_mmap(struct file *file, struct vm_area *vma)
 {
 	struct trident_state *state = (struct trident_state *)file->private_data;
 	struct dmabuf *dmabuf = &state->dmabuf;

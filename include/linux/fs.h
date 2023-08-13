@@ -405,8 +405,8 @@ struct address_space {
 	unsigned long		nrpages;	/* number of total pages */
 	struct address_space_operations *a_ops;	/* methods */
 	struct inode		*host;		/* owner: inode, block_device */
-	struct vm_area_struct	*i_mmap;	/* list of private mappings */
-	struct vm_area_struct	*i_mmap_shared; /* list of shared mappings */
+	struct vm_area	*i_mmap;	/* list of private mappings */
+	struct vm_area	*i_mmap_shared; /* list of shared mappings */
 	spinlock_t		i_shared_lock;  /* and spinlock protecting it */
 	int			gfp_mask;	/* how to allocate the pages */
 };
@@ -835,7 +835,7 @@ struct file_operations {
 	int (*readdir) (struct file *, void *, filldir_t);
 	unsigned int (*poll) (struct file *, struct poll_table_struct *);
 	int (*ioctl) (struct inode *, struct file *, unsigned int, unsigned long);
-	int (*mmap) (struct file *, struct vm_area_struct *);
+	int (*mmap) (struct file *, struct vm_area *);
 	int (*open) (struct inode *, struct file *);
 	int (*flush) (struct file *);
 	int (*release) (struct inode *, struct file *);
@@ -1436,7 +1436,7 @@ extern int generic_direct_IO(int, struct inode *, struct kiobuf *, unsigned long
 extern int waitfor_one_page(struct page *);
 extern int writeout_one_page(struct page *);
 
-extern int generic_file_mmap(struct file *, struct vm_area_struct *);
+extern int generic_file_mmap(struct file *, struct vm_area *);
 extern int file_read_actor(read_descriptor_t * desc, struct page *page, unsigned long offset, unsigned long size);
 extern ssize_t generic_file_read(struct file *, char *, size_t, loff_t *);
 extern ssize_t generic_file_write(struct file *, const char *, size_t, loff_t *);

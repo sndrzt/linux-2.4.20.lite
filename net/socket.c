@@ -90,7 +90,7 @@ static ssize_t sock_read(struct file *file, char *buf,
 			 size_t size, loff_t *ppos);
 static ssize_t sock_write(struct file *file, const char *buf,
 			  size_t size, loff_t *ppos);
-static int sock_mmap(struct file *file, struct vm_area_struct * vma);
+static int sock_mmap(struct file *file, struct vm_area * vma);
 
 static int sock_close(struct inode *inode, struct file *file);
 static unsigned int sock_poll(struct file *file,
@@ -690,7 +690,7 @@ static unsigned int sock_poll(struct file *file, poll_table * wait)
 	return sock->ops->poll(file, sock, wait);
 }
 
-static int sock_mmap(struct file * file, struct vm_area_struct * vma)
+static int sock_mmap(struct file * file, struct vm_area * vma)
 {
 	struct socket *sock = socki_lookup(file->f_dentry->d_inode);
 

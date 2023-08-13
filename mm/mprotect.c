@@ -91,10 +91,10 @@ static void change_protection(unsigned long start, unsigned long end, pgprot_t n
 	return;
 }
 
-static inline int mprotect_fixup_all(struct vm_area_struct * vma, struct vm_area_struct ** pprev,
+static inline int mprotect_fixup_all(struct vm_area * vma, struct vm_area ** pprev,
 	int newflags, pgprot_t prot)
 {
-	struct vm_area_struct * prev = *pprev;
+	struct vm_area * prev = *pprev;
 	struct mm_struct * mm = vma->vm_mm;
 
 	if (prev && prev->vm_end == vma->vm_start && can_vma_merge(prev, newflags) &&
@@ -120,11 +120,11 @@ static inline int mprotect_fixup_all(struct vm_area_struct * vma, struct vm_area
 	return 0;
 }
 
-static inline int mprotect_fixup_start(struct vm_area_struct * vma, struct vm_area_struct ** pprev,
+static inline int mprotect_fixup_start(struct vm_area * vma, struct vm_area ** pprev,
 	unsigned long end,
 	int newflags, pgprot_t prot)
 {
-	struct vm_area_struct * n, * prev = *pprev;
+	struct vm_area * n, * prev = *pprev;
 
 	*pprev = vma;
 
@@ -147,8 +147,8 @@ static inline int mprotect_fixup_start(struct vm_area_struct * vma, struct vm_ar
 	n->vm_page_prot = prot;
 	if (n->vm_file)
 		get_file(n->vm_file);
-	if (n->vm_ops && n->vm_ops->open)
-		n->vm_ops->open(n);
+	if (n->vm_ops && n->vm_ops->vopen)
+		n->vm_ops->vopen(n);
 	vma->vm_pgoff += (end - vma->vm_start) >> PAGE_SHIFT;
 	lock_vma_mappings(vma);
 	spin_lock(&vma->vm_mm->page_table_lock);
@@ -160,11 +160,11 @@ static inline int mprotect_fixup_start(struct vm_area_struct * vma, struct vm_ar
 	return 0;
 }
 
-static inline int mprotect_fixup_end(struct vm_area_struct * vma, struct vm_area_struct ** pprev,
+static inline int mprotect_fixup_end(struct vm_area * vma, struct vm_area ** pprev,
 	unsigned long start,
 	int newflags, pgprot_t prot)
 {
-	struct vm_area_struct * n;
+	struct vm_area * n;
 
 	n = kmem_cache_alloc(vm_area_cachep, GFP_KERNEL);
 	if (!n)
@@ -177,8 +177,8 @@ static inline int mprotect_fixup_end(struct vm_area_struct * vma, struct vm_area
 	n->vm_page_prot = prot;
 	if (n->vm_file)
 		get_file(n->vm_file);
-	if (n->vm_ops && n->vm_ops->open)
-		n->vm_ops->open(n);
+	if (n->vm_ops && n->vm_ops->vopen)
+		n->vm_ops->vopen(n);
 	lock_vma_mappings(vma);
 	spin_lock(&vma->vm_mm->page_table_lock);
 	vma->vm_end = start;
@@ -191,11 +191,11 @@ static inline int mprotect_fixup_end(struct vm_area_struct * vma, struct vm_area
 	return 0;
 }
 
-static inline int mprotect_fixup_middle(struct vm_area_struct * vma, struct vm_area_struct ** pprev,
+static inline int mprotect_fixup_middle(struct vm_area * vma, struct vm_area ** pprev,
 	unsigned long start, unsigned long end,
 	int newflags, pgprot_t prot)
 {
-	struct vm_area_struct * left, * right;
+	struct vm_area * left, * right;
 
 	left = kmem_cache_alloc(vm_area_cachep, SLAB_KERNEL);
 	if (!left)
@@ -214,9 +214,9 @@ static inline int mprotect_fixup_middle(struct vm_area_struct * vma, struct vm_a
 	right->vm_raend = 0;
 	if (vma->vm_file)
 		atomic_add(2,&vma->vm_file->f_count);
-	if (vma->vm_ops && vma->vm_ops->open) {
-		vma->vm_ops->open(left);
-		vma->vm_ops->open(right);
+	if (vma->vm_ops && vma->vm_ops->vopen) {
+		vma->vm_ops->vopen(left);
+		vma->vm_ops->vopen(right);
 	}
 	vma->vm_pgoff += (start - vma->vm_start) >> PAGE_SHIFT;
 	vma->vm_raend = 0;
@@ -236,7 +236,7 @@ static inline int mprotect_fixup_middle(struct vm_area_struct * vma, struct vm_a
 	return 0;
 }
 
-static int mprotect_fixup(struct vm_area_struct * vma, struct vm_area_struct ** pprev,
+static int mprotect_fixup(struct vm_area * vma, struct vm_area ** pprev,
 	unsigned long start, unsigned long end, unsigned int newflags)
 {
 	pgprot_t newprot;
@@ -267,7 +267,7 @@ static int mprotect_fixup(struct vm_area_struct * vma, struct vm_area_struct ** 
 asmlinkage long sys_mprotect(unsigned long start, size_t len, unsigned long prot)
 {
 	unsigned long nstart, end, tmp;
-	struct vm_area_struct * vma, * next, * prev;
+	struct vm_area * vma, * next, * prev;
 	int error = -EINVAL;
 
 	if (start & ~PAGE_MASK)

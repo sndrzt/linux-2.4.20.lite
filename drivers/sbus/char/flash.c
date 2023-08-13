@@ -35,7 +35,7 @@ static struct {
 #define FLASH_MINOR	152
 
 static int
-flash_mmap(struct file *file, struct vm_area_struct *vma)
+flash_mmap(struct file *file, struct vm_area *vma)
 {
 	unsigned long addr;
 	unsigned long size;

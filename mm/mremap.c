@@ -122,12 +122,12 @@ oops_we_failed:
 	return -1;
 }
 
-static inline unsigned long move_vma(struct vm_area_struct * vma,
+static inline unsigned long move_vma(struct vm_area * vma,
 	unsigned long addr, unsigned long old_len, unsigned long new_len,
 	unsigned long new_addr)
 {
 	struct mm_struct * mm = vma->vm_mm;
-	struct vm_area_struct * new_vma, * next, * prev;
+	struct vm_area * new_vma, * next, * prev;
 	int allocated_vma;
 
 	new_vma = NULL;
@@ -185,8 +185,8 @@ static inline unsigned long move_vma(struct vm_area_struct * vma,
 			new_vma->vm_raend = 0;
 			if (new_vma->vm_file)
 				get_file(new_vma->vm_file);
-			if (new_vma->vm_ops && new_vma->vm_ops->open)
-				new_vma->vm_ops->open(new_vma);
+			if (new_vma->vm_ops && new_vma->vm_ops->vopen)
+				new_vma->vm_ops->vopen(new_vma);
 			insert_vm_struct(current->mm, new_vma);
 		}
 		do_munmap(current->mm, addr, old_len);
@@ -215,7 +215,7 @@ unsigned long do_mremap(unsigned long addr,
 	unsigned long old_len, unsigned long new_len,
 	unsigned long flags, unsigned long new_addr)
 {
-	struct vm_area_struct *vma;
+	struct vm_area *vma;
 	unsigned long ret = -EINVAL;
 
 	if (flags & ~(MREMAP_FIXED | MREMAP_MAYMOVE))

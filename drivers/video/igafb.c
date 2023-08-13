@@ -241,7 +241,7 @@ static int igafb_set_var(struct fb_var_screeninfo *var, int con,
 
 #ifdef __sparc__
 static int igafb_mmap(struct fb_info *info, struct file *file,
-		      struct vm_area_struct *vma)
+		      struct vm_area *vma)
 {
 	struct fb_info_iga *fb = (struct fb_info_iga *)info;
 	unsigned int size, page, map_size = 0;

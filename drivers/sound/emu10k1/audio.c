@@ -974,7 +974,7 @@ static int emu10k1_audio_ioctl(struct inode *inode, struct file *file, unsigned 
 	return 0;
 }
 
-static struct page *emu10k1_mm_nopage (struct vm_area_struct * vma, unsigned long address, int write_access)
+static struct page *emu10k1_mm_nopage (struct vm_area * vma, unsigned long address, int write_access)
 {
 	struct emu10k1_wavedevice *wave_dev = vma->vm_private_data;
 	struct woinst *woinst = wave_dev->woinst;
@@ -1024,7 +1024,7 @@ struct vm_oprs emu10k1_mm_ops = {
 	vnopage:         emu10k1_mm_nopage,
 };
 
-static int emu10k1_audio_mmap(struct file *file, struct vm_area_struct *vma)
+static int emu10k1_audio_mmap(struct file *file, struct vm_area *vma)
 {
 	struct emu10k1_wavedevice *wave_dev = (struct emu10k1_wavedevice *) file->private_data;
 	unsigned long max_pages, n_pages, pgoffset;

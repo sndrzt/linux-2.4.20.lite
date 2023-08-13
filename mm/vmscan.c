@@ -44,7 +44,7 @@
  */
 
 /* mm->page_table_lock is held. mmap_sem is not held */
-static inline int try_to_swap_out(struct mm_struct * mm, struct vm_area_struct* vma, unsigned long address, pte_t * page_table, struct page *page, struct pm_zone * classzone)
+static inline int try_to_swap_out(struct mm_struct * mm, struct vm_area* vma, unsigned long address, pte_t * page_table, struct page *page, struct pm_zone * classzone)
 {
 	pte_t pte;
 	swp_entry_t entry;
@@ -155,7 +155,7 @@ preserve:
 }
 
 /* mm->page_table_lock is held. mmap_sem is not held */
-static inline int swap_out_pmd(struct mm_struct * mm, struct vm_area_struct * vma, pmd_t *dir, unsigned long address, unsigned long end, int count, struct pm_zone * classzone)
+static inline int swap_out_pmd(struct mm_struct * mm, struct vm_area * vma, pmd_t *dir, unsigned long address, unsigned long end, int count, struct pm_zone * classzone)
 {
 	pte_t * pte;
 	unsigned long pmd_end;
@@ -194,7 +194,7 @@ static inline int swap_out_pmd(struct mm_struct * mm, struct vm_area_struct * vm
 }
 
 /* mm->page_table_lock is held. mmap_sem is not held */
-static inline int swap_out_pgd(struct mm_struct * mm, struct vm_area_struct * vma, pgd_t *dir, unsigned long address, unsigned long end, int count, struct pm_zone * classzone)
+static inline int swap_out_pgd(struct mm_struct * mm, struct vm_area * vma, pgd_t *dir, unsigned long address, unsigned long end, int count, struct pm_zone * classzone)
 {
 	pmd_t * pmd;
 	unsigned long pgd_end;
@@ -224,7 +224,7 @@ static inline int swap_out_pgd(struct mm_struct * mm, struct vm_area_struct * vm
 }
 
 /* mm->page_table_lock is held. mmap_sem is not held */
-static inline int swap_out_vma(struct mm_struct * mm, struct vm_area_struct * vma, unsigned long address, int count, struct pm_zone * classzone)
+static inline int swap_out_vma(struct mm_struct * mm, struct vm_area * vma, unsigned long address, int count, struct pm_zone * classzone)
 {
 	pgd_t *pgdir;
 	unsigned long end;
@@ -256,7 +256,7 @@ struct mm_struct *swap_mm = &init_mm;
 static inline int swap_out_mm(struct mm_struct * mm, int count, int * mmcounter, struct pm_zone * classzone)
 {
 	unsigned long address;
-	struct vm_area_struct* vma;
+	struct vm_area* vma;
 
 	/*
 	 * Find the proper vm-area after freezing the vma chain 

@@ -18,7 +18,7 @@
  *
  *
  * The memory is organized in caches, one cache for each object type.
- * (e.g. inode_cache, dentry_cache, buffer_head, vm_area_struct)
+ * (e.g. inode_cache, dentry_cache, buffer_head, vm_area)
  * Each cache consists out of many slabs (they are small (usually one
  * page long) and always contiguous), and each slab contains multiple
  * initialized objects.

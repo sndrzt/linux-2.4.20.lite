@@ -1512,7 +1512,7 @@ static unsigned int ymf_poll(struct file *file, struct poll_table_struct *wait)
 	return mask;
 }
 
-static int ymf_mmap(struct file *file, struct vm_area_struct *vma)
+static int ymf_mmap(struct file *file, struct vm_area *vma)
 {
 	struct ymf_state *state = (struct ymf_state *)file->private_data;
 	struct ymf_dmabuf *dmabuf = &state->wpcm.dmabuf;

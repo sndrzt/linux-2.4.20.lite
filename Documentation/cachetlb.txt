@@ -68,7 +68,7 @@ changes occur:
 	call flush_tlb_page (see below) for each entry which may be
 	modified.
 
-4) void flush_tlb_page(struct vm_area_struct *vma, unsigned long page)
+4) void flush_tlb_page(struct vm_area *vma, unsigned long page)
 
 	This time we need to remove the PAGE_SIZE sized translation
 	from the TLB.  The 'vma' is the backing structure used by
@@ -109,7 +109,7 @@ changes occur:
    sequences.  It is at these times that flush_tlb_pgtables will
    be invoked.
 
-6) void update_mmu_cache(struct vm_area_struct *vma,
+6) void update_mmu_cache(struct vm_area *vma,
 			 unsigned long address, pte_t pte)
 
 	At the end of every page fault, this routine is invoked to
@@ -189,7 +189,7 @@ Here are the routines, one by one:
 	call flush_cache_page (see below) for each entry which may be
 	modified.
 
-4) void flush_cache_page(struct vm_area_struct *vma, unsigned long page)
+4) void flush_cache_page(struct vm_area *vma, unsigned long page)
 
 	This time we need to remove a PAGE_SIZE sized range
 	from the cache.  The 'vma' is the backing structure used by
@@ -339,7 +339,7 @@ Here is the new interface:
 	If the icache does not snoop stores then this routine will need
 	to flush it.
 
-  void flush_icache_user_range(struct vm_area_struct *vma,
+  void flush_icache_user_range(struct vm_area *vma,
 			struct page *page, unsigned long addr, int len)
 	This is called when the kernel stores into addresses that are
 	part of the address space of a user process (which may be some
@@ -350,7 +350,7 @@ Here is the new interface:
 	not cross a page boundary.  Currently this is only called from
 	kernel/ptrace.c.
 
-  void flush_icache_page(struct vm_area_struct *vma, struct page *page)
+  void flush_icache_page(struct vm_area *vma, struct page *page)
 	This is called when a page-cache page is about to be mapped
 	into a user process' address space.  It offers an opportunity
 	for a port to ensure d-cache/i-cache coherency if necessary.

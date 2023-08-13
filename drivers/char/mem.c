@@ -182,7 +182,7 @@ static inline int noncached_address(unsigned long addr)
 #endif
 }
 
-static int mmap_mem(struct file * file, struct vm_area_struct * vma)
+static int mmap_mem(struct file * file, struct vm_area * vma)
 {
 	unsigned long offset = vma->vm_pgoff << PAGE_SHIFT;
 
@@ -381,7 +381,7 @@ static ssize_t write_null(struct file * file, const char * buf,
 static inline size_t read_zero_pagealigned(char * buf, size_t size)
 {
 	struct mm_struct *mm;
-	struct vm_area_struct * vma;
+	struct vm_area * vma;
 	unsigned long addr=(unsigned long)buf;
 
 	mm = current->mm;
@@ -467,7 +467,7 @@ out:
 	return written ? written : -EFAULT;
 }
 
-static int mmap_zero(struct file * file, struct vm_area_struct * vma)
+static int mmap_zero(struct file * file, struct vm_area * vma)
 {
 	if (vma->vm_flags & VM_SHARED)
 		return shmem_zero_setup(vma);

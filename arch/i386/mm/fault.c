@@ -32,7 +32,7 @@ extern void die(const char *,struct pt_regs *,long);
  */
 int __verify_write(const void * addr, unsigned long size)
 {
-	struct vm_area_struct * vma;
+	struct vm_area * vma;
 	unsigned long start = (unsigned long) addr;
 
 	if (!size)
@@ -141,7 +141,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long error_code)
 {
 	struct task_struct *tsk;
 	struct mm_struct *mm;
-	struct vm_area_struct * vma;
+	struct vm_area * vma;
 	unsigned long address;
 	unsigned long page;
 	unsigned long fixup;

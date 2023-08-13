@@ -2,7 +2,7 @@
  * linux/ipc/shm.c
  * Copyright (C) 1992, 1993 Krishna Balasubramanian
  *	 Many improvements/fixes by Bruno Haible.
- * Replaced `struct shm_desc' by `struct vm_area_struct', July 1994.
+ * Replaced `struct shm_desc' by `struct vm_area', July 1994.
  * Fixed the shm swap deallocation (shm_unuse()), August 1998 Andrea Arcangeli.
  *
  * /proc/sysvipc/shm support (c) 1999 Dragos Acostachioaie <dragos@iname.com>
@@ -56,8 +56,8 @@ static struct ipc_ids shm_ids;
 	ipc_buildid(&shm_ids, id, seq)
 
 static int newseg (key_t key, int shmflg, size_t size);
-static void shm_open (struct vm_area_struct *shmd);
-static void shm_close (struct vm_area_struct *shmd);
+static void shm_open (struct vm_area *shmd);
+static void shm_close (struct vm_area *shmd);
 #ifdef CONFIG_PROC_FS
 static int sysvipc_shm_read_proc(char *buffer, char **start, off_t offset, int length, int *eof, void *data);
 #endif
@@ -107,7 +107,7 @@ static inline void shm_inc (int id) {
 }
 
 /* This is called by fork, once for every shm attach. */
-static void shm_open (struct vm_area_struct *shmd)
+static void shm_open (struct vm_area *shmd)
 {
 	shm_inc (shmd->vm_file->f_dentry->d_inode->i_ino);
 }
@@ -136,7 +136,7 @@ static void shm_destroy (struct shmid_kernel *shp)
  * The descriptor has already been removed from the current->mm->mmap list
  * and will later be kfree()d.
  */
-static void shm_close (struct vm_area_struct *shmd)
+static void shm_close (struct vm_area *shmd)
 {
 	struct file * file = shmd->vm_file;
 	int id = file->f_dentry->d_inode->i_ino;
@@ -157,7 +157,7 @@ static void shm_close (struct vm_area_struct *shmd)
 	up (&shm_ids.sem);
 }
 
-static int shm_mmap(struct file * file, struct vm_area_struct * vma)
+static int shm_mmap(struct file * file, struct vm_area * vma)
 {
 	UPDATE_ATIME(file->f_dentry->d_inode);
 	vma->vm_ops = &shm_vm_ops;
@@ -672,7 +672,7 @@ invalid:
 asmlinkage long sys_shmdt (char *shmaddr)
 {
 	struct mm_struct *mm = current->mm;
-	struct vm_area_struct *shmd, *shmdnext;
+	struct vm_area *shmd, *shmdnext;
 	int retval = -EINVAL;
 
 	down_write(&mm->mmap_sem);

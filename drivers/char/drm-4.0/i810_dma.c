@@ -153,7 +153,7 @@ static struct file_operations i810_buffer_fops = {
       	poll:	 drm_poll,
 };
 
-int i810_mmap_buffers(struct file *filp, struct vm_area_struct *vma)
+int i810_mmap_buffers(struct file *filp, struct vm_area *vma)
 {
 	drm_file_t	    *priv	  = filp->private_data;
 	drm_device_t	    *dev;

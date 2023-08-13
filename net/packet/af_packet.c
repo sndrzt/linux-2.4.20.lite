@@ -1573,7 +1573,7 @@ unsigned int packet_poll(struct file * file, struct socket *sock, poll_table *wa
  * for user mmaps.
  */
 
-static void packet_mm_open(struct vm_area_struct *vma)
+static void packet_mm_open(struct vm_area *vma)
 {
 	struct file *file = vma->vm_file;
 	struct inode *inode = file->f_dentry->d_inode;
@@ -1584,7 +1584,7 @@ static void packet_mm_open(struct vm_area_struct *vma)
 		atomic_inc(&sk->protinfo.af_packet->mapped);
 }
 
-static void packet_mm_close(struct vm_area_struct *vma)
+static void packet_mm_close(struct vm_area *vma)
 {
 	struct file *file = vma->vm_file;
 	struct inode *inode = file->f_dentry->d_inode;
@@ -1741,7 +1741,7 @@ out:
 	return err;
 }
 
-static int packet_mmap(struct file *file, struct socket *sock, struct vm_area_struct *vma)
+static int packet_mmap(struct file *file, struct socket *sock, struct vm_area *vma)
 {
 	struct sock *sk = sock->sk;
 	struct packet_opt *po = sk->protinfo.af_packet;

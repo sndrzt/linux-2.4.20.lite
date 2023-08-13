@@ -393,7 +393,7 @@ static int DRM(_vma_info)(char *buf, char **start, off_t offset, int request,
 	drm_device_t	      *dev = (drm_device_t *)data;
 	int                   len  = 0;
 	drm_vma_entry_t	      *pt;
-	struct vm_area_struct *vma;
+	struct vm_area *vma;
 #if DRM_VMA_VERBOSE
 	unsigned long	      i;
 	unsigned long	      address;

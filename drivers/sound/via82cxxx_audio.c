@@ -319,7 +319,7 @@ static unsigned int via_dsp_poll(struct file *file, struct poll_table_struct *wa
 static int via_dsp_ioctl (struct inode *inode, struct file *file, unsigned int cmd, unsigned long arg);
 static int via_dsp_open (struct inode *inode, struct file *file);
 static int via_dsp_release(struct inode *inode, struct file *file);
-static int via_dsp_mmap(struct file *file, struct vm_area_struct *vma);
+static int via_dsp_mmap(struct file *file, struct vm_area *vma);
 
 static u16 via_ac97_read_reg (struct ac97_codec *codec, u8 reg);
 static void via_ac97_write_reg (struct ac97_codec *codec, u8 reg, u16 value);
@@ -1837,7 +1837,7 @@ static void via_dsp_cleanup (struct via_info *card)
 }
 
 
-static struct page * via_mm_nopage (struct vm_area_struct * vma,
+static struct page * via_mm_nopage (struct vm_area * vma,
 				    unsigned long address, int write_access)
 {
 	struct via_info *card = vma->vm_private_data;
@@ -1910,7 +1910,7 @@ struct vm_oprs via_mm_ops = {
 };
 
 
-static int via_dsp_mmap(struct file *file, struct vm_area_struct *vma)
+static int via_dsp_mmap(struct file *file, struct vm_area *vma)
 {
 	struct via_info *card;
 	int nonblock = (file->f_flags & O_NONBLOCK);

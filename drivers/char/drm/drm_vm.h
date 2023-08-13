@@ -32,14 +32,14 @@
 #include "drmP.h"
 
 struct vm_oprs   DRM(vm_ops) = {
-	vnopage:	 DRM(vm_nopage),
-	vopen:	 DRM(vm_open),
-	vclose:	 DRM(vm_close),
+	vnopage:	 DRM(vnopage),
+	vopen:	 DRM(vopen),
+	vclose:	 DRM(vclose),
 };
 
 struct vm_oprs   DRM(vm_shm_ops) = {
 	vnopage:	 DRM(vm_shm_nopage),
-	vopen:	 DRM(vm_open),
+	vopen:	 DRM(vopen),
 	vclose:	 DRM(vm_shm_close),
 };
 
@@ -55,7 +55,7 @@ struct vm_oprs   DRM(vm_sg_ops) = {
 	vclose:   DRM(vm_close),
 };
 
-struct page *DRM(vnopage)(struct vm_area_struct *vma,
+struct page *DRM(vnopage)(struct vm_area *vma,
 			    unsigned long address,
 			    int unused)
 {
@@ -122,7 +122,7 @@ vm_nopage_error:
 	return NOPAGE_SIGBUS;		/* Disallow mremap */
 }
 
-struct page *DRM(vm_shm_nopage)(struct vm_area_struct *vma,
+struct page *DRM(vm_shm_nopage)(struct vm_area *vma,
 				unsigned long address,
 				int write_access)
 {
@@ -151,7 +151,7 @@ struct page *DRM(vm_shm_nopage)(struct vm_area_struct *vma,
  * person to close a mapping and its not in the global maplist.
  */
 
-void DRM(vm_shm_close)(struct vm_area_struct *vma)
+void DRM(vm_shm_close)(struct vm_area *vma)
 {
 	drm_file_t	*priv	= vma->vm_file->private_data;
 	drm_device_t	*dev	= priv->dev;
@@ -223,7 +223,7 @@ void DRM(vm_shm_close)(struct vm_area_struct *vma)
 	up(&dev->struct_sem);
 }
 
-struct page *DRM(vm_dma_nopage)(struct vm_area_struct *vma,
+struct page *DRM(vm_dma_nopage)(struct vm_area *vma,
 				unsigned long address,
 				int write_access)
 {
@@ -252,7 +252,7 @@ struct page *DRM(vm_dma_nopage)(struct vm_area_struct *vma,
 	return page;
 }
 
-struct page *DRM(vm_sg_nopage)(struct vm_area_struct *vma,
+struct page *DRM(vm_sg_nopage)(struct vm_area *vma,
 			       unsigned long address,
 			       int write_access)
 {
@@ -279,7 +279,7 @@ struct page *DRM(vm_sg_nopage)(struct vm_area_struct *vma,
 	return page;
 }
 
-void DRM(vm_open)(struct vm_area_struct *vma)
+void DRM(vopen)(struct vm_area *vma)
 {
 	drm_file_t	*priv	= vma->vm_file->private_data;
 	drm_device_t	*dev	= priv->dev;
@@ -300,7 +300,7 @@ void DRM(vm_open)(struct vm_area_struct *vma)
 	}
 }
 
-void DRM(vm_close)(struct vm_area_struct *vma)
+void DRM(vclose)(struct vm_area *vma)
 {
 	drm_file_t	*priv	= vma->vm_file->private_data;
 	drm_device_t	*dev	= priv->dev;
@@ -325,7 +325,7 @@ void DRM(vm_close)(struct vm_area_struct *vma)
 	up(&dev->struct_sem);
 }
 
-int DRM(mmap_dma)(struct file *filp, struct vm_area_struct *vma)
+int DRM(mmap_dma)(struct file *filp, struct vm_area *vma)
 {
 	drm_file_t	 *priv	 = filp->private_data;
 	drm_device_t	 *dev;
@@ -365,7 +365,7 @@ int DRM(mmap_dma)(struct file *filp, struct vm_area_struct *vma)
 #endif
 #endif
 
-int DRM(mmap)(struct file *filp, struct vm_area_struct *vma)
+int DRM(mmap)(struct file *filp, struct vm_area *vma)
 {
 	drm_file_t	*priv	= filp->private_data;
 	drm_device_t	*dev	= priv->dev;

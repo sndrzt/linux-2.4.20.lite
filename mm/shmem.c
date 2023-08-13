@@ -660,7 +660,7 @@ failed:
 	return error;
 }
 
-struct page * shmem_nopage(struct vm_area_struct * vma, unsigned long address, int unused)
+struct page * shmem_nopage(struct vm_area * vma, unsigned long address, int unused)
 {
 	struct page * page;
 	unsigned int idx;
@@ -686,7 +686,7 @@ void shmem_lock(struct file * file, int lock)
 	up(&info->sem);
 }
 
-static int shmem_mmap(struct file * file, struct vm_area_struct * vma)
+static int shmem_mmap(struct file * file, struct vm_area * vma)
 {
 	struct vm_oprs * ops;
 	struct inode *inode = file->f_dentry->d_inode;
@@ -1540,7 +1540,7 @@ put_dentry:
  *
  * @vma: the vma to be mmapped is prepared by do_mmap_pgoff
  */
-int shmem_zero_setup(struct vm_area_struct *vma)
+int shmem_zero_setup(struct vm_area *vma)
 {
 	struct file *file;
 	loff_t size = vma->vm_end - vma->vm_start;

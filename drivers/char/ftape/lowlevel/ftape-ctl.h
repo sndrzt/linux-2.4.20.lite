@@ -148,7 +148,7 @@ extern int ftape_init_drive_needed;
 /*
  *      ftape-ctl.c defined global functions.
  */
-extern int  ftape_mmap(struct vm_area_struct *vma);
+extern int  ftape_mmap(struct vm_area *vma);
 extern int  ftape_enable(int drive_selection);
 extern void ftape_disable(void);
 extern int  ftape_seek_to_bot(void);

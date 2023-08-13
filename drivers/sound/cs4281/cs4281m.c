@@ -3193,7 +3193,7 @@ static unsigned int cs4281_poll(struct file *file,
 }
 
 
-static int cs4281_mmap(struct file *file, struct vm_area_struct *vma)
+static int cs4281_mmap(struct file *file, struct vm_area *vma)
 {
 	struct cs4281_state *s =
 	    (struct cs4281_state *) file->private_data;

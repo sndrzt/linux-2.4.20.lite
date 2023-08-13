@@ -174,7 +174,7 @@ void clear_page_tables(struct mm_struct *mm, unsigned long first, int nr)
  * but may be dropped within pmd_alloc() and pte_alloc().
  */
 int copy_page_range(struct mm_struct *dst, struct mm_struct *src,
-			struct vm_area_struct *vma)
+			struct vm_area *vma)
 {
 	pgd_t * src_pgd, * dst_pgd;
 	unsigned long address = vma->vm_start;
@@ -452,7 +452,7 @@ static inline struct page * get_page_map(struct page *page)
  * fails if pages is != NULL and a VM_IO area is found.
  */
 int get_user_pages(struct task_struct *tsk, struct mm_struct *mm, unsigned long start,
-		int len, int write, int force, struct page **pages, struct vm_area_struct **vmas)
+		int len, int write, int force, struct page **pages, struct vm_area **vmas)
 {
 	int i;
 	unsigned int flags;
@@ -466,7 +466,7 @@ int get_user_pages(struct task_struct *tsk, struct mm_struct *mm, unsigned long 
 	i = 0;
 
 	do {
-		struct vm_area_struct *	vma;
+		struct vm_area *	vma;
 
 		vma = find_extend_vma(mm, start);
 
@@ -907,7 +907,7 @@ int remap_page_range(unsigned long from, unsigned long phys_addr, unsigned long 
  *
  * We hold the mm semaphore for reading and vma->vm_mm->page_table_lock
  */
-static inline void establish_pte(struct vm_area_struct * vma, unsigned long address, pte_t *page_table, pte_t entry)
+static inline void establish_pte(struct vm_area * vma, unsigned long address, pte_t *page_table, pte_t entry)
 {
 	set_pte(page_table, entry);
 	flush_tlb_page(vma, address);
@@ -917,7 +917,7 @@ static inline void establish_pte(struct vm_area_struct * vma, unsigned long addr
 /*
  * We hold the mm semaphore for reading and vma->vm_mm->page_table_lock
  */
-static inline void break_cow(struct vm_area_struct * vma, struct page * new_page, unsigned long address, 
+static inline void break_cow(struct vm_area * vma, struct page * new_page, unsigned long address, 
 		pte_t *page_table)
 {
 	flush_page_to_ram(new_page);
@@ -945,7 +945,7 @@ static inline void break_cow(struct vm_area_struct * vma, struct page * new_page
  * We hold the mm semaphore and the page_table_lock on entry and exit
  * with the page_table_lock released.
  */
-static int do_wp_page(struct mm_struct *mm, struct vm_area_struct * vma,
+static int do_wp_page(struct mm_struct *mm, struct vm_area * vma,
 	unsigned long address, pte_t *page_table, pte_t pte)
 {
 	struct page *old_page, *new_page;
@@ -1003,7 +1003,7 @@ no_mem:
 	return -1;
 }
 
-static void vmtruncate_list(struct vm_area_struct *mpnt, unsigned long pgoff)
+static void vmtruncate_list(struct vm_area *mpnt, unsigned long pgoff)
 {
 	do {
 		struct mm_struct *mm = mpnt->vm_mm;
@@ -1115,7 +1115,7 @@ void swapin_readahead(swp_entry_t entry)
  * should release the pagetable lock on exit..
  */
 static int do_swap_page(struct mm_struct * mm,
-	struct vm_area_struct * vma, unsigned long address,
+	struct vm_area * vma, unsigned long address,
 	pte_t * page_table, pte_t orig_pte, int write_access)
 {
 	struct page *page;
@@ -1187,7 +1187,7 @@ static int do_swap_page(struct mm_struct * mm,
  * spinlock held to protect against concurrent faults in
  * multithreaded programs. 
  */
-static int do_anonymous_page(struct mm_struct * mm, struct vm_area_struct * vma, pte_t *page_table, int write_access, unsigned long addr)
+static int do_anonymous_page(struct mm_struct * mm, struct vm_area * vma, pte_t *page_table, int write_access, unsigned long addr)
 {
 	pte_t entry;
 
@@ -1242,17 +1242,17 @@ no_mem:
  * This is called with the MM semaphore held and the page table
  * spinlock held. Exit with the spinlock released.
  */
-static int do_no_page(struct mm_struct * mm, struct vm_area_struct * vma,
+static int do_no_page(struct mm_struct * mm, struct vm_area * vma,
 	unsigned long address, int write_access, pte_t *page_table)
 {
 	struct page * new_page;
 	pte_t entry;
 
-	if (!vma->vm_ops || !vma->vm_ops->nopage)
+	if (!vma->vm_ops || !vma->vm_ops->vnopage)
 		return do_anonymous_page(mm, vma, page_table, write_access, address);
 	spin_unlock(&mm->page_table_lock);
 
-	new_page = vma->vm_ops->nopage(vma, address & PAGE_MASK, 0);
+	new_page = vma->vm_ops->vnopage(vma, address & PAGE_MASK, 0);
 
 	if (new_page == NULL)	/* no page was available -- SIGBUS */
 		return 0;
@@ -1329,7 +1329,7 @@ static int do_no_page(struct mm_struct * mm, struct vm_area_struct * vma,
  * release it when done.
  */
 static inline int handle_pte_fault(struct mm_struct *mm,
-	struct vm_area_struct * vma, unsigned long address,
+	struct vm_area * vma, unsigned long address,
 	int write_access, pte_t * pte)
 {
 	pte_t entry;
@@ -1361,7 +1361,7 @@ static inline int handle_pte_fault(struct mm_struct *mm,
 /*
  * By the time we get here, we already hold the mm semaphore
  */
-int handle_mm_fault(struct mm_struct *mm, struct vm_area_struct * vma,
+int handle_mm_fault(struct mm_struct *mm, struct vm_area * vma,
 	unsigned long address, int write_access)
 {
 	pgd_t *pgd;
@@ -1460,7 +1460,7 @@ out:
 int make_pages_present(unsigned long addr, unsigned long end)
 {
 	int ret, len, write;
-	struct vm_area_struct * vma;
+	struct vm_area * vma;
 
 	vma = find_vma(current->mm, addr);
 	write = (vma->vm_flags & VM_WRITE) != 0;

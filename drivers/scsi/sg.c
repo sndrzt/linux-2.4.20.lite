@@ -1092,7 +1092,7 @@ static void sg_rb_correct4mmap(Sg_scatter_hold * rsv_schp, int startFinish)
     }
 }
 
-static struct page * sg_vma_nopage(struct vm_area_struct *vma, 
+static struct page * sg_vma_nopage(struct vm_area *vma, 
 				   unsigned long addr, int unused)
 {
     Sg_fd * sfp;
@@ -1141,7 +1141,7 @@ static struct vm_oprs sg_mmap_vm_ops = {
     vnopage : sg_vma_nopage,
 };
 
-static int sg_mmap(struct file * filp, struct vm_area_struct *vma)
+static int sg_mmap(struct file * filp, struct vm_area *vma)
 {
     Sg_fd * sfp;
     unsigned long req_sz = vma->vm_end - vma->vm_start;

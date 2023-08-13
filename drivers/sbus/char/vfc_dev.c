@@ -616,7 +616,7 @@ static int vfc_ioctl(struct inode *inode, struct file *file, unsigned int cmd,
 }
 
 static int vfc_mmap(struct inode *inode, struct file *file, 
-		    struct vm_area_struct *vma) 
+		    struct vm_area *vma) 
 {
 	unsigned int map_size, ret, map_offset;
 	struct vfc_dev *dev;

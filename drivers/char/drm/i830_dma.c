@@ -159,7 +159,7 @@ static struct file_operations i830_buffer_fops = {
       	poll:	 DRM(poll),
 };
 
-int i830_mmap_buffers(struct file *filp, struct vm_area_struct *vma)
+int i830_mmap_buffers(struct file *filp, struct vm_area *vma)
 {
 	drm_file_t	    *priv	  = filp->private_data;
 	drm_device_t	    *dev;

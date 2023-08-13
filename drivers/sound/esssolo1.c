@@ -1219,7 +1219,7 @@ static unsigned int solo1_poll(struct file *file, struct poll_table_struct *wait
 }
 
 
-static int solo1_mmap(struct file *file, struct vm_area_struct *vma)
+static int solo1_mmap(struct file *file, struct vm_area *vma)
 {
 	struct solo1_state *s = (struct solo1_state *)file->private_data;
 	struct dmabuf *db;

@@ -33,36 +33,36 @@
 #include "drmP.h"
 
 struct vm_oprs   drm_vm_ops = {
-	vm_nopage:	 drm_vm_nopage,
-	vm_open:	 drm_vm_open,
-	vm_close:	 drm_vm_close,
+	vnopage:	 drm_vm_nopage,
+	vopen:	 drm_vm_open,
+	vclose:	 drm_vm_close,
 };
 
 struct vm_oprs   drm_vm_shm_ops = {
-	vm_nopage:	 drm_vm_shm_nopage,
-	vm_open:	 drm_vm_open,
-	vm_close:	 drm_vm_close,
+	vnopage:	 drm_vm_shm_nopage,
+	vopen:	 drm_vm_open,
+	vclose:	 drm_vm_close,
 };
 
 struct vm_oprs   drm_vm_shm_lock_ops = {
-	vm_nopage:	 drm_vm_shm_nopage_lock,
-	vm_open:	 drm_vm_open,
-	vm_close:	 drm_vm_close,
+	vnopage:	 drm_vm_shm_nopage_lock,
+	vopen:	 drm_vm_open,
+	vclose:	 drm_vm_close,
 };
 
 struct vm_oprs   drm_vm_dma_ops = {
-	vm_nopage:	 drm_vm_dma_nopage,
-	vm_open:	 drm_vm_open,
-	vm_close:	 drm_vm_close,
+	vnopage:	 drm_vm_dma_nopage,
+	vopen:	 drm_vm_open,
+	vclose:	 drm_vm_close,
 };
 
 #if LINUX_VERSION_CODE < 0x020317
-unsigned long drm_vm_nopage(struct vm_area_struct *vma,
+unsigned long drm_vm_nopage(struct vm_area *vma,
 			    unsigned long address,
 			    int write_access)
 #else
 				/* Return type changed in 2.3.23 */
-struct page *drm_vm_nopage(struct vm_area_struct *vma,
+struct page *drm_vm_nopage(struct vm_area *vma,
 			   unsigned long address,
 			   int write_access)
 #endif
@@ -71,12 +71,12 @@ struct page *drm_vm_nopage(struct vm_area_struct *vma,
 }
 
 #if LINUX_VERSION_CODE < 0x020317
-unsigned long drm_vm_shm_nopage(struct vm_area_struct *vma,
+unsigned long drm_vm_shm_nopage(struct vm_area *vma,
 				unsigned long address,
 				int write_access)
 #else
 				/* Return type changed in 2.3.23 */
-struct page *drm_vm_shm_nopage(struct vm_area_struct *vma,
+struct page *drm_vm_shm_nopage(struct vm_area *vma,
 			       unsigned long address,
 			       int write_access)
 #endif
@@ -105,12 +105,12 @@ struct page *drm_vm_shm_nopage(struct vm_area_struct *vma,
 }
 
 #if LINUX_VERSION_CODE < 0x020317
-unsigned long drm_vm_shm_nopage_lock(struct vm_area_struct *vma,
+unsigned long drm_vm_shm_nopage_lock(struct vm_area *vma,
 				     unsigned long address,
 				     int write_access)
 #else
 				/* Return type changed in 2.3.23 */
-struct page *drm_vm_shm_nopage_lock(struct vm_area_struct *vma,
+struct page *drm_vm_shm_nopage_lock(struct vm_area *vma,
 				    unsigned long address,
 				    int write_access)
 #endif
@@ -138,12 +138,12 @@ struct page *drm_vm_shm_nopage_lock(struct vm_area_struct *vma,
 }
 
 #if LINUX_VERSION_CODE < 0x020317
-unsigned long drm_vm_dma_nopage(struct vm_area_struct *vma,
+unsigned long drm_vm_dma_nopage(struct vm_area *vma,
 				unsigned long address,
 				int write_access)
 #else
 				/* Return type changed in 2.3.23 */
-struct page *drm_vm_dma_nopage(struct vm_area_struct *vma,
+struct page *drm_vm_dma_nopage(struct vm_area *vma,
 			       unsigned long address,
 			       int write_access)
 #endif
@@ -172,7 +172,7 @@ struct page *drm_vm_dma_nopage(struct vm_area_struct *vma,
 #endif
 }
 
-void drm_vm_open(struct vm_area_struct *vma)
+void drm_vm_open(struct vm_area *vma)
 {
 	drm_file_t	*priv	= vma->vm_file->private_data;
 	drm_device_t	*dev	= priv->dev;
@@ -202,7 +202,7 @@ void drm_vm_open(struct vm_area_struct *vma)
 #endif
 }
 
-void drm_vm_close(struct vm_area_struct *vma)
+void drm_vm_close(struct vm_area *vma)
 {
 	drm_file_t	*priv	= vma->vm_file->private_data;
 	drm_device_t	*dev	= priv->dev;
@@ -234,7 +234,7 @@ void drm_vm_close(struct vm_area_struct *vma)
 #endif
 }
 
-int drm_mmap_dma(struct file *filp, struct vm_area_struct *vma)
+int drm_mmap_dma(struct file *filp, struct vm_area *vma)
 {
 	drm_file_t	 *priv	 = filp->private_data;
 	drm_device_t	 *dev;
@@ -267,7 +267,7 @@ int drm_mmap_dma(struct file *filp, struct vm_area_struct *vma)
 	return 0;
 }
 
-int drm_mmap(struct file *filp, struct vm_area_struct *vma)
+int drm_mmap(struct file *filp, struct vm_area *vma)
 {
 	drm_file_t	*priv	= filp->private_data;
 	drm_device_t	*dev	= priv->dev;

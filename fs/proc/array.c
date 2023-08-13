@@ -178,7 +178,7 @@ static inline char * task_state(struct task_struct *p, char *buffer)
 
 static inline char * task_mem(struct mm_struct *mm, char *buffer)
 {
-	struct vm_area_struct * vma;
+	struct vm_area * vma;
 	unsigned long data = 0, stack = 0;
 	unsigned long exec = 0, lib = 0;
 
@@ -320,7 +320,7 @@ int proc_pid_stat(struct task_struct *task, char * buffer)
 	}
 	task_unlock(task);
 	if (mm) {
-		struct vm_area_struct *vma;
+		struct vm_area *vma;
 		down_read(&mm->mmap_sem);
 		vma = mm->mmap;
 		while (vma) {
@@ -482,7 +482,7 @@ int proc_pid_statm(struct task_struct *task, char * buffer)
 		atomic_inc(&mm->mm_users);
 	task_unlock(task);
 	if (mm) {
-		struct vm_area_struct * vma;
+		struct vm_area * vma;
 		down_read(&mm->mmap_sem);
 		vma = mm->mmap;
 		while (vma) {
@@ -541,7 +541,7 @@ int proc_pid_statm(struct task_struct *task, char * buffer)
 #define MAPS_LINE_FORMAT	(sizeof(void*) == 4 ? MAPS_LINE_FORMAT4 : MAPS_LINE_FORMAT8)
 #define MAPS_LINE_MAX	(sizeof(void*) == 4 ?  MAPS_LINE_MAX4 :  MAPS_LINE_MAX8)
 
-static int proc_pid_maps_get_line (char *buf, struct vm_area_struct *map)
+static int proc_pid_maps_get_line (char *buf, struct vm_area *map)
 {
 	/* produce the next line */
 	char *line;
@@ -594,7 +594,7 @@ ssize_t proc_pid_read_maps (struct task_struct *task, struct file * file, char *
 			  size_t count, loff_t *ppos)
 {
 	struct mm_struct *mm;
-	struct vm_area_struct * map;
+	struct vm_area * map;
 	char *tmp, *kbuf;
 	long retval;
 	int off, lineno, loff;

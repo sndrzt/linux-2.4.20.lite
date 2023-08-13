@@ -1523,7 +1523,7 @@ static unsigned int sv_poll(struct file *file, struct poll_table_struct *wait)
 	return mask;
 }
 
-static int sv_mmap(struct file *file, struct vm_area_struct *vma)
+static int sv_mmap(struct file *file, struct vm_area *vma)
 {
 	struct sv_state *s = (struct sv_state *)file->private_data;
 	struct dmabuf *db;

@@ -78,7 +78,7 @@ static struct {
 static int sbusfb_open(struct fb_info *info, int user);
 static int sbusfb_release(struct fb_info *info, int user);
 static int sbusfb_mmap(struct fb_info *info, struct file *file, 
-			struct vm_area_struct *vma);
+			struct vm_area *vma);
 static int sbusfb_get_fix(struct fb_fix_screeninfo *fix, int con,
 			struct fb_info *info);
 static int sbusfb_get_var(struct fb_var_screeninfo *var, int con,
@@ -176,7 +176,7 @@ static unsigned long sbusfb_mmapsize(struct fb_info_sbusfb *fb, long size)
 }
 
 static int sbusfb_mmap(struct fb_info *info, struct file *file, 
-			struct vm_area_struct *vma)
+			struct vm_area *vma)
 {
 	struct fb_info_sbusfb *fb = sbusfbinfo(info);
 	unsigned int size, page, r, map_size;

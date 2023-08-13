@@ -129,7 +129,7 @@ int ptrace_detach(struct task_struct *child, unsigned int data)
 int access_process_vm(struct task_struct *tsk, unsigned long addr, void *buf, int len, int write)
 {
 	struct mm_struct *mm;
-	struct vm_area_struct *vma;
+	struct vm_area *vma;
 	struct page *page;
 	void *old_buf = buf;
 

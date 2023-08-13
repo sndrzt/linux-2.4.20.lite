@@ -914,7 +914,7 @@ static int dump_seek(struct file *file, off_t off)
  *
  * I think we should skip something. But I am not sure how. H.J.
  */
-static inline int maydump(struct vm_area_struct *vma)
+static inline int maydump(struct vm_area *vma)
 {
 	/*
 	 * If we may not read the contents, don't allow us to dump
@@ -1022,7 +1022,7 @@ static int elf_core_dump(long signr, struct pt_regs * regs, struct file * file)
 	int segs;
 	size_t size = 0;
 	int i;
-	struct vm_area_struct *vma;
+	struct vm_area *vma;
 	struct elfhdr elf;
 	off_t offset = 0, dataoff;
 	unsigned long limit = current->rlim[RLIMIT_CORE].rlim_cur;
@@ -1234,7 +1234,7 @@ static int elf_core_dump(long signr, struct pt_regs * regs, struct file * file)
 		     addr < vma->vm_end;
 		     addr += PAGE_SIZE) {
 			struct page* page;
-			struct vm_area_struct *vma;
+			struct vm_area *vma;
 
 			if (get_user_pages(current, current->mm, addr, 1, 0, 1,
 						&page, &vma) <= 0) {

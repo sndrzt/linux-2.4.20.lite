@@ -102,7 +102,7 @@ static struct display disp;
 int au1100fb_init(void);
 void au1100fb_setup(char *options, int *ints);
 static int au1100fb_mmap(struct fb_info *fb, struct file *file, 
-		struct vm_area_struct *vma);
+		struct vm_area *vma);
 static int au1100_blank(int blank_mode, struct fb_info_gen *info);
 static int au1100fb_ioctl(struct inode *inode, struct file *file, u_int cmd,
 			  u_long arg, int con, struct fb_info *info);
@@ -372,7 +372,7 @@ static void au1100_set_disp(const void *unused, struct display *disp,
 static int
 au1100fb_mmap(struct fb_info *_fb,
 	     struct file *file,
-	     struct vm_area_struct *vma)
+	     struct vm_area *vma)
 {
 	unsigned int len;
 	unsigned long start=0, off;

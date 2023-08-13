@@ -81,7 +81,7 @@ struct socket
 #define SOCK_INODE(S)	((S)->inode)
 
 struct scm_cookie;
-struct vm_area_struct;
+struct vm_area;
 struct page;
 
 struct proto_ops {
@@ -108,7 +108,7 @@ struct proto_ops {
 			 char *optval, int *optlen);
   int   (*sendmsg)	(struct socket *sock, struct msghdr *m, int total_len, struct scm_cookie *scm);
   int   (*recvmsg)	(struct socket *sock, struct msghdr *m, int total_len, int flags, struct scm_cookie *scm);
-  int	(*mmap)		(struct file *file, struct socket *sock, struct vm_area_struct * vma);
+  int	(*mmap)		(struct file *file, struct socket *sock, struct vm_area * vma);
   ssize_t (*sendpage)	(struct socket *sock, struct page *page, int offset, size_t size, int flags);
 };
 
@@ -199,7 +199,7 @@ SOCKCALL_WRAP(name, sendmsg, (struct socket *sock, struct msghdr *m, int len, st
 	      (sock, m, len, scm)) \
 SOCKCALL_WRAP(name, recvmsg, (struct socket *sock, struct msghdr *m, int len, int flags, struct scm_cookie *scm), \
 	      (sock, m, len, flags, scm)) \
-SOCKCALL_WRAP(name, mmap, (struct file *file, struct socket *sock, struct vm_area_struct *vma), \
+SOCKCALL_WRAP(name, mmap, (struct file *file, struct socket *sock, struct vm_area *vma), \
 	      (file, sock, vma)) \
 	      \
 static struct proto_ops name##_ops = {			\

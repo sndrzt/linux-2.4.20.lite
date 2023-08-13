@@ -558,7 +558,7 @@ fb_ioctl(struct inode *inode, struct file *file, unsigned int cmd,
 }
 
 static int 
-fb_mmap(struct file *file, struct vm_area_struct * vma)
+fb_mmap(struct file *file, struct vm_area * vma)
 {
 	int fbidx = GET_FB_IDX(file->f_dentry->d_inode->i_rdev);
 	struct fb_info *info = registered_fb[fbidx];

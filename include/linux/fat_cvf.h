@@ -28,7 +28,7 @@ struct cvf_format
   int (*cvf_bmap) (struct inode *inode,int block);
   ssize_t (*cvf_file_read) ( struct file *, char *, size_t, loff_t *);
   ssize_t (*cvf_file_write) ( struct file *, const char *, size_t, loff_t *);
-  int (*cvf_mmap) (struct file *, struct vm_area_struct *);
+  int (*cvf_mmap) (struct file *, struct vm_area *);
   int (*cvf_readpage) (struct inode *, struct page *);
   int (*cvf_writepage) (struct inode *, struct page *);
   int (*cvf_dir_ioctl) (struct inode * inode, struct file * filp,

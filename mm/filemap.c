@@ -1868,7 +1868,7 @@ asmlinkage ssize_t sys_readahead(int fd, loff_t offset, size_t count)
  * sure this is sequential access, we don't need a flexible read-ahead
  * window size -- we can always use a large fixed size window.
  */
-static void nopage_sequential_readahead(struct vm_area_struct * vma,
+static void nopage_sequential_readahead(struct vm_area * vma,
 	unsigned long pgoff, unsigned long filesize)
 {
 	unsigned long ra_window;
@@ -1926,7 +1926,7 @@ static void nopage_sequential_readahead(struct vm_area_struct * vma,
  * it in the page cache, and handles the special cases reasonably without
  * having a lot of duplicated code.
  */
-struct page * filemap_nopage(struct vm_area_struct * area, unsigned long address, int unused)
+struct page * filemap_nopage(struct vm_area * area, unsigned long address, int unused)
 {
 	int error;
 	struct file *file = area->vm_file;
@@ -2072,7 +2072,7 @@ page_not_uptodate:
 /* Called with mm->page_table_lock held to protect against other
  * threads/the swapper from ripping pte's out from under us.
  */
-static inline int filemap_sync_pte(pte_t * ptep, struct vm_area_struct *vma,
+static inline int filemap_sync_pte(pte_t * ptep, struct vm_area *vma,
 	unsigned long address, unsigned int flags)
 {
 	pte_t pte = *ptep;
@@ -2089,7 +2089,7 @@ static inline int filemap_sync_pte(pte_t * ptep, struct vm_area_struct *vma,
 
 static inline int filemap_sync_pte_range(pmd_t * pmd,
 	unsigned long address, unsigned long size, 
-	struct vm_area_struct *vma, unsigned long offset, unsigned int flags)
+	struct vm_area *vma, unsigned long offset, unsigned int flags)
 {
 	pte_t * pte;
 	unsigned long end;
@@ -2119,7 +2119,7 @@ static inline int filemap_sync_pte_range(pmd_t * pmd,
 
 static inline int filemap_sync_pmd_range(pgd_t * pgd,
 	unsigned long address, unsigned long size, 
-	struct vm_area_struct *vma, unsigned int flags)
+	struct vm_area *vma, unsigned int flags)
 {
 	pmd_t * pmd;
 	unsigned long offset, end;
@@ -2147,7 +2147,7 @@ static inline int filemap_sync_pmd_range(pgd_t * pgd,
 	return error;
 }
 
-int filemap_sync(struct vm_area_struct * vma, unsigned long address,
+int filemap_sync(struct vm_area * vma, unsigned long address,
 	size_t size, unsigned int flags)
 {
 	pgd_t * dir;
@@ -2181,7 +2181,7 @@ static struct vm_oprs generic_file_vm_ops = {
 
 /* This is used for a general mmap of a disk file */
 
-int generic_file_mmap(struct file * file, struct vm_area_struct * vma)
+int generic_file_mmap(struct file * file, struct vm_area * vma)
 {
 	struct address_space *mapping = file->f_dentry->d_inode->i_mapping;
 	struct inode *inode = mapping->host;
@@ -2210,7 +2210,7 @@ int generic_file_mmap(struct file * file, struct vm_area_struct * vma)
  * where the application knows that it has finished with the data and
  * wishes to intelligently schedule its own I/O traffic.
  */
-static int msync_interval(struct vm_area_struct * vma,
+static int msync_interval(struct vm_area * vma,
 	unsigned long start, unsigned long end, int flags)
 {
 	int ret = 0;
@@ -2248,7 +2248,7 @@ static int msync_interval(struct vm_area_struct * vma,
 asmlinkage long sys_msync(unsigned long start, size_t len, int flags)
 {
 	unsigned long end;
-	struct vm_area_struct * vma;
+	struct vm_area * vma;
 	int unmapped_error, error = -EINVAL;
 
 	down_read(&current->mm->mmap_sem);
@@ -2304,7 +2304,7 @@ out:
 	return error;
 }
 
-static inline void setup_read_behavior(struct vm_area_struct * vma,
+static inline void setup_read_behavior(struct vm_area * vma,
 	int behavior)
 {
 	VM_ClearReadHint(vma);
@@ -2321,10 +2321,10 @@ static inline void setup_read_behavior(struct vm_area_struct * vma,
 	return;
 }
 
-static long madvise_fixup_start(struct vm_area_struct * vma,
+static long madvise_fixup_start(struct vm_area * vma,
 	unsigned long end, int behavior)
 {
-	struct vm_area_struct * n;
+	struct vm_area * n;
 	struct mm_struct * mm = vma->vm_mm;
 
 	n = kmem_cache_alloc(vm_area_cachep, SLAB_KERNEL);
@@ -2336,8 +2336,8 @@ static long madvise_fixup_start(struct vm_area_struct * vma,
 	n->vm_raend = 0;
 	if (n->vm_file)
 		get_file(n->vm_file);
-	if (n->vm_ops && n->vm_ops->open)
-		n->vm_ops->open(n);
+	if (n->vm_ops && n->vm_ops->vopen)
+		n->vm_ops->vopen(n);
 	vma->vm_pgoff += (end - vma->vm_start) >> PAGE_SHIFT;
 	lock_vma_mappings(vma);
 	spin_lock(&mm->page_table_lock);
@@ -2348,10 +2348,10 @@ static long madvise_fixup_start(struct vm_area_struct * vma,
 	return 0;
 }
 
-static long madvise_fixup_end(struct vm_area_struct * vma,
+static long madvise_fixup_end(struct vm_area * vma,
 	unsigned long start, int behavior)
 {
-	struct vm_area_struct * n;
+	struct vm_area * n;
 	struct mm_struct * mm = vma->vm_mm;
 
 	n = kmem_cache_alloc(vm_area_cachep, SLAB_KERNEL);
@@ -2364,8 +2364,8 @@ static long madvise_fixup_end(struct vm_area_struct * vma,
 	n->vm_raend = 0;
 	if (n->vm_file)
 		get_file(n->vm_file);
-	if (n->vm_ops && n->vm_ops->open)
-		n->vm_ops->open(n);
+	if (n->vm_ops && n->vm_ops->vopen)
+		n->vm_ops->vopen(n);
 	lock_vma_mappings(vma);
 	spin_lock(&mm->page_table_lock);
 	vma->vm_end = start;
@@ -2375,10 +2375,10 @@ static long madvise_fixup_end(struct vm_area_struct * vma,
 	return 0;
 }
 
-static long madvise_fixup_middle(struct vm_area_struct * vma,
+static long madvise_fixup_middle(struct vm_area * vma,
 	unsigned long start, unsigned long end, int behavior)
 {
-	struct vm_area_struct * left, * right;
+	struct vm_area * left, * right;
 	struct mm_struct * mm = vma->vm_mm;
 
 	left = kmem_cache_alloc(vm_area_cachep, SLAB_KERNEL);
@@ -2399,9 +2399,9 @@ static long madvise_fixup_middle(struct vm_area_struct * vma,
 	if (vma->vm_file)
 		atomic_add(2, &vma->vm_file->f_count);
 
-	if (vma->vm_ops && vma->vm_ops->open) {
-		vma->vm_ops->open(left);
-		vma->vm_ops->open(right);
+	if (vma->vm_ops && vma->vm_ops->vopen) {
+		vma->vm_ops->vopen(left);
+		vma->vm_ops->vopen(right);
 	}
 	vma->vm_pgoff += (start - vma->vm_start) >> PAGE_SHIFT;
 	vma->vm_raend = 0;
@@ -2421,7 +2421,7 @@ static long madvise_fixup_middle(struct vm_area_struct * vma,
  * We can potentially split a vm area into separate
  * areas, each area with its own behavior.
  */
-static long madvise_behavior(struct vm_area_struct * vma,
+static long madvise_behavior(struct vm_area * vma,
 	unsigned long start, unsigned long end, int behavior)
 {
 	int error = 0;
@@ -2450,7 +2450,7 @@ static long madvise_behavior(struct vm_area_struct * vma,
  * Schedule all required I/O operations, then run the disk queue
  * to make sure they are started.  Do not wait for completion.
  */
-static long madvise_willneed(struct vm_area_struct * vma,
+static long madvise_willneed(struct vm_area * vma,
 	unsigned long start, unsigned long end)
 {
 	long error = -EBADF;
@@ -2521,7 +2521,7 @@ static long madvise_willneed(struct vm_area_struct * vma,
  * An interface that causes the system to free clean pages and flush
  * dirty pages is already available as msync(MS_INVALIDATE).
  */
-static long madvise_dontneed(struct vm_area_struct * vma,
+static long madvise_dontneed(struct vm_area * vma,
 	unsigned long start, unsigned long end)
 {
 	if (vma->vm_flags & VM_LOCKED)
@@ -2531,7 +2531,7 @@ static long madvise_dontneed(struct vm_area_struct * vma,
 	return 0;
 }
 
-static long madvise_vma(struct vm_area_struct * vma, unsigned long start,
+static long madvise_vma(struct vm_area * vma, unsigned long start,
 	unsigned long end, int behavior)
 {
 	long error = -EBADF;
@@ -2596,7 +2596,7 @@ static long madvise_vma(struct vm_area_struct * vma, unsigned long start,
 asmlinkage long sys_madvise(unsigned long start, size_t len, int behavior)
 {
 	unsigned long end;
-	struct vm_area_struct * vma;
+	struct vm_area * vma;
 	int unmapped_error = 0;
 	int error = -EINVAL;
 
@@ -2661,7 +2661,7 @@ out:
  * and is up to date; i.e. that no page-in operation would be required
  * at this time if an application were to map and access this page.
  */
-static unsigned char mincore_page(struct vm_area_struct * vma,
+static unsigned char mincore_page(struct vm_area * vma,
 	unsigned long pgoff)
 {
 	unsigned char present = 0;
@@ -2677,7 +2677,7 @@ static unsigned char mincore_page(struct vm_area_struct * vma,
 	return present;
 }
 
-static long mincore_vma(struct vm_area_struct * vma,
+static long mincore_vma(struct vm_area * vma,
 	unsigned long start, unsigned long end, unsigned char * vec)
 {
 	long error, i, remaining;
@@ -2749,7 +2749,7 @@ asmlinkage long sys_mincore(unsigned long start, size_t len,
 {
 	int index = 0;
 	unsigned long end;
-	struct vm_area_struct * vma;
+	struct vm_area * vma;
 	int unmapped_error = 0;
 	long error = -EINVAL;
 

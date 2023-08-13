@@ -315,7 +315,7 @@ out:
 int setup_arg_pages(struct linux_binprm *bprm)
 {
 	unsigned long stack_base;
-	struct vm_area_struct *mpnt;
+	struct vm_area *mpnt;
 	int i;
 
 	stack_base = STACK_TOP - MAX_ARG_PAGES*PAGE_SIZE;

@@ -2395,7 +2395,7 @@ static unsigned int cs_poll(struct file *file, struct poll_table_struct *wait)
  *	toys ;)).
  */
  
-static int cs_mmap(struct file *file, struct vm_area_struct *vma)
+static int cs_mmap(struct file *file, struct vm_area *vma)
 {
 	struct cs_card *card = (struct cs_card *)file->private_data;
 	struct cs_state *state;

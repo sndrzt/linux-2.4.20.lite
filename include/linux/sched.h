@@ -208,9 +208,9 @@ struct files_struct {
 extern int max_map_count;
 
 struct mm_struct {
-	struct vm_area_struct * mmap;		/* list of VMAs */
+	struct vm_area * mmap;		/* list of VMAs */
 	rb_root_t mm_rb;
-	struct vm_area_struct * mmap_cache;	/* last find_vma result */
+	struct vm_area * mmap_cache;	/* last find_vma result */
 	pgd_t * pgd;
 	atomic_t mm_users;			/* How many users with user space? */
 	atomic_t mm_count;			/* How many references to "struct mm_struct" (users count as 1) */

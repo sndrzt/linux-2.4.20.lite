@@ -1175,7 +1175,7 @@ static int meye_ioctl(struct inode *inode, struct file *file,
 	return video_usercopy(inode, file, cmd, arg, meye_do_ioctl);
 }
 
-static int meye_mmap(struct file *file, struct vm_area_struct *vma) {
+static int meye_mmap(struct file *file, struct vm_area *vma) {
 	unsigned long start = vma->vm_start;
 	unsigned long size  = vma->vm_end - vma->vm_start;
 	unsigned long page, pos;

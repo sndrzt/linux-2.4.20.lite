@@ -55,7 +55,7 @@ static int proc_fd_link(struct inode *inode, struct dentry **dentry, struct vfsm
 static int proc_exe_link(struct inode *inode, struct dentry **dentry, struct vfsmount **mnt)
 {
 	struct mm_struct * mm;
-	struct vm_area_struct * vma;
+	struct vm_area * vma;
 	int result = -ENOENT;
 	struct task_struct *task = inode->u.proc_i.task;
 

@@ -1301,7 +1301,7 @@ forte_dsp_poll (struct file *file, struct poll_table_struct *wait)
  */
 
 static int
-forte_dsp_mmap (struct file *file, struct vm_area_struct *vma)
+forte_dsp_mmap (struct file *file, struct vm_area *vma)
 {
 	struct forte_chip *chip;
 	struct forte_channel *channel;

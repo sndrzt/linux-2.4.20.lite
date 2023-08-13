@@ -102,7 +102,7 @@ static int sgivwfb_get_cmap(struct fb_cmap *cmap, int kspc, int con,
 static int sgivwfb_set_cmap(struct fb_cmap *cmap, int kspc, int con,
 			    struct fb_info *info);
 static int sgivwfb_mmap(struct fb_info *info, struct file *file,
-                        struct vm_area_struct *vma);
+                        struct vm_area *vma);
 
 static struct fb_ops sgivwfb_ops = {
 	owner:		THIS_MODULE,
@@ -836,7 +836,7 @@ static int sgivwfb_set_cmap(struct fb_cmap *cmap, int kspc, int con,
 }
 
 static int sgivwfb_mmap(struct fb_info *info, struct file *file,
-                        struct vm_area_struct *vma)
+                        struct vm_area *vma)
 {
   unsigned long size = vma->vm_end - vma->vm_start;
   unsigned long offset = vma->vm_pgoff << PAGE_SHIFT;

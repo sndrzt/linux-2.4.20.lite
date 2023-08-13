@@ -315,7 +315,7 @@ static void do_acct_process(long exitcode, struct file *file)
 
 	vsize = 0;
 	if (current->mm) {
-		struct vm_area_struct *vma;
+		struct vm_area *vma;
 		down_read(&current->mm->mmap_sem);
 		vma = current->mm->mmap;
 		while (vma) {

@@ -424,7 +424,7 @@ static unsigned int sound_poll(struct file *file, poll_table * wait)
 	return 0;
 }
 
-static int sound_mmap(struct file *file, struct vm_area_struct *vma)
+static int sound_mmap(struct file *file, struct vm_area *vma)
 {
 	int dev_class;
 	unsigned long size;

@@ -9,8 +9,6 @@
 
 #if	defined(__KERNEL__)
 
-typedef struct kmem_cache_s kmem_cache_t;
-
 #include	<linux/mm.h>
 #include	<linux/cache.h>
 
@@ -49,15 +47,15 @@ typedef struct kmem_cache_s kmem_cache_t;
 extern void kmem_cache_init(void);
 extern void kmem_cache_sizes_init(void);
 
-extern kmem_cache_t *kmem_find_general_cachep(size_t, int gfpflags);
-extern kmem_cache_t *kmem_cache_create(const char *, size_t, size_t, unsigned long,
-				       void (*)(void *, kmem_cache_t *, unsigned long),
-				       void (*)(void *, kmem_cache_t *, unsigned long));
-extern int kmem_cache_destroy(kmem_cache_t *);
-extern int kmem_cache_shrink(kmem_cache_t *);
-extern void *kmem_cache_alloc(kmem_cache_t *, int);
-extern void kmem_cache_free(kmem_cache_t *, void *);
-extern unsigned int kmem_cache_size(kmem_cache_t *);
+extern struct kmem_cache_s *kmem_find_general_cachep(size_t, int gfpflags);
+extern struct kmem_cache_s *kmem_cache_create(const char *, size_t, size_t, unsigned long,
+				       void (*)(void *, struct kmem_cache_s *, unsigned long),
+				       void (*)(void *, struct kmem_cache_s *, unsigned long));
+extern int kmem_cache_destroy(struct kmem_cache_s *);
+extern int kmem_cache_shrink(struct kmem_cache_s *);
+extern void *kmem_cache_alloc(struct kmem_cache_s *, int);
+extern void kmem_cache_free(struct kmem_cache_s *, void *);
+extern unsigned int kmem_cache_size(struct kmem_cache_s *);
 
 extern void *kmalloc(size_t, int);
 extern void kfree(const void *);
@@ -65,15 +63,15 @@ extern void kfree(const void *);
 extern int FASTCALL(kmem_cache_reap(int));
 
 /* System wide caches */
-extern kmem_cache_t	*vm_area_cachep;
-extern kmem_cache_t	*mm_cachep;
-extern kmem_cache_t	*names_cachep;
-extern kmem_cache_t	*files_cachep;
-extern kmem_cache_t	*filp_cachep;
-extern kmem_cache_t	*dquot_cachep;
-extern kmem_cache_t	*bh_cachep;
-extern kmem_cache_t	*fs_cachep;
-extern kmem_cache_t	*sigact_cachep;
+extern struct kmem_cache_s	*vm_area_cachep;
+extern struct kmem_cache_s	*mm_cachep;
+extern struct kmem_cache_s	*names_cachep;
+extern struct kmem_cache_s	*files_cachep;
+extern struct kmem_cache_s	*filp_cachep;
+extern struct kmem_cache_s	*dquot_cachep;
+extern struct kmem_cache_s	*bh_cachep;
+extern struct kmem_cache_s	*fs_cachep;
+extern struct kmem_cache_s	*sigact_cachep;
 
 #endif	/* __KERNEL__ */
 

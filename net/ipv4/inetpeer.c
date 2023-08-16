@@ -70,7 +70,7 @@
 /* Exported for inet_getid inline function.  */
 spinlock_t inet_peer_idlock = SPIN_LOCK_UNLOCKED;
 
-static kmem_cache_t *peer_cachep;
+static struct kmem_cache_s *peer_cachep;
 
 #define node_height(x) x->avl_height
 static struct inet_peer peer_fake_node = {

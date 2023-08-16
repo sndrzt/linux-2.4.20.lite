@@ -85,7 +85,7 @@
 #define async_dbg dbg //err
 
 #ifdef DEBUG_SLAB
-	static kmem_cache_t *urb_priv_kmem;
+	static struct kmem_cache_s *urb_priv_kmem;
 #endif
 
 #define SLAB_FLAG     (in_interrupt () || current->state != TASK_RUNNING ? SLAB_ATOMIC : SLAB_KERNEL)

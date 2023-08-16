@@ -63,7 +63,7 @@
 
 int sysctl_hot_list_len = 128;
 
-static kmem_cache_t *skbuff_head_cache;
+static struct kmem_cache_s *skbuff_head_cache;
 
 static union {
 	struct sk_buff_head	list;
@@ -220,7 +220,7 @@ nohead:
 /*
  *	Slab constructor for a skb head. 
  */ 
-static inline void skb_headerinit(void *p, kmem_cache_t *cache, 
+static inline void skb_headerinit(void *p, struct kmem_cache_s *cache, 
 				  unsigned long flags)
 {
 	struct sk_buff *skb = p;

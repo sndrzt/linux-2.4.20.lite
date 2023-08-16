@@ -27,7 +27,7 @@ void kill_super(struct super_block *sb);
 
 static struct list_head *mount_hashtable;
 static int hash_mask, hash_bits;
-static kmem_cache_t *mnt_cache; 
+static struct kmem_cache_s *mnt_cache; 
 
 extern void init_rootfs(void);
 

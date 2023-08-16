@@ -842,7 +842,7 @@ struct fs_info                  /*  This structure is for the mounted devfs  */
 };
 
 static struct fs_info fs_info = {devfsd_buffer_lock: SPIN_LOCK_UNLOCKED};
-static kmem_cache_t *devfsd_buf_cache;
+static struct kmem_cache_s *devfsd_buf_cache;
 #ifdef CONFIG_DEVFS_DEBUG
 static unsigned int devfs_debug_init __initdata = DEBUG_NONE;
 static unsigned int devfs_debug = DEBUG_NONE;

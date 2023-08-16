@@ -50,7 +50,7 @@
 
 struct rt6_statistics	rt6_stats;
 
-static kmem_cache_t * fib6_node_kmem;
+static struct kmem_cache_s * fib6_node_kmem;
 
 enum fib_walk_state_t
 {

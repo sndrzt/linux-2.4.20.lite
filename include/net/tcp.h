@@ -134,7 +134,7 @@ extern struct tcp_hashinfo {
 #define tcp_lhash_wait	(tcp_hashinfo.__tcp_lhash_wait)
 #define tcp_portalloc_lock (tcp_hashinfo.__tcp_portalloc_lock)
 
-extern kmem_cache_t *tcp_bucket_cachep;
+extern struct kmem_cache_s *tcp_bucket_cachep;
 extern struct tcp_bind_bucket *tcp_bucket_create(struct tcp_bind_hashbucket *head,
 						 unsigned short snum);
 extern void tcp_bucket_unlock(struct sock *sk);
@@ -192,7 +192,7 @@ struct tcp_tw_bucket {
 #endif
 };
 
-extern kmem_cache_t *tcp_timewait_cachep;
+extern struct kmem_cache_s *tcp_timewait_cachep;
 
 static inline void tcp_tw_put(struct tcp_tw_bucket *tw)
 {
@@ -522,7 +522,7 @@ struct open_request {
 };
 
 /* SLAB cache for open requests. */
-extern kmem_cache_t *tcp_openreq_cachep;
+extern struct kmem_cache_s *tcp_openreq_cachep;
 
 #define tcp_openreq_alloc()		kmem_cache_alloc(tcp_openreq_cachep, SLAB_ATOMIC)
 #define tcp_openreq_fastfree(req)	kmem_cache_free(tcp_openreq_cachep, req)

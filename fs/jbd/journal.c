@@ -1591,7 +1591,7 @@ void * __jbd_kmalloc (char *where, size_t size, int flags, int retry)
 /*
  * Journal_head storage management
  */
-static kmem_cache_t *journal_head_cache;
+static struct kmem_cache_s *journal_head_cache;
 #ifdef CONFIG_JBD_DEBUG
 static atomic_t nr_journal_heads = ATOMIC_INIT(0);
 #endif

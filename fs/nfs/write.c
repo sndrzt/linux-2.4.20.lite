@@ -97,7 +97,7 @@ static void	nfs_commit_done(struct rpc_task *);
 # define IS_SWAPFILE(inode)	(0)
 #endif
 
-static kmem_cache_t *nfs_wdata_cachep;
+static struct kmem_cache_s *nfs_wdata_cachep;
 
 static __inline__ struct nfs_write_data *nfs_writedata_alloc(void)
 {

@@ -85,7 +85,7 @@ static char *errbuf;
 
 #include "uhci-debug.h"
 
-static kmem_cache_t *uhci_up_cachep;	/* urb_priv */
+static struct kmem_cache_s *uhci_up_cachep;	/* urb_priv */
 
 static int rh_submit_urb(struct urb *urb);
 static int rh_unlink_urb(struct urb *urb);

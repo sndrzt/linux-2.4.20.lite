@@ -48,7 +48,7 @@
    printk(KERN_DEBUG a)
  */
 
-static kmem_cache_t * fn_hash_kmem;
+static struct kmem_cache_s * fn_hash_kmem;
 
 /*
    These bizarre types are just to force strict type checking.

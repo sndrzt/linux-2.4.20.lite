@@ -46,7 +46,7 @@ struct pm_zone {
 	/*
 	 * free areas of different sizes
 	 */
-	struct free_area		free_area[MAX_ORDER];
+	struct free_area		free_areas[MAX_ORDER];
 
 	/*
 	 * wait_tbl		-- the array holding the hash table
@@ -126,7 +126,7 @@ struct pm_zonelist {
  *      into the struct pm_node to properly support NUMA.
  */
 struct bootmem_data;
-typedef struct pm_node {
+struct pm_node {
 	struct pm_zone node_zones[MAX_NR_ZONES];
 	struct pm_zonelist node_zonelists[GFP_ZONEMASK+1];
 	int nr_zones;

@@ -73,7 +73,7 @@ static spinlock_t inode_lock = SPIN_LOCK_UNLOCKED;
  */
 struct inodes_stat_t inodes_stat;
 
-static kmem_cache_t * inode_cachep;
+static struct kmem_cache_s * inode_cachep;
 
 #define alloc_inode() \
 	 ((struct inode *) kmem_cache_alloc(inode_cachep, SLAB_KERNEL))
@@ -90,7 +90,7 @@ static void destroy_inode(struct inode *inode)
  * once, because the fields are idempotent across use
  * of the inode, so let the slab aware of that.
  */
-static void init_once(void * foo, kmem_cache_t * cachep, unsigned long flags)
+static void init_once(void * foo, struct kmem_cache_s * cachep, unsigned long flags)
 {
 	struct inode * inode = (struct inode *) foo;
 

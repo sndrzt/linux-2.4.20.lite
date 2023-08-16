@@ -121,7 +121,7 @@ static void __free_pages_ok (struct page *page, unsigned int order)
 		BUG();
 	index = page_idx >> (1 + order);
 
-	area = zone->free_area + order;
+	area = zone->free_areas + order;
 
 	spin_lock_irqsave(&zone->lock, flags);
 
@@ -130,7 +130,7 @@ static void __free_pages_ok (struct page *page, unsigned int order)
 	while (mask + (1 << (MAX_ORDER-1))) {
 		struct page *buddy1, *buddy2;
 
-		if (area >= zone->free_area + MAX_ORDER)
+		if (area >= zone->free_areas + MAX_ORDER)
 			BUG();
 		if (!__test_and_change_bit(index, area->map))
 			/*
@@ -198,7 +198,7 @@ static inline struct page * expand (struct pm_zone *zone, struct page *page,
 static FASTCALL(struct page * rmqueue(struct pm_zone *zone, unsigned int order));
 static struct page * rmqueue(struct pm_zone *zone, unsigned int order)
 {
-	struct free_area * area = zone->free_area + order;
+	struct free_area * area = zone->free_areas + order;
 	unsigned int curr_order = order;
 	struct list_head *head, *curr;
 	unsigned long flags;
@@ -557,7 +557,7 @@ void show_free_areas_core(struct pm_node *pmnod)
 		if (zone->size) {
 			spin_lock_irqsave(&zone->lock, flags);
 		 	for (order = 0; order < MAX_ORDER; order++) {
-				head = &(zone->free_area + order)->free_list;
+				head = &(zone->free_areas + order)->free_list;
 				curr = head;
 				nr = 0;
 				for (;;) {
@@ -797,9 +797,9 @@ void __init free_area_init_core(int nid, struct pm_node *pmnod, struct page **gm
 		for (i = 0; ; i++) {
 			unsigned long bitmap_size;
 
-			INIT_LIST_HEAD(&zone->free_area[i].free_list);
+			INIT_LIST_HEAD(&zone->free_areas[i].free_list);
 			if (i == MAX_ORDER-1) {
-				zone->free_area[i].map = NULL;
+				zone->free_areas[i].map = NULL;
 				break;
 			}
 
@@ -828,7 +828,7 @@ void __init free_area_init_core(int nid, struct pm_node *pmnod, struct page **gm
 			 */
 			bitmap_size = (size-1) >> (i+4);
 			bitmap_size = LONG_ALIGN(bitmap_size+1);
-			zone->free_area[i].map = 
+			zone->free_areas[i].map = 
 			  (unsigned long *) alloc_bootmem_node(pmnod, bitmap_size);
 		}
 	}

@@ -25,7 +25,7 @@ extern void send_sigio(struct fown_struct *fown, int fd, int band);
 int dir_notify_enable = 1;
 
 static rwlock_t dn_lock = RW_LOCK_UNLOCKED;
-static kmem_cache_t *dn_cache;
+static struct kmem_cache_s *dn_cache;
 
 static void redo_inode_mask(struct inode *inode)
 {

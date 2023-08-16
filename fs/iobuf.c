@@ -11,7 +11,7 @@
 #include <linux/vmalloc.h>
 
 
-static kmem_cache_t *kiobuf_cachep;
+static struct kmem_cache_s *kiobuf_cachep;
 
 void end_kio_request(struct kiobuf *kiobuf, int uptodate)
 {

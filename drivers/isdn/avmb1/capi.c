@@ -156,11 +156,11 @@ static struct capidev *capidev_openlist = 0;
 static struct capiminor *minors = 0;
 #endif /* CONFIG_ISDN_CAPI_MIDDLEWARE */
 
-static kmem_cache_t *capidev_cachep = 0;
-static kmem_cache_t *capincci_cachep = 0;
+static struct kmem_cache_s *capidev_cachep = 0;
+static struct kmem_cache_s *capincci_cachep = 0;
 #ifdef CONFIG_ISDN_CAPI_MIDDLEWARE
-static kmem_cache_t *capiminor_cachep = 0;
-static kmem_cache_t *capidh_cachep = 0;
+static struct kmem_cache_s *capiminor_cachep = 0;
+static struct kmem_cache_s *capidh_cachep = 0;
 #endif /* CONFIG_ISDN_CAPI_MIDDLEWARE */
 
 #ifdef CONFIG_ISDN_CAPI_MIDDLEWARE

@@ -263,9 +263,9 @@ int sysctl_tcp_fin_timeout = TCP_FIN_TIMEOUT;
 
 struct tcp_mib	tcp_statistics[NR_CPUS*2];
 
-kmem_cache_t *tcp_openreq_cachep;
-kmem_cache_t *tcp_bucket_cachep;
-kmem_cache_t *tcp_timewait_cachep;
+struct kmem_cache_s *tcp_openreq_cachep;
+struct kmem_cache_s *tcp_bucket_cachep;
+struct kmem_cache_s *tcp_timewait_cachep;
 
 atomic_t tcp_orphan_count = ATOMIC_INIT(0);
 

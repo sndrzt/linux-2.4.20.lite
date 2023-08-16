@@ -13,13 +13,13 @@
 #define HASH_MASK	(HASH_SIZE-1)
 static struct list_head cdev_hashtable[HASH_SIZE];
 static spinlock_t cdev_lock = SPIN_LOCK_UNLOCKED;
-static kmem_cache_t * cdev_cachep;
+static struct kmem_cache_s * cdev_cachep;
 
 #define alloc_cdev() \
 	 ((struct char_device *) kmem_cache_alloc(cdev_cachep, SLAB_KERNEL))
 #define destroy_cdev(cdev) kmem_cache_free(cdev_cachep, (cdev))
 
-static void init_once(void * foo, kmem_cache_t * cachep, unsigned long flags)
+static void init_once(void * foo, struct kmem_cache_s * cachep, unsigned long flags)
 {
 	struct char_device * cdev = (struct char_device *) foo;
 

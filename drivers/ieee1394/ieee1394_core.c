@@ -48,7 +48,7 @@ static int disable_hotplug = 0;
 /* We are GPL, so treat us special */
 MODULE_LICENSE("GPL");
 
-static kmem_cache_t *hpsb_packet_cache;
+static struct kmem_cache_s *hpsb_packet_cache;
 
 /* Some globals used */
 const char *hpsb_speedto_str[] = { "S100", "S200", "S400" };

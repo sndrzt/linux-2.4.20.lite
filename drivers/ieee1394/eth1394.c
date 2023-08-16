@@ -82,7 +82,7 @@ static char version[] __devinitdata =
 /* Our ieee1394 highlevel driver */
 #define ETHER1394_DRIVER_NAME "ether1394"
 
-static kmem_cache_t *packet_task_cache;
+static struct kmem_cache_s *packet_task_cache;
 static struct hpsb_highlevel *hl_handle = NULL;
 
 /* Card handling */

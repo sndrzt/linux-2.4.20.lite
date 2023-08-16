@@ -20,7 +20,7 @@
  * SLAB caches for signal bits.
  */
 
-static kmem_cache_t *sigqueue_cachep;
+static struct kmem_cache_s *sigqueue_cachep;
 
 atomic_t nr_queued_signals;
 int max_queued_signals = 1024;

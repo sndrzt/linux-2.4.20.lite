@@ -455,7 +455,7 @@ out:
 }
 
 static rwlock_t fasync_lock = RW_LOCK_UNLOCKED;
-static kmem_cache_t *fasync_cache;
+static struct kmem_cache_s *fasync_cache;
 
 /*
  * fasync_helper() is used by some character device drivers (mainly mice)

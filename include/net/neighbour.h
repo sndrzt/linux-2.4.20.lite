@@ -162,7 +162,7 @@ struct neigh_table
 	rwlock_t		lock;
 	unsigned long		last_rand;
 	struct neigh_parms	*parms_list;
-	kmem_cache_t		*kmem_cachep;
+	struct kmem_cache_s		*kmem_cachep;
 	struct tasklet_struct	gc_task;
 	struct neigh_statistics	stats;
 	struct neighbour	*hash_buckets[NEIGH_HASHMASK+1];

@@ -64,7 +64,7 @@ unsigned int ip_conntrack_htable_size = 0;
 static int ip_conntrack_max = 0;
 static atomic_t ip_conntrack_count = ATOMIC_INIT(0);
 struct list_head *ip_conntrack_hash;
-static kmem_cache_t *ip_conntrack_cachep;
+static struct kmem_cache_s *ip_conntrack_cachep;
 
 extern struct ip_conntrack_protocol ip_conntrack_generic_protocol;
 

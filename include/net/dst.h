@@ -83,7 +83,7 @@ struct dst_ops
 	int			entry_size;
 
 	atomic_t		entries;
-	kmem_cache_t 		*kmem_cachep;
+	struct kmem_cache_s 		*kmem_cachep;
 };
 
 #ifdef __KERNEL__

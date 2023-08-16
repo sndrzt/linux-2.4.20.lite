@@ -77,7 +77,7 @@ for( ; ((f) = *(fp)) != NULL && dn_key_eq((f)->fn_key, (key)); (fp) = &(f)->fn_n
 static rwlock_t dn_fib_tables_lock = RW_LOCK_UNLOCKED;
 static struct dn_fib_table *dn_fib_tables[DN_NUM_TABLES + 1];
 
-static kmem_cache_t *dn_hash_kmem;
+static struct kmem_cache_s *dn_hash_kmem;
 static int dn_fib_hash_zombies;
 
 static __inline__ dn_fib_idx_t dn_hash(dn_fib_key_t key, struct dn_zone *dz)

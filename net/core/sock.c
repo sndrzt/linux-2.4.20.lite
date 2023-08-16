@@ -573,7 +573,7 @@ lenout:
   	return 0;
 }
 
-static kmem_cache_t *sk_cachep;
+static struct kmem_cache_s *sk_cachep;
 
 /*
  *	All socket objects are allocated here. This is for future

@@ -782,19 +782,19 @@ bad_fork_free:
 }
 
 /* SLAB cache for signal_struct structures (tsk->sig) */
-kmem_cache_t *sigact_cachep;
+struct kmem_cache_s *sigact_cachep;
 
 /* SLAB cache for files_struct structures (tsk->files) */
-kmem_cache_t *files_cachep;
+struct kmem_cache_s *files_cachep;
 
 /* SLAB cache for fs_struct structures (tsk->fs) */
-kmem_cache_t *fs_cachep;
+struct kmem_cache_s *fs_cachep;
 
 /* SLAB cache for vm_area structures */
-kmem_cache_t *vm_area_cachep;
+struct kmem_cache_s *vm_area_cachep;
 
 /* SLAB cache for mm_struct structures (tsk->mm) */
-kmem_cache_t *mm_cachep;
+struct kmem_cache_s *mm_cachep;
 
 void __init proc_caches_init(void)
 {

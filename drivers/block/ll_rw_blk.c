@@ -43,7 +43,7 @@ extern int mac_floppy_init(void);
 /*
  * For the allocated request tables
  */
-static kmem_cache_t *request_cachep;
+static struct kmem_cache_s *request_cachep;
 
 /*
  * The "disk" task queue is used to start the actual requests

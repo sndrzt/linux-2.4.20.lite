@@ -34,7 +34,7 @@ spinlock_t dcache_lock __cacheline_aligned_in_smp = SPIN_LOCK_UNLOCKED;
 /* Right now the dcache depends on the kernel lock */
 #define check_lock()	if (!kernel_locked()) BUG()
 
-static kmem_cache_t *dentry_cache; 
+static struct kmem_cache_s *dentry_cache; 
 
 /*
  * This is the single most critical data structure when it comes
@@ -1224,7 +1224,7 @@ static void __init dcache_init(unsigned long mempages)
 	} while (i);
 }
 
-static void init_buffer_head(void * foo, kmem_cache_t * cachep, unsigned long flags)
+static void init_buffer_head(void * foo, struct kmem_cache_s * cachep, unsigned long flags)
 {
 	if ((flags & (SLAB_CTOR_VERIFY|SLAB_CTOR_CONSTRUCTOR)) ==
 	    SLAB_CTOR_CONSTRUCTOR)
@@ -1237,16 +1237,16 @@ static void init_buffer_head(void * foo, kmem_cache_t * cachep, unsigned long fl
 }
 
 /* SLAB cache for __getname() consumers */
-kmem_cache_t *names_cachep;
+struct kmem_cache_s *names_cachep;
 
 /* SLAB cache for file structures */
-kmem_cache_t *filp_cachep;
+struct kmem_cache_s *filp_cachep;
 
 /* SLAB cache for dquot structures */
-kmem_cache_t *dquot_cachep;
+struct kmem_cache_s *dquot_cachep;
 
 /* SLAB cache for buffer_head structures */
-kmem_cache_t *bh_cachep;
+struct kmem_cache_s *bh_cachep;
 EXPORT_SYMBOL(bh_cachep);
 
 extern void bdev_cache_init(void);

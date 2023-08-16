@@ -217,12 +217,12 @@ typedef struct acpi_node
 /*
  * ACPI Table Descriptor.  One per ACPI table
  */
-typedef struct acpi_table_desc
+struct acpi_table_desc
 {
 	struct acpi_table_desc  *prev;
 	struct acpi_table_desc  *next;
 	struct acpi_table_desc  *installed_desc;
-	acpi_table_header       *pointer;
+	struct acpi_table_header       *pointer;
 	void                    *base_pointer;
 	u8                      *aml_start;
 	u64                     physical_address;
@@ -234,7 +234,7 @@ typedef struct acpi_table_desc
 	u8                      allocation;
 	u8                      loaded_into_namespace;
 
-} acpi_table_desc;
+};
 
 
 typedef struct

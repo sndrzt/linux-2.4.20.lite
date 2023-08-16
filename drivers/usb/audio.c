@@ -275,7 +275,7 @@ struct dmabuf {
 	unsigned total_bytes;
 	int count;
 	unsigned error; /* over/underrun */
-	wait_queue_head_t wait;
+	struct wait_queue_head_t wait;
 	/* redundant, but makes calculations easier */
 	unsigned fragsize;
 	unsigned dmasize;

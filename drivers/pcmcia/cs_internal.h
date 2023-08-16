@@ -50,7 +50,7 @@ typedef struct client_t {
     event_callback_args_t event_callback_args;
     struct client_t 	*next;
     u_int		mtd_count;
-    wait_queue_head_t	mtd_req;
+    struct wait_queue_head_t	mtd_req;
     erase_busy_t	erase_busy;
 } client_t;
 

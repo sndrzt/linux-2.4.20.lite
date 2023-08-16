@@ -187,11 +187,11 @@ typedef struct _mgslpc_info {
 	int            rx_buf_count;   /* total number of rx buffers */
 	int            rx_frame_count; /* number of full rx buffers */
 	
-	wait_queue_head_t	open_wait;
-	wait_queue_head_t	close_wait;
+	struct wait_queue_head_t	open_wait;
+	struct wait_queue_head_t	close_wait;
 	
-	wait_queue_head_t	status_event_wait_q;
-	wait_queue_head_t	event_wait_q;
+	struct wait_queue_head_t	status_event_wait_q;
+	struct wait_queue_head_t	event_wait_q;
 	struct timer_list	tx_timer;	/* HDLC transmit timeout timer */
 	struct _mgslpc_info	*next_device;	/* device list link */
 

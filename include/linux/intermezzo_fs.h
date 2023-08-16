@@ -270,7 +270,7 @@ struct presto_file_set {
         /* This queue is used both for processes waiting for the kernel to give
          * up the permit as well as processes waiting for the kernel to be given
          * the permit, depending on the state of FSET_HASPERMIT. */
-        wait_queue_head_t fset_permit_queue;
+        struct wait_queue_head_t fset_permit_queue;
 
         loff_t  fset_file_maxio;  /* writing more than this causes a close */
         unsigned long int kml_truncate_size;

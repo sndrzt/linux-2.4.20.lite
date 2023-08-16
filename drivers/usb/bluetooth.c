@@ -193,7 +193,7 @@ struct usb_bluetooth {
 	struct urb *		write_urb_pool[NUM_BULK_URBS];
 	__u8			bulk_out_endpointAddress;
 
-	wait_queue_head_t	write_wait;
+	struct wait_queue_head_t	write_wait;
 
 	struct tq_struct	tqueue;		/* task queue for line discipline waking up */
 	

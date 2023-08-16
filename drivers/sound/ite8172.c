@@ -293,7 +293,7 @@ struct it8172_state {
 	spinlock_t lock;
 	struct semaphore open_sem;
 	mode_t open_mode;
-	wait_queue_head_t open_wait;
+	struct wait_queue_head_t open_wait;
 
 	struct dmabuf {
 		void *rawbuf;
@@ -307,7 +307,7 @@ struct it8172_state {
 		int curBufPtr;
 		unsigned total_bytes;
 		unsigned error; /* over/underrun */
-		wait_queue_head_t wait;
+		struct wait_queue_head_t wait;
 		/* redundant, but makes calculations easier */
 		unsigned fragsize;
 		unsigned dmasize;

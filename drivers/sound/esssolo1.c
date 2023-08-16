@@ -187,7 +187,7 @@ struct solo1_state {
 	spinlock_t lock;
 	struct semaphore open_sem;
 	mode_t open_mode;
-	wait_queue_head_t open_wait;
+	struct wait_queue_head_t open_wait;
 
 	struct dmabuf {
 		void *rawbuf;
@@ -199,7 +199,7 @@ struct solo1_state {
 		unsigned total_bytes;
 		int count;
 		unsigned error; /* over/underrun */
-		wait_queue_head_t wait;
+		struct wait_queue_head_t wait;
 		/* redundant, but makes calculations easier */
 		unsigned fragsize;
 		unsigned dmasize;
@@ -218,8 +218,8 @@ struct solo1_state {
 	struct {
 		unsigned ird, iwr, icnt;
 		unsigned ord, owr, ocnt;
-		wait_queue_head_t iwait;
-		wait_queue_head_t owait;
+		struct wait_queue_head_t iwait;
+		struct wait_queue_head_t owait;
 		struct timer_list timer;
 		unsigned char ibuf[MIDIINBUF];
 		unsigned char obuf[MIDIOUTBUF];

@@ -192,7 +192,7 @@ struct usbnet {
 	struct driver_info	*driver_info;
 	struct semaphore	mutex;
 	struct list_head	dev_list;
-	wait_queue_head_t	*wait;
+	struct wait_queue_head_t	*wait;
 
 	// protocol/interface state
 	struct net_device	net;

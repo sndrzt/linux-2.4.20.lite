@@ -277,7 +277,7 @@
 /*
  * Macro to check if a pointer is within an ACPI table.
  * Parameter (a) is the pointer to check.  Parameter (b) must be defined
- * as a pointer to an acpi_table_header.  (b+1) then points past the header,
+ * as a pointer to an struct acpi_table_header.  (b+1) then points past the header,
  * and ((u8 *)b+b->Length) points one byte past the end of the table.
  */
 #ifndef _IA16

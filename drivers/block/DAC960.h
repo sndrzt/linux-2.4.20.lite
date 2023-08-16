@@ -2211,7 +2211,7 @@ typedef struct request IO_Request_T;
 typedef request_queue_t RequestQueue_T;
 typedef struct super_block SuperBlock_T;
 typedef struct timer_list Timer_T;
-typedef wait_queue_head_t WaitQueue_T;
+typedef struct wait_queue_head_t WaitQueue_T;
 
 
 /*

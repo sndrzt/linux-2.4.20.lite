@@ -99,8 +99,8 @@ typedef struct stlport {
 	struct wait_queue	*open_wait;
 	struct wait_queue	*close_wait;
 #else
-	wait_queue_head_t	open_wait;
-	wait_queue_head_t	close_wait;
+	struct wait_queue_head_t	open_wait;
+	struct wait_queue_head_t	close_wait;
 #endif
 	struct termios		normaltermios;
 	struct termios		callouttermios;

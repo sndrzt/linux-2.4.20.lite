@@ -75,9 +75,9 @@ typedef struct {
 	struct wait_queue	*close_wait;
 	struct wait_queue	*raw_wait;
 #else
-	wait_queue_head_t	open_wait;
-	wait_queue_head_t	close_wait;
-	wait_queue_head_t	raw_wait;
+	struct wait_queue_head_t	open_wait;
+	struct wait_queue_head_t	close_wait;
+	struct wait_queue_head_t	raw_wait;
 #endif
 	struct tq_struct	tqhangup;
 	struct termios		normaltermios;

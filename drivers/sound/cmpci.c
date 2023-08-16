@@ -238,7 +238,7 @@ struct cm_state {
 	spinlock_t lock;
 	struct semaphore open_sem;
 	mode_t open_mode;
-	wait_queue_head_t open_wait;
+	struct wait_queue_head_t open_wait;
 
 	struct dmabuf {
 		void *rawbuf;
@@ -250,7 +250,7 @@ struct cm_state {
 		unsigned total_bytes;
 		int count;
 		unsigned error;		/* over/underrun */
-		wait_queue_head_t wait;
+		struct wait_queue_head_t wait;
 		
 		unsigned fragsize;	/* redundant, but makes calculations easier */
 		unsigned dmasize;
@@ -268,8 +268,8 @@ struct cm_state {
 	struct {			/* midi stuff */
 		unsigned ird, iwr, icnt;
 		unsigned ord, owr, ocnt;
-		wait_queue_head_t iwait;
-		wait_queue_head_t owait;
+		struct wait_queue_head_t iwait;
+		struct wait_queue_head_t owait;
 		struct timer_list timer;
 		unsigned char ibuf[MIDIINBUF];
 		unsigned char obuf[MIDIOUTBUF];

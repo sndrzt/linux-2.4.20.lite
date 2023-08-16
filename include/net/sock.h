@@ -118,7 +118,7 @@ struct unix_opt {
 	struct sock *		gc_tree;
 	atomic_t		inflight;
 	rwlock_t		lock;
-	wait_queue_head_t	peer_wait;
+	struct wait_queue_head_t	peer_wait;
 };
 
 
@@ -477,7 +477,7 @@ struct tcp_opt {
 typedef struct {
 	spinlock_t		slock;
 	unsigned int		users;
-	wait_queue_head_t	wq;
+	struct wait_queue_head_t	wq;
 } socket_lock_t;
 
 #define sock_lock_init(__sk) \
@@ -512,7 +512,7 @@ struct sock {
 	socket_lock_t		lock;		/* Synchronizer...			*/
 	int			rcvbuf;		/* Size of receive buffer in bytes	*/
 
-	wait_queue_head_t	*sleep;		/* Sock wait queue			*/
+	struct wait_queue_head_t	*sleep;		/* Sock wait queue			*/
 	struct dst_entry	*dst_cache;	/* Destination cache			*/
 	rwlock_t		dst_lock;
 	atomic_t		rmem_alloc;	/* Receive queue bytes committed	*/

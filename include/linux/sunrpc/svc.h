@@ -127,7 +127,7 @@ struct svc_rqst {
 						 * to report (real or virtual)
 						 */
 
-	wait_queue_head_t	rq_wait;	/* synchronozation */
+	struct wait_queue_head_t	rq_wait;	/* synchronozation */
 };
 
 /*

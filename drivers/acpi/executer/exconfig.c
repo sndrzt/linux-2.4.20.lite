@@ -60,8 +60,8 @@ acpi_ex_load_op (
 	acpi_operand_object     *table_desc = NULL;
 	u8                      *table_ptr;
 	u8                      *table_data_ptr;
-	acpi_table_header       table_header;
-	acpi_table_desc         table_info;
+	struct acpi_table_header       table_header;
+	struct acpi_table_desc         table_info;
 	u32                     i;
 
 
@@ -73,7 +73,7 @@ acpi_ex_load_op (
 	/* Get the table header */
 
 	table_header.length = 0;
-	for (i = 0; i < sizeof (acpi_table_header); i++) {
+	for (i = 0; i < sizeof (struct acpi_table_header); i++) {
 		status = acpi_ev_address_space_dispatch (rgn_desc, ACPI_READ_ADR_SPACE,
 				   (ACPI_PHYSICAL_ADDRESS) i, 8,
 				   (u32 *) ((u8 *) &table_header + i));
@@ -91,8 +91,8 @@ acpi_ex_load_op (
 
 	/* Copy the header to the buffer */
 
-	MEMCPY (table_ptr, &table_header, sizeof (acpi_table_header));
-	table_data_ptr = table_ptr + sizeof (acpi_table_header);
+	MEMCPY (table_ptr, &table_header, sizeof (struct acpi_table_header));
+	table_data_ptr = table_ptr + sizeof (struct acpi_table_header);
 
 
 	/* Get the table from the op region */
@@ -133,7 +133,7 @@ acpi_ex_load_op (
 
 	/* Install the new table into the local data structures */
 
-	table_info.pointer     = (acpi_table_header *) table_ptr;
+	table_info.pointer     = (struct acpi_table_header *) table_ptr;
 	table_info.length      = table_header.length;
 	table_info.allocation  = ACPI_MEM_ALLOCATED;
 	table_info.base_pointer = table_ptr;
@@ -197,7 +197,7 @@ acpi_ex_unload_table (
 {
 	acpi_status             status = AE_NOT_IMPLEMENTED;
 	acpi_operand_object     *table_desc = ddb_handle;
-	acpi_table_desc         *table_info;
+	struct acpi_table_desc         *table_info;
 
 
 	FUNCTION_TRACE ("Ex_unload_table");
@@ -218,7 +218,7 @@ acpi_ex_unload_table (
 
 	/* Get the actual table descriptor from the Ddb_handle */
 
-	table_info = (acpi_table_desc *) table_desc->reference.object;
+	table_info = (struct acpi_table_desc *) table_desc->reference.object;
 
 	/*
 	 * Delete the entire namespace under this table Node

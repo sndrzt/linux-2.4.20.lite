@@ -265,8 +265,8 @@ struct reiserfs_journal_list {
   struct buffer_head *j_commit_bh ; /* commit buffer head */
   struct reiserfs_journal_cnode *j_realblock  ;
   struct reiserfs_journal_cnode *j_freedlist ; /* list of buffers that were freed during this trans.  free each of these on flush */
-  wait_queue_head_t j_commit_wait ; /* wait for all the commit blocks to be flushed */
-  wait_queue_head_t j_flush_wait ; /* wait for all the real blocks to be flushed */
+  struct wait_queue_head_t j_commit_wait ; /* wait for all the commit blocks to be flushed */
+  struct wait_queue_head_t j_flush_wait ; /* wait for all the real blocks to be flushed */
 } ;
 
 struct reiserfs_page_list  ; /* defined in reiserfs_fs.h */
@@ -293,9 +293,9 @@ struct reiserfs_journal {
   */
   struct reiserfs_page_list *j_flush_pages ;
   time_t j_trans_start_time ;         /* time this transaction started */
-  wait_queue_head_t j_wait ;         /* wait  journal_end to finish I/O */
+  struct wait_queue_head_t j_wait ;         /* wait  journal_end to finish I/O */
   atomic_t j_wlock ;                       /* lock for j_wait */
-  wait_queue_head_t j_join_wait ;    /* wait for current transaction to finish before starting new one */
+  struct wait_queue_head_t j_join_wait ;    /* wait for current transaction to finish before starting new one */
   atomic_t j_jlock ;                       /* lock for j_join_wait */
   int j_journal_list_index ;	      /* journal list number of the current trans */
   int j_list_bitmap_index ;	      /* number of next list bitmap to use */
@@ -440,7 +440,7 @@ struct reiserfs_sb_info
     } s_alloc_options;
 
 				/* Comment? -Hans */
-    wait_queue_head_t s_wait;
+    struct wait_queue_head_t s_wait;
 				/* To be obsoleted soon by per buffer seals.. -Hans */
     atomic_t s_generation_counter; // increased by one every time the
     // tree gets re-balanced

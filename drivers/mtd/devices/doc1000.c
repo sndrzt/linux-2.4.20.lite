@@ -63,7 +63,7 @@ struct mypriv {
 	u_short numdevices;
 	u_char interleave;
 	struct erase_info *cur_erases;
-	wait_queue_head_t wq;
+	struct wait_queue_head_t wq;
 	u_char devstat[MAX_FLASH_DEVICES];
 	u_long devshift;
 };

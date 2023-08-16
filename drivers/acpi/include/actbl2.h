@@ -53,7 +53,7 @@
  */
 typedef struct
 {
-	acpi_table_header       header;                 /* Table header */
+	struct acpi_table_header       header;                 /* Table header */
 	u32                     table_offset_entry [1]; /* Array of pointers to  */
 			 /* other tables' headers */
 } RSDT_DESCRIPTOR_REV2;
@@ -64,7 +64,7 @@ typedef struct
  */
 typedef struct
 {
-	acpi_table_header       header;                 /* Table header */
+	struct acpi_table_header       header;                 /* Table header */
 	u64                     table_offset_entry [1]; /* Array of pointers to  */
 			 /* other tables' headers */
 } XSDT_DESCRIPTOR_REV2;
@@ -108,7 +108,7 @@ typedef struct
  */
 typedef struct
 {
-	acpi_table_header       header;             /* table header */
+	struct acpi_table_header       header;             /* table header */
 	u32                     V1_firmware_ctrl;   /* 32-bit physical address of FACS */
 	u32                     V1_dsdt;            /* 32-bit physical address of DSDT */
 	u8                      reserved1;          /* System Interrupt Model isn't used in ACPI 2.0*/

@@ -160,7 +160,7 @@ struct rpc_xprt {
 	void			(*old_state_change)(struct sock *);
 	void			(*old_write_space)(struct sock *);
 
-	wait_queue_head_t	cong_wait;
+	struct wait_queue_head_t	cong_wait;
 };
 
 #ifdef __KERNEL__

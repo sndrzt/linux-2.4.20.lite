@@ -49,7 +49,7 @@ static unsigned long pushbutton_pending;	/* = 0 */
 
 /* things needed for the long_delay function */
 static struct semaphore		delay_sem;
-static wait_queue_head_t	delay_wait;
+static struct wait_queue_head_t	delay_wait;
 
 /* delay is in jiffies to wait for */
 static void long_delay (int delay)

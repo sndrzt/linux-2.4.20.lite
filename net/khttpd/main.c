@@ -88,7 +88,7 @@ static int ConnectionsPending(int CPUNR)
 
 
 
-static wait_queue_head_t DummyWQ[CONFIG_KHTTPD_NUMCPU];
+static struct wait_queue_head_t DummyWQ[CONFIG_KHTTPD_NUMCPU];
 static atomic_t Running[CONFIG_KHTTPD_NUMCPU]; 
 
 static int MainDaemon(void *cpu_pointer)

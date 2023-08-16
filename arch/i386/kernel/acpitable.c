@@ -65,7 +65,7 @@ acpi_checksum(void *buffer, int length)
 }
 
 static void __init
-acpi_print_table_header(acpi_table_header * header)
+acpi_print_table_header(struct acpi_table_header * header)
 {
 	if (!header)
 		return;
@@ -214,7 +214,7 @@ __va_range(unsigned long phys, unsigned long size)
 static int __init acpi_tables_init(void)
 {
 	int result = -ENODEV;
-	acpi_table_header *header = NULL;
+	struct acpi_table_header *header = NULL;
 	struct acpi_table_rsdp *rsdp = NULL;
 	struct acpi_table_rsdt *rsdt = NULL;
 	struct acpi_table_rsdt saved_rsdt;
@@ -258,7 +258,7 @@ static int __init acpi_tables_init(void)
 	 * size of RSDT) divided by the size of each entry
 	 * (4-byte table pointers).
 	 */
-	tables = (header->length - sizeof(acpi_table_header)) / 4;
+	tables = (header->length - sizeof(struct acpi_table_header)) / 4;
 		    
 	memcpy(&saved_rsdt, rsdt, sizeof(saved_rsdt));
 
@@ -269,12 +269,12 @@ static int __init acpi_tables_init(void)
 
 	for (i = 0; i < tables; i++) {
 		/* Map in header, then map in full table length. */
-		header = (acpi_table_header *)
+		header = (struct acpi_table_header *)
 			    __va_range(saved_rsdt.entry[i],
-				       sizeof(acpi_table_header));
+				       sizeof(struct acpi_table_header));
 		if (!header)
 			break;
-		header = (acpi_table_header *)
+		header = (struct acpi_table_header *)
 			    __va_range(saved_rsdt.entry[i], header->length);
 		if (!header)
 			break;
@@ -454,11 +454,11 @@ acpi_parse_plat_int_src(struct acpi_table_plat_int_src *plintsrc)
 	       plintsrc->iosapic_vector, plintsrc->global_irq);
 }
 static int __init
-acpi_parse_madt(acpi_table_header * header, unsigned long phys)
+acpi_parse_madt(struct acpi_table_header * header, unsigned long phys)
 {
 
 	struct acpi_table_madt *madt;	    
-	acpi_madt_entry_header *entry_header;
+	struct acpi_madt_entry_header *entry_header;
 	int table_size;
 	
 	madt = (struct acpi_table_madt *) __va_range(phys, header->length);
@@ -468,7 +468,7 @@ acpi_parse_madt(acpi_table_header * header, unsigned long phys)
 
 	table_size = (int) (header->length - sizeof(*madt));
 	entry_header =
-	    (acpi_madt_entry_header *) ((void *) madt + sizeof(*madt));
+	    (struct acpi_madt_entry_header *) ((void *) madt + sizeof(*madt));
 
 	while (entry_header && (table_size > 0)) {
 		switch (entry_header->type) {
@@ -509,7 +509,7 @@ acpi_parse_madt(acpi_table_header * header, unsigned long phys)
 		}
 		table_size -= entry_header->length;
 		entry_header =
-		    (acpi_madt_entry_header *) ((void *) entry_header +
+		    (struct acpi_madt_entry_header *) ((void *) entry_header +
 						entry_header->length);
 	}
 

@@ -264,7 +264,7 @@ struct buffer_head {
  	void *b_private;		/* reserved for b_end_io */
 
 	unsigned long b_rsector;	/* Real buffer location on disk */
-	wait_queue_head_t b_wait;
+	struct wait_queue_head_t b_wait;
 
 	struct inode *	     b_inode;
 	struct list_head     b_inode_buffers;	/* doubly linked list of inode dirty buffers */
@@ -459,7 +459,7 @@ struct inode {
 	struct inode_operations	*i_op;
 	struct file_operations	*i_fop;	/* former ->i_op->default_file_ops */
 	struct super_block	*i_sb;
-	wait_queue_head_t	i_wait;
+	struct wait_queue_head_t	i_wait;
 	struct file_lock	*i_flock;
 	struct address_space	*i_mapping;
 	struct address_space	i_data;
@@ -584,7 +584,7 @@ struct file_lock {
 	struct list_head fl_block;	/* circular list of blocked processes */
 	fl_owner_t fl_owner;
 	unsigned int fl_pid;
-	wait_queue_head_t fl_wait;
+	struct wait_queue_head_t fl_wait;
 	struct file *fl_file;
 	unsigned char fl_flags;
 	unsigned char fl_type;

@@ -37,7 +37,7 @@ struct tun_struct {
 	int			attached;
 	uid_t			owner;
 
-	wait_queue_head_t	read_wait;
+	struct wait_queue_head_t	read_wait;
 	struct sk_buff_head	readq;
 
 	struct net_device	dev;

@@ -132,7 +132,7 @@ struct adpt_i2o_post_wait_data
 {
 	int status;
 	u32 id;
-	adpt_wait_queue_head_t *wq;
+	adpt_struct wait_queue_head_t *wq;
 	struct adpt_i2o_post_wait_data *next;
 };
 

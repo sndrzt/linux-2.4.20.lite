@@ -1503,7 +1503,7 @@ static void dl_transfer_length(td_t * td)
 
 static void dl_del_urb (struct urb * urb)
 {
-	wait_queue_head_t * wait_head = ((urb_priv_t *)(urb->hcpriv))->wait;
+	struct wait_queue_head_t * wait_head = ((urb_priv_t *)(urb->hcpriv))->wait;
 
 	urb_rm_priv_locked (urb);
 
@@ -1618,7 +1618,7 @@ static void dl_del_list (ohci_t  * ohci, unsigned int frame)
 			hash_free_ed(ohci, ed);
    	 		/* if all eds are removed wake up sohci_free_dev */
    	 		if (!--dev->ed_cnt) {
-				wait_queue_head_t *wait_head = dev->wait;
+				struct wait_queue_head_t *wait_head = dev->wait;
 
 				dev->wait = 0;
 				if (wait_head)

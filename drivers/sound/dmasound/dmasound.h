@@ -243,7 +243,7 @@ struct sound_queue {
      *	       Bit 1 is set: a frame is playing
      */
     int active;
-    wait_queue_head_t action_queue, open_queue, sync_queue;
+    struct wait_queue_head_t action_queue, open_queue, sync_queue;
     int open_mode;
     int busy, syncing, xruns, died;
 };

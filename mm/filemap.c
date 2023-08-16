@@ -778,10 +778,10 @@ static int read_cluster_nonblocking(struct file * file, unsigned long offset,
  * at a cost of "thundering herd" phenomena during rare hash
  * collisions.
  */
-static inline wait_queue_head_t *page_waitqueue(struct page *page)
+static inline struct wait_queue_head_t *page_waitqueue(struct page *page)
 {
 	const struct pm_zone *zone = page_zone(page);
-	wait_queue_head_t *wait = zone->wait_tbl;
+	struct wait_queue_head_t *wait = zone->wait_tbl;
 	unsigned long hash = (unsigned long)page;
 
 #if BITS_PER_LONG == 64
@@ -832,7 +832,7 @@ static inline wait_queue_head_t *page_waitqueue(struct page *page)
  */
 void ___wait_on_page(struct page *page)
 {
-	wait_queue_head_t *waitqueue = page_waitqueue(page);
+	struct wait_queue_head_t *waitqueue = page_waitqueue(page);
 	struct task_struct *tsk = current;
 	DECLARE_WAITQUEUE(wait, tsk);
 
@@ -857,7 +857,7 @@ void ___wait_on_page(struct page *page)
  */
 void unlock_page(struct page *page)
 {
-	wait_queue_head_t *waitqueue = page_waitqueue(page);
+	struct wait_queue_head_t *waitqueue = page_waitqueue(page);
 	ClearPageLaunder(page);
 	smp_mb__before_clear_bit();
 	if (!test_and_clear_bit(PG_locked, &(page)->flags))
@@ -880,7 +880,7 @@ void unlock_page(struct page *page)
  */
 static void __lock_page(struct page *page)
 {
-	wait_queue_head_t *waitqueue = page_waitqueue(page);
+	struct wait_queue_head_t *waitqueue = page_waitqueue(page);
 	struct task_struct *tsk = current;
 	DECLARE_WAITQUEUE(wait, tsk);
 

@@ -118,7 +118,7 @@ typedef struct td_array {
 
 typedef struct hci {
 	struct virt_root_hub rh;	/* roothub */
-	wait_queue_head_t waitq;	/* deletion of URBs and devices needs a waitqueue */
+	struct wait_queue_head_t waitq;	/* deletion of URBs and devices needs a waitqueue */
 	int active;			/* HC is operating */
 
 	struct list_head ctrl_list;	/* set of ctrl endpoints */

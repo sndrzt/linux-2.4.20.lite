@@ -1902,14 +1902,14 @@ EXPORT_SYMBOL(mtrr_del);
 
 #ifdef CONFIG_SMP
 
-typedef struct
+struct arr_state_t
 {
     unsigned long base;
     unsigned long size;
     mtrr_type type;
-} arr_state_t;
+};
 
-arr_state_t arr_state[8] __initdata =
+struct arr_state_t arr_state[8] __initdata =
 {
     {0UL,0UL,0UL}, {0UL,0UL,0UL}, {0UL,0UL,0UL}, {0UL,0UL,0UL},
     {0UL,0UL,0UL}, {0UL,0UL,0UL}, {0UL,0UL,0UL}, {0UL,0UL,0UL}

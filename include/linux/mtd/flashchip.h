@@ -58,7 +58,7 @@ struct flchip {
 	flstate_t oldstate;
 	spinlock_t *mutex;
 	spinlock_t _spinlock; /* We do it like this because sometimes they'll be shared. */
-	wait_queue_head_t wq; /* Wait on here when we're waiting for the chip
+	struct wait_queue_head_t wq; /* Wait on here when we're waiting for the chip
 			     to be ready */
 	int word_write_time;
 	int buffer_write_time;

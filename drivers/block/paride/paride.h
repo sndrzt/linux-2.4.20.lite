@@ -50,7 +50,7 @@ struct pi_adapter  {
 	void	*privptr;	     /* private pointer for protocol module */
 				     /* For 2.5 just make private a ulong but
 		     			for 2.4 fixups thats a bit risky.. */				
-	wait_queue_head_t parq;     /* semaphore for parport sharing */
+	struct wait_queue_head_t parq;     /* semaphore for parport sharing */
 	void	*pardev;	     /* pointer to pardevice */
 	char	*parname;	     /* parport name */
 	int	claimed;	     /* parport has already been claimed */

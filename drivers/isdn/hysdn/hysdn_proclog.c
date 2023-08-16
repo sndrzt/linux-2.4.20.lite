@@ -43,7 +43,7 @@ struct procdata {
 	int if_used;		/* open count for interface */
 	int volatile del_lock;	/* lock for delete operations */
 	uchar logtmp[LOG_MAX_LINELEN];
-	wait_queue_head_t rd_queue;
+	struct wait_queue_head_t rd_queue;
 };
 
 

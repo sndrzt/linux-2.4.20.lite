@@ -178,7 +178,7 @@ struct ftdi_private {
 				 * it is different between devices
 				 */
 	int flags;		/* some ASYNC_xxxx flags are supported */
-        wait_queue_head_t delta_msr_wait; /* Used for TIOCMIWAIT */
+        struct wait_queue_head_t delta_msr_wait; /* Used for TIOCMIWAIT */
  	char prev_status, diff_status;        /* Used for TIOCMIWAIT */
 };
 

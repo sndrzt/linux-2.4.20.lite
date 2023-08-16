@@ -318,9 +318,9 @@ typedef struct _rme96xx_info {
 		unsigned error; /* over/underruns cleared on sync again */
 
 		/* waiting and locking */
-		wait_queue_head_t wait;
+		struct wait_queue_head_t wait;
 		struct semaphore  open_sem;
-		wait_queue_head_t open_wait;
+		struct wait_queue_head_t open_wait;
 
 	} dma[RME96xx_MAX_DEVS]; 
 

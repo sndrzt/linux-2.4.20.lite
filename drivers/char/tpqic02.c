@@ -131,7 +131,7 @@ unsigned long qic02_tape_debug = TPQD_DEFAULT_FLAGS;
 
 static volatile int ctlbits;	/* control reg bits for tape interface */
 
-static wait_queue_head_t qic02_tape_transfer;	/* sync rw with interrupts */
+static struct wait_queue_head_t qic02_tape_transfer;	/* sync rw with interrupts */
 
 static volatile struct mtget ioctl_status;	/* current generic status */
 

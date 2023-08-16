@@ -120,7 +120,7 @@ extern struct tcp_hashinfo {
 	 */
 	rwlock_t __tcp_lhash_lock ____cacheline_aligned;
 	atomic_t __tcp_lhash_users;
-	wait_queue_head_t __tcp_lhash_wait;
+	struct wait_queue_head_t __tcp_lhash_wait;
 	spinlock_t __tcp_portalloc_lock;
 } tcp_hashinfo;
 

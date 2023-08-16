@@ -123,7 +123,7 @@ typedef struct acpi_init_walk_info
 	u16                     op_region_init;
 	u16                     field_init;
 	u16                     object_count;
-	acpi_table_desc         *table_desc;
+	struct acpi_table_desc         *table_desc;
 
 } acpi_init_walk_info;
 
@@ -135,7 +135,7 @@ typedef struct acpi_device_walk_info
 	u16                     device_count;
 	u16                     num_STA;
 	u16                     num_INI;
-	acpi_table_desc         *table_desc;
+	struct acpi_table_desc         *table_desc;
 
 } acpi_device_walk_info;
 

@@ -449,7 +449,7 @@ struct fs_transmit_config {
 
 struct fs_vcc {
 	int channo;
-	wait_queue_head_t close_wait;
+	struct wait_queue_head_t close_wait;
 	struct sk_buff *last_skb;
 };
 

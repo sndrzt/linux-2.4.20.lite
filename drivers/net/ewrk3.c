@@ -1767,7 +1767,7 @@ static int ewrk3_ethtool_ioctl(struct net_device *dev, void *useraddr)
 		long delay, ret;
 		u_char cr;
 		int count;
-		wait_queue_head_t wait;
+		struct wait_queue_head_t wait;
 
 		init_waitqueue_head(&wait);
 

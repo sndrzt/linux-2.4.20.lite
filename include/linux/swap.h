@@ -112,7 +112,7 @@ extern void FASTCALL(activate_page(struct page *));
 extern void swap_setup(void);
 
 /* linux/mm/vmscan.c */
-extern wait_queue_head_t kswapd_wait;
+extern struct wait_queue_head_t kswapd_wait;
 extern int FASTCALL(try_to_free_pages_zone(struct pm_zone *, unsigned int));
 extern int FASTCALL(try_to_free_pages(unsigned int));
 

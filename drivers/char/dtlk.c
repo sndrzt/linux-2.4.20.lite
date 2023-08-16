@@ -83,7 +83,7 @@ static int dtlk_busy;
 static int dtlk_has_indexing;
 static unsigned int dtlk_portlist[] =
 {0x25e, 0x29e, 0x2de, 0x31e, 0x35e, 0x39e, 0};
-static wait_queue_head_t dtlk_process_list;
+static struct wait_queue_head_t dtlk_process_list;
 static struct timer_list dtlk_timer;
 
 /* prototypes for file_operations struct */

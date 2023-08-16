@@ -107,7 +107,7 @@ struct dma_iso_ctx {
 	int ctrlSet;
 	int cmdPtr;
 	int ctxMatch;
-	wait_queue_head_t waitq;
+	struct wait_queue_head_t waitq;
 	spinlock_t lock;
 	unsigned int syt_offset;
 	int flags;

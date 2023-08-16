@@ -292,7 +292,7 @@ struct stru_hal2_codec {
 	unsigned short mod;		/* MOD value */
 	unsigned short inc;		/* INC value */
 
-	wait_queue_head_t dma_wait;
+	struct wait_queue_head_t dma_wait;
 	spinlock_t lock;
 	struct semaphore sem;
 

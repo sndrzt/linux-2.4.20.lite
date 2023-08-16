@@ -501,7 +501,7 @@ struct video_card {
 	struct semaphore sem;
 
 	/* people waiting for buffer space, please form a line here... */
-	wait_queue_head_t waitq;
+	struct wait_queue_head_t waitq;
 
 	/* support asynchronous I/O signals (SIGIO) */
 	struct fasync_struct *fasync;

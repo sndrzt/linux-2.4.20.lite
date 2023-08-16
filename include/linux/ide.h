@@ -405,7 +405,7 @@ typedef struct ide_drive_s {
 	unsigned long long capacity48;	/* total number of sectors */
 	unsigned int	drive_data;	/* for use by tuneproc/selectproc as needed */
 	void		  *hwif;	/* actually (ide_hwif_t *) */
-	wait_queue_head_t wqueue;	/* used to wait for drive in open() */
+	struct wait_queue_head_t wqueue;	/* used to wait for drive in open() */
 	struct hd_driveid *id;		/* drive model identification info */
 	struct hd_struct  *part;	/* drive partition table */
 	char		name[4];	/* drive name, such as "hda" */

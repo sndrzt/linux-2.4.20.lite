@@ -43,7 +43,7 @@ struct hiddev {
 	int exist;
 	int open;
 	int minor;
-	wait_queue_head_t wait;
+	struct wait_queue_head_t wait;
 	devfs_handle_t devfs;
 	struct hid_device *hid;
 	struct hiddev_list *list;

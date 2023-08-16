@@ -163,7 +163,7 @@ acpi_ds_init_one_object (
 
 acpi_status
 acpi_ds_initialize_objects (
-	acpi_table_desc         *table_desc,
+	struct acpi_table_desc         *table_desc,
 	acpi_namespace_node     *start_node)
 {
 	acpi_status             status;

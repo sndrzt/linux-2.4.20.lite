@@ -37,7 +37,7 @@
  */
 
 struct dir_locking_info {
-	wait_queue_head_t p;
+	struct wait_queue_head_t p;
 	short int looking;	/* How many process doing a lookup */
 	short int creating;	/* Is there any creation going on here
 				 *  Only one at a time, although one

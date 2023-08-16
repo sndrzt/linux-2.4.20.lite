@@ -593,7 +593,7 @@ static int flock_locks_conflict(struct file_lock *caller_fl, struct file_lock *s
 	return (locks_conflict(caller_fl, sys_fl));
 }
 
-static int interruptible_sleep_on_locked(wait_queue_head_t *fl_wait, int timeout)
+static int interruptible_sleep_on_locked(struct wait_queue_head_t *fl_wait, int timeout)
 {
 	int result = 0;
 	DECLARE_WAITQUEUE(wait, current);

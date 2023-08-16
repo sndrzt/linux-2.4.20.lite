@@ -170,7 +170,7 @@ struct dev_state {
 	spinlock_t lock;            /* protects the async urb lists */
 	struct list_head async_pending;
 	struct list_head async_completed;
-	wait_queue_head_t wait;     /* wake up if a request completed */
+	struct wait_queue_head_t wait;     /* wake up if a request completed */
 	unsigned int discsignr;
 	struct task_struct *disctask;
 	void *disccontext;

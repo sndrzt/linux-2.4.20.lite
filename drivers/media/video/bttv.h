@@ -208,7 +208,7 @@ extern int bttv_write_gpio(unsigned int card,
    WARNING: because there is no buffer for GPIO data, one MUST 
    process data ASAP
 */
-extern wait_queue_head_t* bttv_get_gpio_queue(unsigned int card);
+extern struct wait_queue_head_t* bttv_get_gpio_queue(unsigned int card);
 
 /* call i2c clients
 */

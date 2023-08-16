@@ -312,7 +312,7 @@ struct trident_state {
 		unsigned total_bytes;	/* total bytes dmaed by hardware */
 
 		unsigned error;		/* number of over/underruns */
-		wait_queue_head_t wait;	/* put process on wait queue when no more space in buffer */
+		struct wait_queue_head_t wait;	/* put process on wait queue when no more space in buffer */
 
 		/* redundant, but makes calculations easier */
 		unsigned fragsize;

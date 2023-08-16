@@ -41,7 +41,7 @@ extern void		nfs_wake_flushd(void);
 struct nfs_reqlist {
 	atomic_t		nr_requests;
 	unsigned long		runat;
-	wait_queue_head_t	request_wait;
+	struct wait_queue_head_t	request_wait;
 
 	/* The async RPC task that is responsible for scanning the
 	 * requests.

@@ -124,7 +124,7 @@ struct CHIPSTATE {
 	/* thread */
 	struct task_struct  *thread;
 	struct semaphore    *notify;
-	wait_queue_head_t    wq;
+	struct wait_queue_head_t    wq;
 	struct timer_list    wt;
 	int                  done;
 	int                  watch_stereo;

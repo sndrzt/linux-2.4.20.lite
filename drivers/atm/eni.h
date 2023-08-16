@@ -83,7 +83,7 @@ struct eni_dev {
 	struct eni_tx tx[NR_CHAN];	/* TX channels */
 	struct eni_tx *ubr;		/* UBR channel */
 	struct sk_buff_head tx_queue;	/* PDUs currently being TX DMAed*/
-	wait_queue_head_t tx_wait;	/* for close */
+	struct wait_queue_head_t tx_wait;	/* for close */
 	int tx_bw;			/* remaining bandwidth */
 	u32 dma[TX_DMA_BUF*2];		/* DMA request scratch area */
 	int tx_mult;			/* buffer size multiplier (percent) */
@@ -93,7 +93,7 @@ struct eni_dev {
 	struct atm_vcc *slow,*last_slow;
 	struct atm_vcc **rx_map;	/* for fast lookups */
 	struct sk_buff_head rx_queue;	/* PDUs currently being RX-DMAed */
-	wait_queue_head_t rx_wait;	/* for close */
+	struct wait_queue_head_t rx_wait;	/* for close */
 	int rx_mult;			/* buffer size multiplier (percent) */
 	/*-------------------------------- statistics */
 	unsigned long lost;		/* number of lost cells (RX) */

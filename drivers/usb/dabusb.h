@@ -20,8 +20,8 @@ typedef struct
 {
 	struct semaphore mutex;
 	struct usb_device *usbdev;
-	wait_queue_head_t wait;
-	wait_queue_head_t remove_ok;
+	struct wait_queue_head_t wait;
+	struct wait_queue_head_t remove_ok;
 	spinlock_t lock;
 	atomic_t pending_io;
 	driver_state_t state;
@@ -44,7 +44,7 @@ typedef struct
 
 typedef struct
 {
-	wait_queue_head_t wait;
+	struct wait_queue_head_t wait;
 } bulk_completion_context_t, *pbulk_completion_context_t;
 
 

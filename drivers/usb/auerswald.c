@@ -194,7 +194,7 @@ typedef struct auerchain
 /* urb blocking completion helper struct */
 typedef struct
 {
-	wait_queue_head_t wqh;    	/* wait for completion */
+	struct wait_queue_head_t wqh;    	/* wait for completion */
 	unsigned int done;		/* completion flag */
 } auerchain_chs_t,*pauerchain_chs_t;
 
@@ -251,7 +251,7 @@ typedef struct
 	auerbufctl_t 		bufctl;             /* Buffer control for control transfers */
         pauerscon_t 	     	services[AUH_TYPESIZE];/* context pointers for each service */
 	unsigned int		version;	    /* Version of the device */
-	wait_queue_head_t 	bufferwait;         /* wait for a control buffer */
+	struct wait_queue_head_t 	bufferwait;         /* wait for a control buffer */
 } auerswald_t,*pauerswald_t;
 
 /* the global usb devfs handle */
@@ -271,7 +271,7 @@ typedef struct
 	pauerswald_t auerdev;           /* context pointer of assigned device */
         auerbufctl_t bufctl;            /* controls the buffer chain */
         auerscon_t scontext;            /* service context */
-	wait_queue_head_t readwait;     /* for synchronous reading */
+	struct wait_queue_head_t readwait;     /* for synchronous reading */
 	struct semaphore readmutex;     /* protection against multiple reads */
 	pauerbuf_t readbuf;		/* buffer held for partial reading */
 	unsigned int readoffset;	/* current offset in readbuf */

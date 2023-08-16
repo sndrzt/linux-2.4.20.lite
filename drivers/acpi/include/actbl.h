@@ -91,7 +91,7 @@ typedef struct  /* Root System Descriptor Pointer */
 } RSDP_DESCRIPTOR;
 
 
-typedef struct  /* ACPI common table header */
+struct acpi_table_header  /* ACPI common table header */
 {
 	NATIVE_CHAR             signature [4];          /* identifies type of table */
 	u32                     length;                 /* length of table, in bytes,
@@ -104,7 +104,7 @@ typedef struct  /* ACPI common table header */
 	NATIVE_CHAR             asl_compiler_id [4];    /* ASL compiler vendor ID */
 	u32                     asl_compiler_revision;  /* ASL compiler revision number */
 
-} acpi_table_header;
+};
 
 
 typedef struct  /* Common FACS for internal use */
@@ -118,7 +118,7 @@ typedef struct  /* Common FACS for internal use */
 
 typedef struct  /* APIC Table */
 {
-	acpi_table_header       header;                 /* table header */
+	struct acpi_table_header       header;                 /* table header */
 	u32                     local_apic_address;     /* Physical address for accessing local APICs */
 	u32                     PCATcompat      : 1;    /* a one indicates system also has dual 8259s */
 	u32                     reserved1       : 31;
@@ -166,7 +166,7 @@ typedef struct  /* IO APIC */
 */
 typedef struct  /* Smart Battery Description Table */
 {
-	acpi_table_header       header;
+	struct acpi_table_header       header;
 	u32                     warning_level;
 	u32                     low_level;
 	u32                     critical_level;

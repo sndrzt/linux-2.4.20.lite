@@ -49,7 +49,7 @@
 u32
 acpi_tb_get_table_count (
 	RSDP_DESCRIPTOR         *RSDP,
-	acpi_table_header       *RSDT)
+	struct acpi_table_header       *RSDT)
 {
 	u32                     pointer_size;
 
@@ -75,7 +75,7 @@ acpi_tb_get_table_count (
 	 * pointers contained within the RSDT/XSDT.  The size of the pointers
 	 * is architecture-dependent.
 	 */
-	return ((RSDT->length - sizeof (acpi_table_header)) / pointer_size);
+	return ((RSDT->length - sizeof (struct acpi_table_header)) / pointer_size);
 }
 
 
@@ -93,7 +93,7 @@ acpi_tb_get_table_count (
 
 acpi_status
 acpi_tb_convert_to_xsdt (
-	acpi_table_desc         *table_info,
+	struct acpi_table_desc         *table_info,
 	u32                     *number_of_tables)
 {
 	u32                     table_size;
@@ -109,7 +109,7 @@ acpi_tb_convert_to_xsdt (
 
 	/* Compute size of the converted XSDT */
 
-	table_size = (*number_of_tables * sizeof (u64)) + sizeof (acpi_table_header);
+	table_size = (*number_of_tables * sizeof (u64)) + sizeof (struct acpi_table_header);
 
 
 	/* Allocate an XSDT */
@@ -121,7 +121,7 @@ acpi_tb_convert_to_xsdt (
 
 	/* Copy the header and set the length */
 
-	MEMCPY (new_table, table_info->pointer, sizeof (acpi_table_header));
+	MEMCPY (new_table, table_info->pointer, sizeof (struct acpi_table_header));
 	new_table->header.length = table_size;
 
 	/* Copy the table pointers */
@@ -150,8 +150,8 @@ acpi_tb_convert_to_xsdt (
 
 	/* Point the table descriptor to the new table */
 
-	table_info->pointer     = (acpi_table_header *) new_table;
-	table_info->base_pointer = (acpi_table_header *) new_table;
+	table_info->pointer     = (struct acpi_table_header *) new_table;
+	table_info->base_pointer = (struct acpi_table_header *) new_table;
 	table_info->length      = table_size;
 	table_info->allocation  = ACPI_MEM_ALLOCATED;
 
@@ -193,7 +193,7 @@ acpi_tb_convert_table_fadt (void)
 #endif
 
 	fadt_descriptor_rev2   *FADT2;
-	acpi_table_desc        *table_desc;
+	struct acpi_table_desc        *table_desc;
 
 
 	FUNCTION_TRACE ("Tb_convert_table_fadt");
@@ -467,7 +467,7 @@ acpi_tb_convert_table_fadt (void)
 
 	/* Install the new table */
 
-	table_desc->pointer = (acpi_table_header *) acpi_gbl_FADT;
+	table_desc->pointer = (struct acpi_table_header *) acpi_gbl_FADT;
 	table_desc->base_pointer = acpi_gbl_FADT;
 	table_desc->allocation = ACPI_MEM_ALLOCATED;
 	table_desc->length = sizeof (fadt_descriptor_rev2);
@@ -499,7 +499,7 @@ acpi_tb_convert_table_fadt (void)
 
 acpi_status
 acpi_tb_build_common_facs (
-	acpi_table_desc         *table_info)
+	struct acpi_table_desc         *table_info)
 {
 	acpi_common_facs        *common_facs;
 

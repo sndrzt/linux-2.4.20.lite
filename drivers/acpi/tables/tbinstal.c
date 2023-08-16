@@ -50,8 +50,8 @@
 
 acpi_status
 acpi_tb_install_table (
-	acpi_table_header       *table_ptr,
-	acpi_table_desc         *table_info)
+	struct acpi_table_header       *table_ptr,
+	struct acpi_table_desc         *table_info)
 {
 	acpi_status             status;
 
@@ -106,10 +106,10 @@ acpi_tb_install_table (
 
 acpi_status
 acpi_tb_recognize_table (
-	acpi_table_header       *table_ptr,
-	acpi_table_desc         *table_info)
+	struct acpi_table_header       *table_ptr,
+	struct acpi_table_desc         *table_info)
 {
-	acpi_table_header       *table_header;
+	struct acpi_table_header       *table_header;
 	acpi_status             status;
 	acpi_table_type         table_type = 0;
 	u32                     i;
@@ -120,7 +120,7 @@ acpi_tb_recognize_table (
 
 	/* Ensure that we have a valid table pointer */
 
-	table_header = (acpi_table_header *) table_info->pointer;
+	table_header = (struct acpi_table_header *) table_info->pointer;
 	if (!table_header) {
 		return_ACPI_STATUS (AE_BAD_PARAMETER);
 	}
@@ -268,7 +268,7 @@ acpi_tb_init_table_descriptor (
 	table_desc->allocation          = table_info->allocation;
 	table_desc->aml_start           = (u8 *) (table_desc->pointer + 1),
 	table_desc->aml_length          = (u32) (table_desc->length -
-			 (u32) sizeof (acpi_table_header));
+			 (u32) sizeof (struct acpi_table_header));
 	table_desc->table_id            = acpi_ut_allocate_owner_id (OWNER_TYPE_TABLE);
 	table_desc->loaded_into_namespace = FALSE;
 

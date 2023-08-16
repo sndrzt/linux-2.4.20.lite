@@ -44,7 +44,7 @@ struct evdev {
 	int open;
 	int minor;
 	struct input_handle handle;
-	wait_queue_head_t wait;
+	struct wait_queue_head_t wait;
 	devfs_handle_t devfs;
 	struct evdev_list *list;
 };

@@ -188,7 +188,7 @@ struct irlan_cb {
 	__u32 max_sdu_size;
 	__u8  max_header_size;
 	
-	wait_queue_head_t open_wait;
+	struct wait_queue_head_t open_wait;
 	struct timer_list watchdog_timer;
 };
 

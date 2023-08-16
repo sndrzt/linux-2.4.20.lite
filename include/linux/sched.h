@@ -358,7 +358,7 @@ struct task_struct {
 	struct task_struct *pidhash_next;
 	struct task_struct **pidhash_pprev;
 
-	wait_queue_head_t wait_chldexit;	/* for wait4() */
+	struct wait_queue_head_t wait_chldexit;	/* for wait4() */
 	struct completion *vfork_done;		/* for vfork() */
 	unsigned long rt_priority;
 	unsigned long it_real_value, it_prof_value, it_virt_value;
@@ -591,13 +591,13 @@ extern unsigned long prof_shift;
 
 #define CURRENT_TIME (xtime.tv_sec)
 
-extern void FASTCALL(__wake_up(wait_queue_head_t *q, unsigned int mode, int nr));
-extern void FASTCALL(__wake_up_sync(wait_queue_head_t *q, unsigned int mode, int nr));
-extern void FASTCALL(sleep_on(wait_queue_head_t *q));
-extern long FASTCALL(sleep_on_timeout(wait_queue_head_t *q,
+extern void FASTCALL(__wake_up(struct wait_queue_head_t *q, unsigned int mode, int nr));
+extern void FASTCALL(__wake_up_sync(struct wait_queue_head_t *q, unsigned int mode, int nr));
+extern void FASTCALL(sleep_on(struct wait_queue_head_t *q));
+extern long FASTCALL(sleep_on_timeout(struct wait_queue_head_t *q,
 				      signed long timeout));
-extern void FASTCALL(interruptible_sleep_on(wait_queue_head_t *q));
-extern long FASTCALL(interruptible_sleep_on_timeout(wait_queue_head_t *q,
+extern void FASTCALL(interruptible_sleep_on(struct wait_queue_head_t *q));
+extern long FASTCALL(interruptible_sleep_on_timeout(struct wait_queue_head_t *q,
 						    signed long timeout));
 extern int FASTCALL(wake_up_process(struct task_struct * tsk));
 
@@ -799,9 +799,9 @@ extern void daemonize(void);
 extern int do_execve(char *, char **, char **, struct pt_regs *);
 extern int do_fork(unsigned long, unsigned long, struct pt_regs *, unsigned long);
 
-extern void FASTCALL(add_wait_queue(wait_queue_head_t *q, wait_queue_t * wait));
-extern void FASTCALL(add_wait_queue_exclusive(wait_queue_head_t *q, wait_queue_t * wait));
-extern void FASTCALL(remove_wait_queue(wait_queue_head_t *q, wait_queue_t * wait));
+extern void FASTCALL(add_wait_queue(struct wait_queue_head_t *q, wait_queue_t * wait));
+extern void FASTCALL(add_wait_queue_exclusive(struct wait_queue_head_t *q, wait_queue_t * wait));
+extern void FASTCALL(remove_wait_queue(struct wait_queue_head_t *q, wait_queue_t * wait));
 
 #define __wait_event(wq, condition) 					\
 do {									\

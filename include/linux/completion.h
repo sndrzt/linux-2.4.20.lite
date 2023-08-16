@@ -12,7 +12,7 @@
 
 struct completion {
 	unsigned int done;
-	wait_queue_head_t wait;
+	struct wait_queue_head_t wait;
 };
 
 #define COMPLETION_INITIALIZER(work) \

@@ -1212,8 +1212,8 @@ typedef struct {
 	struct wait_queue *poll_q;
 	struct wait_queue *read_q;
 #else
-        wait_queue_head_t poll_q;
-        wait_queue_head_t read_q;
+        struct wait_queue_head_t poll_q;
+        struct wait_queue_head_t read_q;
 #endif
 	char *read_buffer, *read_buffer_end;
 	char *read_convert_buffer;
@@ -1222,7 +1222,7 @@ typedef struct {
 #if LINUX_VERSION_CODE < 0x020400
 	struct wait_queue *write_q;
 #else
-        wait_queue_head_t write_q;
+        struct wait_queue_head_t write_q;
 #endif
 	char *write_buffer, *write_buffer_end;
 	char *write_convert_buffer;

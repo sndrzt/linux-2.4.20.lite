@@ -16,7 +16,7 @@
 * 2000/07/13    acme		remove crap #if KERNEL_VERSION > blah
 * 2000/01/21    acme            rename cyclomx_open to cyclomx_mod_inc_use_count
 *                               and cyclomx_close to cyclomx_mod_dec_use_count
-* 1999/05/19	acme		wait_queue_head_t wait_stats(support for 2.3.*)
+* 1999/05/19	acme		struct wait_queue_head_t wait_stats(support for 2.3.*)
 * 1999/01/03	acme		judicious use of data types
 * 1998/12/27	acme		cleanup: PACKED not needed
 * 1998/08/08	acme		Version 0.0.1
@@ -52,7 +52,7 @@ typedef struct cycx {
 	spinlock_t lock;
 	char in_isr;			/* interrupt-in-service flag */
 	char buff_int_mode_unbusy;      /* flag for carrying out dev_tint */
-	wait_queue_head_t wait_stats;  /* to wait for the STATS indication */
+	struct wait_queue_head_t wait_stats;  /* to wait for the STATS indication */
 	u32 mbox;			/* -> mailbox */
 	void (*isr)(struct cycx* card);	/* interrupt service routine */
 	int (*exec)(struct cycx* card, void* u_cmd, void* u_data);

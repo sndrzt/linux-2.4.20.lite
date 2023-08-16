@@ -336,7 +336,7 @@ typedef struct
 	__u16 length;	// number of tds associated with this request
 	__u16 td_cnt;	// number of tds already serviced
 	int   state;
-	wait_queue_head_t * wait;
+	struct wait_queue_head_t * wait;
 	td_t * td[0];	// list pointer to all corresponding TDs associated with this request
 
 } urb_priv_t;
@@ -418,7 +418,7 @@ struct ohci_device {
 	ed_t 	ed[NUM_EDS];
 	dma_addr_t dma;
 	int ed_cnt;
-	wait_queue_head_t * wait;
+	struct wait_queue_head_t * wait;
 };
 
 // #define ohci_to_usb(ohci)	((ohci)->usb)

@@ -147,7 +147,7 @@ struct camera_state {
 	devfs_handle_t		devfs;		/* devfs device */
 
 	/* always valid */
-	wait_queue_head_t	wait;		/* for timed waits */
+	struct wait_queue_head_t	wait;		/* for timed waits */
 };
 
 /* Support multiple cameras, possibly of different types.  */

@@ -71,7 +71,7 @@ struct autofs_info {
 #define AUTOFS_INF_EXPIRING	(1<<0) /* dentry is in the process of expiring */
 
 struct autofs_wait_queue {
-	wait_queue_head_t queue;
+	struct wait_queue_head_t queue;
 	struct autofs_wait_queue *next;
 	autofs_wqt_t wait_queue_token;
 	/* We use the following to see what we are waiting for */

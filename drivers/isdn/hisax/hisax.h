@@ -792,8 +792,8 @@ struct te_hw {
 	unsigned char *sfifo_e;
 	int sfifo_cnt;
 	unsigned int stat;
-	wait_queue_head_t rwaitq;
-	wait_queue_head_t swaitq;
+	struct wait_queue_head_t rwaitq;
+	struct wait_queue_head_t swaitq;
 };
 #endif
 
@@ -813,7 +813,7 @@ struct isac_chip {
 	int mon_rxp;
 	struct arcofi_msg *arcofi_list;
 	struct timer_list arcofitimer;
-	wait_queue_head_t arcofi_wait;
+	struct wait_queue_head_t arcofi_wait;
 	u_char arcofi_bc;
 	u_char arcofi_state;
 	u_char mocr;
@@ -856,7 +856,7 @@ struct icc_chip {
 	int mon_rxp;
 	struct arcofi_msg *arcofi_list;
 	struct timer_list arcofitimer;
-	wait_queue_head_t arcofi_wait;
+	struct wait_queue_head_t arcofi_wait;
 	u_char arcofi_bc;
 	u_char arcofi_state;
 	u_char mocr;

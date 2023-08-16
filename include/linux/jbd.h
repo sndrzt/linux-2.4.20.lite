@@ -468,22 +468,22 @@ struct journal_s
 
 	/* Wait queue for waiting for a locked transaction to start
            committing, or for a barrier lock to be released */
-	wait_queue_head_t	j_wait_transaction_locked;
+	struct wait_queue_head_t	j_wait_transaction_locked;
 	
 	/* Wait queue for waiting for checkpointing to complete */
-	wait_queue_head_t	j_wait_logspace;
+	struct wait_queue_head_t	j_wait_logspace;
 	
 	/* Wait queue for waiting for commit to complete */
-	wait_queue_head_t	j_wait_done_commit;
+	struct wait_queue_head_t	j_wait_done_commit;
 	
 	/* Wait queue to trigger checkpointing */
-	wait_queue_head_t	j_wait_checkpoint;
+	struct wait_queue_head_t	j_wait_checkpoint;
 	
 	/* Wait queue to trigger commit */
-	wait_queue_head_t	j_wait_commit;
+	struct wait_queue_head_t	j_wait_commit;
 	
 	/* Wait queue to wait for updates to complete */
-	wait_queue_head_t	j_wait_updates;
+	struct wait_queue_head_t	j_wait_updates;
 
 	/* Semaphore for locking against concurrent checkpoints */
 	struct semaphore 	j_checkpoint_sem;

@@ -1124,7 +1124,7 @@ typedef struct net_local {
 
 	struct timer_list timer;
 
-	wait_queue_head_t  wait_for_tok_int;
+	struct wait_queue_head_t  wait_for_tok_int;
 
 	INTPTRS intptrs;	/* Internal adapter pointer. Must be read
 				 * before OPEN command.

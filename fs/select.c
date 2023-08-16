@@ -28,7 +28,7 @@
 struct poll_table_entry {
 	struct file * filp;
 	wait_queue_t wait;
-	wait_queue_head_t * wait_address;
+	struct wait_queue_head_t * wait_address;
 };
 
 struct poll_table_page {
@@ -72,7 +72,7 @@ void poll_freewait(poll_table* pt)
 	}
 }
 
-void __pollwait(struct file * filp, wait_queue_head_t * wait_address, poll_table *p)
+void __pollwait(struct file * filp, struct wait_queue_head_t * wait_address, poll_table *p)
 {
 	struct poll_table_page *table = p->table;
 

@@ -47,7 +47,7 @@ struct kiobuf
 	atomic_t	io_count;	/* IOs still in progress */
 	int		errno;		/* Status of completed IO */
 	void		(*end_io) (struct kiobuf *); /* Completion callback */
-	wait_queue_head_t wait_queue;
+	struct wait_queue_head_t wait_queue;
 };
 
 

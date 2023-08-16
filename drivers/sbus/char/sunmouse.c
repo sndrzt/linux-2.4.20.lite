@@ -73,7 +73,7 @@ struct sun_mouse {
 	int delta_y;                   /* Current delta-y */
 	int active;		       /* set if device is open */
         int vuid_mode;	               /* VUID_NATIVE or VUID_FIRM_EVENT */
-	wait_queue_head_t proc_list;
+	struct wait_queue_head_t proc_list;
 	struct fasync_struct *fasync;
 	
 	/* The event/stream queue */

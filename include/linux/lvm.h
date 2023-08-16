@@ -566,7 +566,7 @@ typedef struct lv_v5 {
 	struct list_head *lv_snapshot_hash_table;
 	uint32_t lv_snapshot_hash_table_size;
 	uint32_t lv_snapshot_hash_mask;
-	wait_queue_head_t lv_snapshot_wait;
+	struct wait_queue_head_t lv_snapshot_wait;
 	int	lv_snapshot_use_rate;
 	struct vg_v3	*vg;
 

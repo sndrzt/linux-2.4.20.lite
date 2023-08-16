@@ -249,7 +249,7 @@ struct stream {
 	 */
 	struct list_head dma_packet_lists;
 	struct list_head free_packet_lists;
-        wait_queue_head_t packet_list_wait;
+        struct wait_queue_head_t packet_list_wait;
 	spinlock_t packet_list_lock;
 	struct ohci1394_iso_tasklet iso_tasklet;
 	struct pci_pool *descriptor_pool, *packet_pool;

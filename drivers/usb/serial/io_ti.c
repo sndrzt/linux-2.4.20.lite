@@ -102,7 +102,7 @@ struct edgeport_port {
 	int lsr_event;
 	struct edgeport_uart_buf_desc tx;
 	struct async_icount	icount;
-	wait_queue_head_t	delta_msr_wait;	/* for handling sleeping while
+	struct wait_queue_head_t	delta_msr_wait;	/* for handling sleeping while
 						   waiting for msr change to
 						   happen */
 	struct edgeport_serial	*edge_serial;

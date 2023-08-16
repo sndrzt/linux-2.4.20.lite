@@ -219,9 +219,9 @@ struct amba_info {
 
 	struct tasklet_struct	tlet;
 
-	wait_queue_head_t	open_wait;
-	wait_queue_head_t	close_wait;
-	wait_queue_head_t	delta_msr_wait;
+	struct wait_queue_head_t	open_wait;
+	struct wait_queue_head_t	close_wait;
+	struct wait_queue_head_t	delta_msr_wait;
 };
 
 #ifdef CONFIG_SERIAL_AMBA_CONSOLE

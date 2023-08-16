@@ -140,10 +140,10 @@ struct lp_struct {
 	unsigned int runchars;
 	struct lp_stats stats;
 #endif
-	wait_queue_head_t waitq;
+	struct wait_queue_head_t waitq;
 	unsigned int last_error;
 	struct semaphore port_mutex;
-	wait_queue_head_t dataq;
+	struct wait_queue_head_t dataq;
 	long timeout;
 	unsigned int best_mode;
 	unsigned int current_mode;

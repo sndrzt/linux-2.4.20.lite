@@ -268,9 +268,9 @@ struct mxser_struct {
 	struct tq_struct tqueue;
 	struct termios normal_termios;
 	struct termios callout_termios;
-	wait_queue_head_t open_wait;
-	wait_queue_head_t close_wait;
-	wait_queue_head_t delta_msr_wait;
+	struct wait_queue_head_t open_wait;
+	struct wait_queue_head_t close_wait;
+	struct wait_queue_head_t delta_msr_wait;
 	struct async_icount icount;	/* kernel counters for the 4 input interrupts */
 };
 

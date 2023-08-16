@@ -752,9 +752,9 @@ void __init free_area_init_core(int nid, struct pm_node *pmnod, struct page **gm
 		zone->wait_table_size = wait_table_size(size);
 		zone->wait_table_shift =
 			BITS_PER_LONG - wait_table_bits(zone->wait_table_size);
-		zone->wait_tbl = (wait_queue_head_t *)
+		zone->wait_tbl = (struct wait_queue_head_t *)
 			alloc_bootmem_node(pmnod, zone->wait_table_size
-						* sizeof(wait_queue_head_t));
+						* sizeof(struct wait_queue_head_t));
 
 		for(i = 0; i < zone->wait_table_size; ++i)
 			init_waitqueue_head(zone->wait_tbl + i);

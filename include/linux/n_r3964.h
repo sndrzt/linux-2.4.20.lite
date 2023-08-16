@@ -191,7 +191,7 @@ struct r3964_info {
 	unsigned char *rx_buf;            /* ring buffer */
 	unsigned char *tx_buf;
 
-	wait_queue_head_t read_wait;
+	struct wait_queue_head_t read_wait;
 	//struct wait_queue *read_wait;
 
 	struct r3964_block_header *rx_first;

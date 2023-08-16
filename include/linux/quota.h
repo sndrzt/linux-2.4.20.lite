@@ -160,8 +160,8 @@ struct dquot {
 	struct list_head dq_hash;	/* Hash list in memory */
 	struct list_head dq_inuse;	/* List of all quotas */
 	struct list_head dq_free;	/* Free list element */
-	wait_queue_head_t dq_wait_lock;	/* Pointer to waitqueue on dquot lock */
-	wait_queue_head_t dq_wait_free;	/* Pointer to waitqueue for quota to be unused */
+	struct wait_queue_head_t dq_wait_lock;	/* Pointer to waitqueue on dquot lock */
+	struct wait_queue_head_t dq_wait_free;	/* Pointer to waitqueue for quota to be unused */
 	int dq_count;			/* Reference count */
 
 	/* fields after this point are cleared when invalidating */

@@ -95,7 +95,7 @@ acpi_tb_system_table_pointer (
 {
 	u32                     i;
 	acpi_table_desc         *table_desc;
-	acpi_table_header       *table;
+	struct acpi_table_header       *table;
 
 
 	/* No function trace, called too often! */
@@ -174,7 +174,7 @@ acpi_tb_system_table_pointer (
 
 acpi_status
 acpi_tb_validate_table_header (
-	acpi_table_header       *table_header)
+	struct acpi_table_header       *table_header)
 {
 	acpi_name               signature;
 
@@ -184,7 +184,7 @@ acpi_tb_validate_table_header (
 
 	/* Verify that this is a valid address */
 
-	if (!acpi_os_readable (table_header, sizeof (acpi_table_header))) {
+	if (!acpi_os_readable (table_header, sizeof (struct acpi_table_header))) {
 		ACPI_DEBUG_PRINT ((ACPI_DB_ERROR,
 			"Cannot read table header at %p\n", table_header));
 		return (AE_BAD_ADDRESS);
@@ -200,20 +200,20 @@ acpi_tb_validate_table_header (
 			table_header, &signature));
 
 		REPORT_WARNING (("Invalid table signature %4.4s found\n", (char*)&signature));
-		DUMP_BUFFER (table_header, sizeof (acpi_table_header));
+		DUMP_BUFFER (table_header, sizeof (struct acpi_table_header));
 		return (AE_BAD_SIGNATURE);
 	}
 
 
 	/* Validate the table length */
 
-	if (table_header->length < sizeof (acpi_table_header)) {
+	if (table_header->length < sizeof (struct acpi_table_header)) {
 		ACPI_DEBUG_PRINT ((ACPI_DB_ERROR,
 			"Invalid length in table header %p name %4.4s\n",
 			table_header, (char*)&signature));
 
 		REPORT_WARNING (("Invalid table header length found\n"));
-		DUMP_BUFFER (table_header, sizeof (acpi_table_header));
+		DUMP_BUFFER (table_header, sizeof (struct acpi_table_header));
 		return (AE_BAD_HEADER);
 	}
 
@@ -241,9 +241,9 @@ acpi_status
 acpi_tb_map_acpi_table (
 	ACPI_PHYSICAL_ADDRESS   physical_address,
 	u32                     *size,
-	acpi_table_header       **logical_address)
+	struct acpi_table_header       **logical_address)
 {
-	acpi_table_header       *table;
+	struct acpi_table_header       *table;
 	u32                     table_size = *size;
 	acpi_status             status = AE_OK;
 
@@ -256,7 +256,7 @@ acpi_tb_map_acpi_table (
 	if ((*size) == 0) {
 		/* Get the table header so we can extract the table length */
 
-		status = acpi_os_map_memory (physical_address, sizeof (acpi_table_header),
+		status = acpi_os_map_memory (physical_address, sizeof (struct acpi_table_header),
 				  (void **) &table);
 		if (ACPI_FAILURE (status)) {
 			return (status);
@@ -274,7 +274,7 @@ acpi_tb_map_acpi_table (
 
 		/* Always unmap the memory for the header */
 
-		acpi_os_unmap_memory (table, sizeof (acpi_table_header));
+		acpi_os_unmap_memory (table, sizeof (struct acpi_table_header));
 
 		/* Exit if header invalid */
 
@@ -317,7 +317,7 @@ acpi_tb_map_acpi_table (
 
 acpi_status
 acpi_tb_verify_table_checksum (
-	acpi_table_header       *table_header)
+	struct acpi_table_header       *table_header)
 {
 	u8                      checksum;
 	acpi_status             status = AE_OK;

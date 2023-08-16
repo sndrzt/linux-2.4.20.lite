@@ -146,7 +146,7 @@ static inline void md_init_signals (void)
 #define md_spin_lock_irqsave spin_lock_irqsave
 
 /* 026 */
-typedef wait_queue_head_t md_wait_queue_head_t;
+typedef struct wait_queue_head_t md_wait_queue_head_t;
 #define MD_DECLARE_WAITQUEUE(w,t) DECLARE_WAITQUEUE((w),(t))
 #define MD_DECLARE_WAIT_QUEUE_HEAD(x) DECLARE_WAIT_QUEUE_HEAD(x)
 #define md_init_waitqueue_head init_waitqueue_head

@@ -297,12 +297,12 @@ struct streamer_private {
         spinlock_t streamer_lock;
 
 	volatile int srb_queued;	/* True if an SRB is still posted */
-	wait_queue_head_t srb_wait;
+	struct wait_queue_head_t srb_wait;
 
 	volatile int asb_queued;	/* True if an ASB is posted */
 
 	volatile int trb_queued;	/* True if a TRB is posted */
-	wait_queue_head_t trb_wait;
+	struct wait_queue_head_t trb_wait;
 
 	struct streamer_rx_desc *streamer_rx_ring;
 	struct streamer_tx_desc *streamer_tx_ring;

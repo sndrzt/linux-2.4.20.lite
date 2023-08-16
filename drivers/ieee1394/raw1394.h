@@ -89,7 +89,7 @@ struct file_info {
         struct list_head req_complete;
         struct semaphore complete_sem;
         spinlock_t reqlists_lock;
-        wait_queue_head_t poll_wait_complete;
+        struct wait_queue_head_t poll_wait_complete;
 
         u8 *fcp_buffer;
 

@@ -80,7 +80,7 @@ static int mtd_blksizes[MAX_MTD_DEVICES];
 
 static void erase_callback(struct erase_info *done)
 {
-	wait_queue_head_t *wait_q = (wait_queue_head_t *)done->priv;
+	struct wait_queue_head_t *wait_q = (struct wait_queue_head_t *)done->priv;
 	wake_up(wait_q);
 }
 
@@ -89,7 +89,7 @@ static int erase_write (struct mtd_info *mtd, unsigned long pos,
 {
 	struct erase_info erase;
 	DECLARE_WAITQUEUE(wait, current);
-	wait_queue_head_t wait_q;
+	struct wait_queue_head_t wait_q;
 	size_t retlen;
 	int ret;
 

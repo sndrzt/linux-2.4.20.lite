@@ -57,7 +57,7 @@ extern NATIVE_CHAR              *acpi_gbl_db_disasm_indent;
 extern u8                       acpi_gbl_db_output_flags;
 extern u32                      acpi_gbl_db_debug_level;
 extern u32                      acpi_gbl_db_console_debug_level;
-extern acpi_table_header        *acpi_gbl_db_table_ptr;
+extern struct acpi_table_header        *acpi_gbl_db_table_ptr;
 
 /*
  * Statistic globals

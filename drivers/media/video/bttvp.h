@@ -166,8 +166,8 @@ struct bttv {
 	u32 *vbi_even;
 	u32 bus_vbi_even;
 	u32 bus_vbi_odd;
-        wait_queue_head_t vbiq;
-	wait_queue_head_t capq;
+        struct wait_queue_head_t vbiq;
+	struct wait_queue_head_t capq;
 	int vbip;
 
 	u32 *risc_scr_odd;
@@ -193,7 +193,7 @@ struct bttv {
 	int errors;
 	int needs_restart;
 
-	wait_queue_head_t gpioq;
+	struct wait_queue_head_t gpioq;
 	int shutdown;
         void (*audio_hook)(struct bttv *btv, struct video_audio *v, int set);
 };

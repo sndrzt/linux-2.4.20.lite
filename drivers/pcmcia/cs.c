@@ -142,12 +142,12 @@ struct proc_dir_entry *proc_pccard = NULL;
 
 /* String tables for error messages */
 
-typedef struct lookup_t {
+struct lookup_t {
     int key;
     char *msg;
-} lookup_t;
+};
 
-static const lookup_t error_table[] = {
+static const struct lookup_t error_table[] = {
     { CS_SUCCESS,		"Operation succeeded" },
     { CS_BAD_ADAPTER,		"Bad adapter" },
     { CS_BAD_ATTRIBUTE, 	"Bad attribute", },
@@ -180,9 +180,9 @@ static const lookup_t error_table[] = {
     { CS_BAD_HANDLE,		"Bad handle" },
     { CS_BAD_TUPLE,		"Bad CIS tuple" }
 };
-#define ERROR_COUNT (sizeof(error_table)/sizeof(lookup_t))
+#define ERROR_COUNT (sizeof(error_table)/sizeof(struct lookup_t))
 
-static const lookup_t service_table[] = {
+static const struct lookup_t service_table[] = {
     { AccessConfigurationRegister,	"AccessConfigurationRegister" },
     { AddSocketServices,		"AddSocketServices" },
     { AdjustResourceInfo,		"AdjustResourceInfo" },
@@ -233,7 +233,7 @@ static const lookup_t service_table[] = {
     { InsertCard,			"InsertCard" },
     { ReplaceCIS,			"ReplaceCIS" }
 };
-#define SERVICE_COUNT (sizeof(service_table)/sizeof(lookup_t))
+#define SERVICE_COUNT (sizeof(service_table)/sizeof(struct lookup_t))
 
 /*======================================================================
 

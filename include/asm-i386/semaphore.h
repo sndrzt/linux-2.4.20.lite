@@ -44,7 +44,7 @@
 struct semaphore {
 	atomic_t count;
 	int sleepers;
-	wait_queue_head_t wait;
+	struct wait_queue_head_t wait;
 #if WAITQUEUE_DEBUG
 	long __magic;
 #endif

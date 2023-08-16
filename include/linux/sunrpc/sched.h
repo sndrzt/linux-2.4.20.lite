@@ -72,7 +72,7 @@ struct rpc_task {
 	 * you have a pathological interest in kernel oopses.
 	 */
 	struct timer_list	tk_timer;	/* kernel timer */
-	wait_queue_head_t	tk_wait;	/* sync: sleep on this q */
+	struct wait_queue_head_t	tk_wait;	/* sync: sleep on this q */
 	unsigned long		tk_timeout;	/* timeout for rpc_sleep() */
 	unsigned short		tk_flags;	/* misc flags */
 	unsigned char		tk_active   : 1;/* Task has been activated */

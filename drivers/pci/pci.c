@@ -1745,7 +1745,7 @@ struct pci_pool {	/* the pool */
 	struct pci_dev		*dev;
 	size_t			allocation;
 	char			name [32];
-	wait_queue_head_t	waitq;
+	struct wait_queue_head_t	waitq;
 };
 
 struct pci_page {	/* cacheable header for 'allocation' bytes */

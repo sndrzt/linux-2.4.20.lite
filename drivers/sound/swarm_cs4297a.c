@@ -236,8 +236,8 @@ typedef struct serdma_s {
         int count;
         unsigned underrun;	// underrun flag
         unsigned error;	// over/underrun 
-        wait_queue_head_t wait;
-        wait_queue_head_t reg_wait;
+        struct wait_queue_head_t wait;
+        struct wait_queue_head_t reg_wait;
         // redundant, but makes calculations easier 
         unsigned fragsize;	// 2**fragshift..
         unsigned sbufsz;	// 2**buforder.
@@ -295,9 +295,9 @@ struct cs4297a_state {
 	struct semaphore open_sem_adc;
 	struct semaphore open_sem_dac;
 	mode_t open_mode;
-	wait_queue_head_t open_wait;
-	wait_queue_head_t open_wait_adc;
-	wait_queue_head_t open_wait_dac;
+	struct wait_queue_head_t open_wait;
+	struct wait_queue_head_t open_wait_adc;
+	struct wait_queue_head_t open_wait_dac;
 
 	dma_addr_t dmaaddr_sample_buf;
 	unsigned buforder_sample_buf;	// Log base 2 of 'dma_buf' size in bytes..

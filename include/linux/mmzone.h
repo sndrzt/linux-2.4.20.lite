@@ -73,7 +73,7 @@ struct pm_zone {
 	 * primary users of these fields, and in mm/page_alloc.c
 	 * free_area_init_core() performs the initialization of them.
 	 */
-	wait_queue_head_t	* wait_tbl;
+	struct wait_queue_head_t	* wait_tbl;
 	unsigned long		wait_table_size;
 	unsigned long		wait_table_shift;
 

@@ -141,7 +141,7 @@ struct mdc800_data
 	unsigned int		endpoint [4];
 
 	struct urb *		irq_urb;
-	wait_queue_head_t	irq_wait;
+	struct wait_queue_head_t	irq_wait;
 	int                     irq_woken;
 	char*			irq_urb_buffer;
 
@@ -151,13 +151,13 @@ struct mdc800_data
 
 	struct urb *   		write_urb;
 	char*			write_urb_buffer;
-	wait_queue_head_t	write_wait;
+	struct wait_queue_head_t	write_wait;
 	int                     written;
 
 
 	struct urb *		download_urb;
 	char*			download_urb_buffer;
-	wait_queue_head_t	download_wait;
+	struct wait_queue_head_t	download_wait;
 	int                     downloaded;
 	int			download_left;		// Bytes left to download ?
 

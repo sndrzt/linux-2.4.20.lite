@@ -89,7 +89,7 @@ struct saa7146
 		*dmavid3, *dmaa1in, *dmaa1out, *dmaa2in, *dmaa2out,
 		*pagedebi, *pagevid1, *pagevid2, *pagevid3, *pagea1in,
 		*pagea1out, *pagea2in, *pagea2out;
-	wait_queue_head_t i2cq, debiq, audq, vidq;
+	struct wait_queue_head_t i2cq, debiq, audq, vidq;
 	u8  *vidbuf, *audbuf, *osdbuf, *dmadebi;
 	int audhead, vidhead, osdhead, audtail, vidtail, osdtail;
 	spinlock_t lock;	/* the device lock */

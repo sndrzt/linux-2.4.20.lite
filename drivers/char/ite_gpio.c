@@ -64,7 +64,7 @@
 static int ite_gpio_irq=IT8172_GPIO_IRQ;
 
 static long ite_irq_counter[MAX_GPIO_LINE];
-wait_queue_head_t ite_gpio_wait[MAX_GPIO_LINE];
+struct wait_queue_head_t ite_gpio_wait[MAX_GPIO_LINE];
 static int ite_gpio_irq_pending[MAX_GPIO_LINE];
 
 static int ite_gpio_debug=0;

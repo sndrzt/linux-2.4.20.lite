@@ -35,7 +35,7 @@ static int			reclaimer(void *ptr);
  */
 struct nlm_wait {
 	struct nlm_wait *	b_next;		/* linked list */
-	wait_queue_head_t	b_wait;		/* where to wait on */
+	struct wait_queue_head_t	b_wait;		/* where to wait on */
 	struct nlm_host *	b_host;
 	struct file_lock *	b_lock;		/* local file lock */
 	unsigned short		b_reclaim;	/* got to reclaim lock */

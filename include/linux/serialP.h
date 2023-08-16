@@ -88,9 +88,9 @@ struct async_struct {
 	int			io_type;
 	struct tq_struct	tqueue;
 #ifdef DECLARE_WAITQUEUE
-	wait_queue_head_t	open_wait;
-	wait_queue_head_t	close_wait;
-	wait_queue_head_t	delta_msr_wait;
+	struct wait_queue_head_t	open_wait;
+	struct wait_queue_head_t	close_wait;
+	struct wait_queue_head_t	delta_msr_wait;
 #else	
 	struct wait_queue	*open_wait;
 	struct wait_queue	*close_wait;

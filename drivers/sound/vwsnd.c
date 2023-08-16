@@ -1461,7 +1461,7 @@ typedef enum vwsnd_port_flags {
 typedef struct vwsnd_port {
 
 	spinlock_t	lock;
-	wait_queue_head_t queue;
+	struct wait_queue_head_t queue;
 	vwsnd_port_swstate_t swstate;
 	vwsnd_port_hwstate_t hwstate;
 	vwsnd_port_flags_t flags;
@@ -1515,7 +1515,7 @@ typedef struct vwsnd_dev {
 	struct semaphore io_sema;
 	struct semaphore mix_sema;
 	mode_t		open_mode;
-	wait_queue_head_t open_wait;
+	struct wait_queue_head_t open_wait;
 
 	lithium_t	lith;
 

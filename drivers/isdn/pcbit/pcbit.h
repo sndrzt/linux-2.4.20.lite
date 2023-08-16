@@ -67,7 +67,7 @@ struct pcbit_dev {
 	struct frame_buf *write_queue;
 
 	/* Protocol start */
-	wait_queue_head_t set_running_wq;
+	struct wait_queue_head_t set_running_wq;
 	struct timer_list set_running_timer;
 
 	struct timer_list error_recover_timer;

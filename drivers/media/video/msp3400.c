@@ -108,7 +108,7 @@ struct msp3400c {
 
 	/* thread */
 	struct task_struct  *thread;
-	wait_queue_head_t    wq;
+	struct wait_queue_head_t    wq;
 
 	struct semaphore    *notify;
 	int                  active,restart,rmmod;

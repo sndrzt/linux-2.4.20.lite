@@ -133,7 +133,7 @@ int bttv_write_gpio(unsigned int card, unsigned long mask, unsigned long data)
 	return 0;
 }
 
-wait_queue_head_t* bttv_get_gpio_queue(unsigned int card)
+struct wait_queue_head_t* bttv_get_gpio_queue(unsigned int card)
 {
 	struct bttv *btv;
 

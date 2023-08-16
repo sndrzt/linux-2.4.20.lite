@@ -134,7 +134,7 @@ struct channel_data {
 	struct semaphore rsem, wsem;
 	char *rxdata;
 	int rxsize;
-	wait_queue_head_t txwaitq, rxwaitq;
+	struct wait_queue_head_t txwaitq, rxwaitq;
 	int tx_status, rx_status;
 
 	/* SPPP/HDLC device parts */

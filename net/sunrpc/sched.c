@@ -979,7 +979,7 @@ rpciod_task_pending(void)
 static int
 rpciod(void *ptr)
 {
-	wait_queue_head_t *assassin = (wait_queue_head_t*) ptr;
+	struct wait_queue_head_t *assassin = (struct wait_queue_head_t*) ptr;
 	int		rounds = 0;
 
 	MOD_INC_USE_COUNT;

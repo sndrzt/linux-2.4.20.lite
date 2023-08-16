@@ -127,7 +127,7 @@ typedef struct _MWAVE_IPC {
 	BOOLEAN bIsHere;
 	/* entry spin lock */
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,0)
-	wait_queue_head_t ipc_wait_queue;
+	struct wait_queue_head_t ipc_wait_queue;
 #else
 	struct wait_queue *ipc_wait_queue;
 #endif

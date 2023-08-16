@@ -97,7 +97,7 @@ struct hci_dev {
 	struct sk_buff     	*sent_cmd;
 
 	struct semaphore	req_lock;
-	wait_queue_head_t	req_wait_q;
+	struct wait_queue_head_t	req_wait_q;
 	__u32			req_status;
 	__u32			req_result;
 

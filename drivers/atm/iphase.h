@@ -1011,8 +1011,8 @@ typedef struct iadev_t {
         IARTN_Q               tx_return_q;
         u32                   close_pending;
 #if LINUX_VERSION_CODE >= 0x20303
-        wait_queue_head_t    close_wait;
-        wait_queue_head_t    timeout_wait;
+        struct wait_queue_head_t    close_wait;
+        struct wait_queue_head_t    timeout_wait;
 #else
         struct wait_queue     *close_wait;
         struct wait_queue     *timeout_wait;

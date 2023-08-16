@@ -320,7 +320,7 @@ struct controller {
 	char proc_name[20];
 	char proc_name2[20];
 	struct tq_struct int_task_event;
-	wait_queue_head_t queue;	/* sleep & wake process */
+	struct wait_queue_head_t queue;	/* sleep & wake process */
 };
 
 struct irq_mapping {

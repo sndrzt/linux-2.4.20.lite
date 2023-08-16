@@ -314,14 +314,14 @@ struct planb {
 	struct planb_window	win;
 	volatile unsigned char	*mask;		/* Clipmask buffer */
 	int			suspend;
-	wait_queue_head_t	suspendq;
+	struct wait_queue_head_t	suspendq;
 	struct planb_suspend	suspended;
 	int			cmd_buff_inited; /* cmd buffer inited? */
 
 /* grabbing stuff: */ 
 	int			grabbing;
 	unsigned int		gcount;
-	wait_queue_head_t	capq;
+	struct wait_queue_head_t	capq;
 	int			last_fr;
 	int			prev_last_fr;
 	unsigned char		**rawbuf;
@@ -347,7 +347,7 @@ struct planb {
 	int			vbirunning;
 	int			vbip;		/* pointer into VBI buffer */
 	unsigned char		*vbibuf;	/* buffer for VBI data */
-	wait_queue_head_t	vbiq;
+	struct wait_queue_head_t	vbiq;
 };
 
 #endif /* __KERNEL__ */

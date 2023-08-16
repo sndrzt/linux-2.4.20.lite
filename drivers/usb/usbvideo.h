@@ -122,7 +122,7 @@ typedef struct {
 	int length;		/* How many bytes allocated for the queue */
 	int wi;			/* That's where we write */
 	int ri;			/* Read from here until you hit write index */
-	wait_queue_head_t wqh;	/* Processes waiting */
+	struct wait_queue_head_t wqh;	/* Processes waiting */
 } RingQueue_t;
 
 typedef enum {

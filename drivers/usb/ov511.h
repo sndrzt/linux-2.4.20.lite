@@ -439,7 +439,7 @@ struct ov511_frame {
 
 	long bytes_read;	/* Amount that has been read() */
 
-	wait_queue_head_t wq;	/* Processes waiting */
+	struct wait_queue_head_t wq;	/* Processes waiting */
 
 	int snapshot;		/* True if frame was a snapshot */
 };
@@ -514,7 +514,7 @@ struct usb_ov511 {
 
 	struct ov511_sbuf sbuf[OV511_NUMSBUF];
 
-	wait_queue_head_t wq;	/* Processes waiting */
+	struct wait_queue_head_t wq;	/* Processes waiting */
 
 	int snap_enabled;	/* Snapshot mode enabled */
 	

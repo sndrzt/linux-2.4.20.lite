@@ -38,8 +38,8 @@ struct gs_port {
   int                     flags;
   struct termios          normal_termios;
   struct termios          callout_termios;
-  wait_queue_head_t       open_wait;
-  wait_queue_head_t       close_wait;
+  struct wait_queue_head_t       open_wait;
+  struct wait_queue_head_t       close_wait;
   long                    session;
   long                    pgrp;
   int                     count;

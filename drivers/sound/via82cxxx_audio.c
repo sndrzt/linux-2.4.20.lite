@@ -240,7 +240,7 @@ struct via_buffer_pgtbl {
 struct via_channel {
 	atomic_t n_frags;
 	atomic_t hw_ptr;
-	wait_queue_head_t wait;
+	struct wait_queue_head_t wait;
 
 	unsigned int sw_ptr;
 	unsigned int slop_len;

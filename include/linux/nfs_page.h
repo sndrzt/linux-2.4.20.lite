@@ -30,7 +30,7 @@ struct nfs_page {
 	struct inode		*wb_inode;
 	struct rpc_cred		*wb_cred;
 	struct page		*wb_page;	/* page to read in/write out */
-	wait_queue_head_t	wb_wait;	/* wait queue */
+	struct wait_queue_head_t	wb_wait;	/* wait queue */
 	unsigned long		wb_timeout;	/* when to read/write/commit */
 	unsigned int		wb_offset,	/* Offset of read/write */
 				wb_bytes,	/* Length of request */

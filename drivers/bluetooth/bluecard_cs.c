@@ -288,7 +288,7 @@ static void bluecard_write_wakeup(bluecard_info_t *info)
 
 		if (skb->pkt_type & 0x80) {
 
-			wait_queue_head_t wait;
+			struct wait_queue_head_t wait;
 			unsigned char baud_reg;
 
 			switch (skb->pkt_type) {

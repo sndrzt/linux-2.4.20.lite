@@ -67,7 +67,7 @@ struct rio_usb_data {
         int present;                    /* Device is present on the bus */
         char *obuf, *ibuf;              /* transfer buffers */
         char bulk_in_ep, bulk_out_ep;   /* Endpoint assignments */
-        wait_queue_head_t wait_q;       /* for timeouts */
+        struct wait_queue_head_t wait_q;       /* for timeouts */
 	struct semaphore lock;          /* general race avoidance */
 };
 

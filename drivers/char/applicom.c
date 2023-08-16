@@ -97,7 +97,7 @@ MODULE_SUPPORTED_DEVICE("ac");
 static struct applicom_board {
 	unsigned long PhysIO;
 	unsigned long RamIO;
-	wait_queue_head_t FlagSleepSend;
+	struct wait_queue_head_t FlagSleepSend;
 	long irq;
 	spinlock_t mutex;
 } apbs[MAX_BOARD];

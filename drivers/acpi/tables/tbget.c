@@ -54,9 +54,9 @@ acpi_status
 acpi_tb_get_table_ptr (
 	acpi_table_type         table_type,
 	u32                     instance,
-	acpi_table_header       **table_ptr_loc)
+	struct acpi_table_header       **table_ptr_loc)
 {
-	acpi_table_desc         *table_desc;
+	struct acpi_table_desc         *table_desc;
 	u32                     i;
 
 
@@ -131,11 +131,11 @@ acpi_tb_get_table_ptr (
 acpi_status
 acpi_tb_get_table (
 	ACPI_PHYSICAL_ADDRESS   physical_address,
-	acpi_table_header       *buffer_ptr,
-	acpi_table_desc         *table_info)
+	struct acpi_table_header       *buffer_ptr,
+	struct acpi_table_desc         *table_info)
 {
-	acpi_table_header       *table_header = NULL;
-	acpi_table_header       *full_table = NULL;
+	struct acpi_table_header       *table_header = NULL;
+	struct acpi_table_header       *full_table = NULL;
 	u32                     size;
 	u8                      allocation;
 	acpi_status             status = AE_OK;
@@ -225,11 +225,11 @@ acpi_tb_get_table (
 acpi_status
 acpi_tb_get_all_tables (
 	u32                     number_of_tables,
-	acpi_table_header       *table_ptr)
+	struct acpi_table_header       *table_ptr)
 {
 	acpi_status             status = AE_OK;
 	u32                     index;
-	acpi_table_desc         table_info;
+	struct acpi_table_desc         table_info;
 
 
 	FUNCTION_TRACE ("Tb_get_all_tables");
@@ -245,7 +245,7 @@ acpi_tb_get_all_tables (
 	for (index = 0; index < number_of_tables; index++) {
 		/* Clear the Table_info each time */
 
-		MEMSET (&table_info, 0, sizeof (acpi_table_desc));
+		MEMSET (&table_info, 0, sizeof (struct acpi_table_desc));
 
 		/* Get the table via the XSDT */
 
@@ -343,7 +343,7 @@ acpi_tb_get_all_tables (
 	/* Dump the DSDT Header */
 
 	ACPI_DEBUG_PRINT ((ACPI_DB_TABLES, "Hex dump of DSDT Header:\n"));
-	DUMP_BUFFER ((u8 *) acpi_gbl_DSDT, sizeof (acpi_table_header));
+	DUMP_BUFFER ((u8 *) acpi_gbl_DSDT, sizeof (struct acpi_table_header));
 
 	/* Dump the entire DSDT */
 
@@ -383,7 +383,7 @@ acpi_status
 acpi_tb_verify_rsdp (
 	ACPI_PHYSICAL_ADDRESS   rsdp_physical_address)
 {
-	acpi_table_desc         table_info;
+	struct acpi_table_desc         table_info;
 	acpi_status             status;
 	u8                      *table_ptr;
 
@@ -421,7 +421,7 @@ acpi_tb_verify_rsdp (
 
 	/* The RSDP supplied is OK */
 
-	table_info.pointer     = (acpi_table_header *) table_ptr;
+	table_info.pointer     = (struct acpi_table_header *) table_ptr;
 	table_info.length      = sizeof (RSDP_DESCRIPTOR);
 	table_info.allocation  = ACPI_MEM_MAPPED;
 	table_info.base_pointer = table_ptr;
@@ -506,7 +506,7 @@ acpi_tb_get_rsdt_address (void)
 
 acpi_status
 acpi_tb_validate_rsdt (
-	acpi_table_header       *table_ptr)
+	struct acpi_table_header       *table_ptr)
 {
 	u32                     no_match;
 
@@ -565,7 +565,7 @@ acpi_tb_get_table_pointer (
 	ACPI_PHYSICAL_ADDRESS   physical_address,
 	u32                     flags,
 	u32                     *size,
-	acpi_table_header       **table_ptr)
+	struct acpi_table_header       **table_ptr)
 {
 	acpi_status             status;
 
@@ -580,7 +580,7 @@ acpi_tb_get_table_pointer (
 
 	else {
 		*size = 0;
-		*table_ptr = (acpi_table_header *) (ACPI_TBLPTR) physical_address;
+		*table_ptr = (struct acpi_table_header *) (ACPI_TBLPTR) physical_address;
 
 		status = AE_OK;
 	}
@@ -605,7 +605,7 @@ acpi_status
 acpi_tb_get_table_rsdt (
 	u32                     *number_of_tables)
 {
-	acpi_table_desc         table_info;
+	struct acpi_table_desc         table_info;
 	acpi_status             status;
 	ACPI_PHYSICAL_ADDRESS   physical_address;
 
@@ -691,10 +691,10 @@ acpi_tb_get_table_rsdt (
 
 acpi_status
 acpi_tb_get_table_facs (
-	acpi_table_header       *buffer_ptr,
-	acpi_table_desc         *table_info)
+	struct acpi_table_header       *buffer_ptr,
+	struct acpi_table_desc         *table_info)
 {
-	acpi_table_header       *table_ptr = NULL;
+	struct acpi_table_header       *table_ptr = NULL;
 	u32                     size;
 	u8                      allocation;
 	acpi_status             status = AE_OK;

@@ -271,7 +271,7 @@ struct wf_config {
 	int samples_used;                  /* how many */
 	char interrupts_on;                /* h/w MPU interrupts enabled ? */
 	char rom_samples_rdonly;           /* can we write on ROM samples */
-	wait_queue_head_t interrupt_sleeper; 
+	struct wait_queue_head_t interrupt_sleeper; 
 } dev;
 
 static int  detect_wffx(void);

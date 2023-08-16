@@ -440,17 +440,17 @@ static char *	apm_event_name[] = {
 #define NR_APM_EVENT_NAME	\
 		(sizeof(apm_event_name) / sizeof(apm_event_name[0]))
 
-typedef struct lookup_t {
+struct lookup_t {
 	int	key;
 	char *	msg;
-} lookup_t;
+};
 
 /*
  *	The BIOS returns a set of standard error codes in AX when the
  *	carry flag is set.
  */
  
-static const lookup_t error_table[] = {
+static const struct lookup_t error_table[] = {
 /* N/A	{ APM_SUCCESS,		"Operation succeeded" }, */
 	{ APM_DISABLED,		"Power management disabled" },
 	{ APM_CONNECTED,	"Real mode interface already connected" },
@@ -469,7 +469,7 @@ static const lookup_t error_table[] = {
 	{ APM_NO_ERROR,		"BIOS did not set a return code" },
 	{ APM_NOT_PRESENT,	"No APM present" }
 };
-#define ERROR_COUNT	(sizeof(error_table)/sizeof(lookup_t))
+#define ERROR_COUNT	(sizeof(error_table)/sizeof(struct lookup_t))
 
 /**
  *	apm_error	-	display an APM error

@@ -455,8 +455,8 @@ struct aac_queue {
 	struct aac_entry	*base;		   	/* This is the system virtual address */
 	struct aac_qhdr 	headers;       		/* A pointer to the producer and consumer queue headers for this queue */
 	u32	 		entries;	   	/* Number of queue entries on this queue */
-	wait_queue_head_t	qfull;		      	/* Event to wait on if the queue is full */
-	wait_queue_head_t	cmdready;	  	/* Indicates there is a Command ready from the adapter on this queue. */
+	struct wait_queue_head_t	qfull;		      	/* Event to wait on if the queue is full */
+	struct wait_queue_head_t	cmdready;	  	/* Indicates there is a Command ready from the adapter on this queue. */
                                         		/* This is only valid for adapter to host command queues. */                      
 	spinlock_t	 	*lock;		     	/* Spinlock for this queue must take this lock before accessing the lock */
 	spinlock_t		lockdata;		/* Actual lock (used only on one side of the lock) */

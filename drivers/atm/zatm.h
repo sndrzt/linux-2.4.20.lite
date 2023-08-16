@@ -73,7 +73,7 @@ struct zatm_vcc {
 	int tx_chan;			/* TX channel, 0 if none */
 	int shaper;			/* shaper, <0 if none */
 	struct sk_buff_head tx_queue;	/* list of buffers in transit */
-	wait_queue_head_t tx_wait;	/* for close */
+	struct wait_queue_head_t tx_wait;	/* for close */
 	u32 *ring;			/* transmit ring */
 	int ring_curr;			/* current write position */
 	int txing;			/* number of transmits in progress */

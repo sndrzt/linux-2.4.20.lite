@@ -38,7 +38,7 @@ int last_pid;
 
 struct task_struct *pidhash[PIDHASH_SZ];
 
-void add_wait_queue(wait_queue_head_t *q, wait_queue_t * wait)
+void add_wait_queue(struct wait_queue_head_t *q, wait_queue_t * wait)
 {
 	unsigned long flags;
 
@@ -48,7 +48,7 @@ void add_wait_queue(wait_queue_head_t *q, wait_queue_t * wait)
 	wq_write_unlock_irqrestore(&q->lock, flags);
 }
 
-void add_wait_queue_exclusive(wait_queue_head_t *q, wait_queue_t * wait)
+void add_wait_queue_exclusive(struct wait_queue_head_t *q, wait_queue_t * wait)
 {
 	unsigned long flags;
 
@@ -58,7 +58,7 @@ void add_wait_queue_exclusive(wait_queue_head_t *q, wait_queue_t * wait)
 	wq_write_unlock_irqrestore(&q->lock, flags);
 }
 
-void remove_wait_queue(wait_queue_head_t *q, wait_queue_t * wait)
+void remove_wait_queue(struct wait_queue_head_t *q, wait_queue_t * wait)
 {
 	unsigned long flags;
 

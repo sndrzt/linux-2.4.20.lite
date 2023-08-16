@@ -129,7 +129,7 @@ struct i2o_post_wait_data
 	int *status;		/* Pointer to status block on caller stack */
 	int *complete;		/* Pointer to completion flag on caller stack */
 	u32 id;			/* Unique identifier */
-	wait_queue_head_t *wq;	/* Wake up for caller (NULL for dead) */
+	struct wait_queue_head_t *wq;	/* Wake up for caller (NULL for dead) */
 	struct i2o_post_wait_data *next;	/* Chain */
 	void *mem[2];		/* Memory blocks to recover on failure path */
 };

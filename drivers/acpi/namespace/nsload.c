@@ -107,7 +107,7 @@ acpi_ns_load_namespace (
 acpi_status
 acpi_ns_one_complete_parse (
 	u32                     pass_number,
-	acpi_table_desc         *table_desc)
+	struct acpi_table_desc         *table_desc)
 {
 	acpi_parse_object       *parse_root;
 	acpi_status             status;
@@ -168,7 +168,7 @@ acpi_ns_one_complete_parse (
 
 acpi_status
 acpi_ns_parse_table (
-	acpi_table_desc         *table_desc,
+	struct acpi_table_desc         *table_desc,
 	acpi_namespace_node     *start_node)
 {
 	acpi_status             status;
@@ -226,7 +226,7 @@ acpi_ns_parse_table (
 
 acpi_status
 acpi_ns_load_table (
-	acpi_table_desc         *table_desc,
+	struct acpi_table_desc         *table_desc,
 	acpi_namespace_node     *node)
 {
 	acpi_status             status;
@@ -306,7 +306,7 @@ acpi_ns_load_table_by_type (
 {
 	u32                     i;
 	acpi_status             status = AE_OK;
-	acpi_table_desc         *table_desc;
+	struct acpi_table_desc         *table_desc;
 
 
 	FUNCTION_TRACE ("Ns_load_table_by_type");

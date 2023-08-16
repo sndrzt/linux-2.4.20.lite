@@ -3,7 +3,7 @@
 
 #define PIPEFS_MAGIC 0x50495045
 struct pipe_inode_info {
-	wait_queue_head_t wait;
+	struct wait_queue_head_t wait;
 	char *base;
 	unsigned int len;
 	unsigned int start;

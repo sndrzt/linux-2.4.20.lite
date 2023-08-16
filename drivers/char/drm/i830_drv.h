@@ -67,7 +67,7 @@ typedef struct drm_i830_private {
    	dma_addr_t dma_status_page;
 
    	atomic_t flush_done;
-   	wait_queue_head_t flush_queue;	/* Processes waiting until flush    */
+   	struct wait_queue_head_t flush_queue;	/* Processes waiting until flush    */
 	drm_buf_t *mmap_buffer;
 	
 	u32 front_di1, back_di1, zi1;

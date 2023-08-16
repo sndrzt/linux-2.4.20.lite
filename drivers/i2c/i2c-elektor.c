@@ -58,7 +58,7 @@ static int i2c_debug = 0;
 #if (LINUX_VERSION_CODE < 0x020301)
 static struct wait_queue *pcf_wait = NULL;
 #else
-static wait_queue_head_t pcf_wait;
+static struct wait_queue_head_t pcf_wait;
 #endif
 static int pcf_pending;
 

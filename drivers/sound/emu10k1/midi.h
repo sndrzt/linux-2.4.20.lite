@@ -45,8 +45,8 @@ struct emu10k1_mididevice
 {
 	struct emu10k1_card *card;
 	u32 mistate;
-	wait_queue_head_t oWait;
-	wait_queue_head_t iWait;
+	struct wait_queue_head_t oWait;
+	struct wait_queue_head_t iWait;
 	s8 iBuf[MIDIIN_BUFLEN];
 	u16 ird, iwr, icnt;
 	struct list_head mid_hdrs;

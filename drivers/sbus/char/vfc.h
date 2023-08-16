@@ -131,7 +131,7 @@ struct vfc_dev {
 	devfs_handle_t de;
 	struct semaphore device_lock_sem;
 	struct timer_list poll_timer;
-	wait_queue_head_t poll_wait;
+	struct wait_queue_head_t poll_wait;
 	int instance;
 	int busy;
 	unsigned long which_io;

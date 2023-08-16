@@ -59,7 +59,7 @@ struct pt_data
 
 	char	*patch_name, *intr_gpr_name, *enable_gpr_name, *pos_gpr_name;
 
-	wait_queue_head_t wait;
+	struct wait_queue_head_t wait;
 	spinlock_t lock;
 };
 

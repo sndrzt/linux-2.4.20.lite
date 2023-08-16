@@ -60,7 +60,7 @@ struct bbc_i2c_bus {
 	void				*i2c_control_regs;
 	unsigned char			own, clock;
 
-	wait_queue_head_t		wq;
+	struct wait_queue_head_t		wq;
 	volatile int			waiting;
 
 	struct linux_ebus_device	*bus_edev;

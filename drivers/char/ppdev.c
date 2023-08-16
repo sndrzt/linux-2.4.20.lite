@@ -73,7 +73,7 @@
 
 struct pp_struct {
 	struct pardevice * pdev;
-	wait_queue_head_t irq_wait;
+	struct wait_queue_head_t irq_wait;
 	atomic_t irqc;
 	unsigned int flags;
 	int irqresponse;

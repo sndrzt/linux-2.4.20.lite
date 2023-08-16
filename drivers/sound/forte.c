@@ -156,7 +156,7 @@ struct forte_channel {
 	unsigned short		ctrl; 		/* Ctrl BAR contents */
 	unsigned long 		iobase;		/* Ctrl BAR address */
 
-	wait_queue_head_t	wait;
+	struct wait_queue_head_t	wait;
 
 	void 			*buf; 		/* Buffer */
 	dma_addr_t		buf_handle; 	/* Buffer handle */

@@ -837,8 +837,8 @@ struct fs_info                  /*  This structure is for the mounted devfs  */
     struct devfsd_notify_struct *devfsd_info;
     volatile unsigned long devfsd_event_mask;
     atomic_t devfsd_overrun_count;
-    wait_queue_head_t devfsd_wait_queue;      /*  Wake devfsd on input       */
-    wait_queue_head_t revalidate_wait_queue;  /*  Wake when devfsd sleeps    */
+    struct wait_queue_head_t devfsd_wait_queue;      /*  Wake devfsd on input       */
+    struct wait_queue_head_t revalidate_wait_queue;  /*  Wake when devfsd sleeps    */
 };
 
 static struct fs_info fs_info = {devfsd_buffer_lock: SPIN_LOCK_UNLOCKED};
@@ -2929,7 +2929,7 @@ static int devfs_d_delete (struct dentry *dentry)
 struct devfs_lookup_struct
 {
     devfs_handle_t de;
-    wait_queue_head_t wait_queue;
+    struct wait_queue_head_t wait_queue;
 };
 
 static int devfs_d_revalidate_wait (struct dentry *dentry, int flags)

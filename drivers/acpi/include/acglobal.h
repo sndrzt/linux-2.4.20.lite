@@ -74,7 +74,7 @@ extern      u32                         acpi_gbl_nesting_level;
 ACPI_EXTERN RSDP_DESCRIPTOR             *acpi_gbl_RSDP;
 ACPI_EXTERN xsdt_descriptor             *acpi_gbl_XSDT;
 ACPI_EXTERN FADT_DESCRIPTOR             *acpi_gbl_FADT;
-ACPI_EXTERN acpi_table_header           *acpi_gbl_DSDT;
+ACPI_EXTERN struct acpi_table_header           *acpi_gbl_DSDT;
 ACPI_EXTERN acpi_common_facs            *acpi_gbl_FACS;
 
 /*
@@ -86,7 +86,7 @@ ACPI_EXTERN acpi_common_facs            *acpi_gbl_FACS;
 /*
  * ACPI Table info arrays
  */
-extern      acpi_table_desc             acpi_gbl_acpi_tables[NUM_ACPI_TABLES];
+extern      struct acpi_table_desc             acpi_gbl_acpi_tables[NUM_ACPI_TABLES];
 extern      ACPI_TABLE_SUPPORT          acpi_gbl_acpi_table_data[NUM_ACPI_TABLES];
 
 /*

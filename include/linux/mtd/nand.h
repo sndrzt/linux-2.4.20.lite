@@ -98,7 +98,7 @@ struct nand_chip {
 	unsigned int ALE;
 	unsigned int NCE;
 	spinlock_t chip_lock;
-	wait_queue_head_t wq;
+	struct wait_queue_head_t wq;
 	nand_state_t state;
 	int page_shift;
 	u_char *data_buf;

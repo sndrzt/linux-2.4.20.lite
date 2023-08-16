@@ -42,7 +42,7 @@
 #define dprintk printk
 typedef unsigned int ACPI_TBLPTR;
 
-typedef struct {		/* ACPI common table header */
+struct acpi_table_header {		/* ACPI common table header */
 	char signature[4];	/* identifies type of table */
 	u32 length;		/* length of table,
 				   in bytes, * including header */
@@ -53,7 +53,7 @@ typedef struct {		/* ACPI common table header */
 	u32 oem_revision;	/* OEM revision number */
 	char asl_compiler_id[4];	/* ASL compiler vendor ID */
 	u32 asl_compiler_revision;	/* ASL compiler revision number */
-} acpi_table_header __attribute__ ((packed));;
+} __attribute__ ((packed));;
 
 enum {
 	ACPI_APIC = 0,
@@ -97,7 +97,7 @@ static char *acpi_table_signatures[ACPI_TABLE_COUNT] = {
 };
 
 struct acpi_table_madt {
-	acpi_table_header header;
+	struct acpi_table_header header;
 	u32 lapic_address;
 	struct {
 		u32 pcat_compat:1;
@@ -134,7 +134,7 @@ enum {
 #define RSDP_SCAN_STEP			16
 #define RSDP_CHECKSUM_LENGTH		20
 
-typedef int (*acpi_table_handler) (acpi_table_header * header, unsigned long);
+typedef int (*acpi_table_handler) (struct acpi_table_header * header, unsigned long);
 
 struct acpi_table_rsdp {
 	char signature[8];
@@ -145,23 +145,23 @@ struct acpi_table_rsdp {
 } __attribute__ ((packed));
 
 struct acpi_table_rsdt {
-	acpi_table_header header;
+	struct acpi_table_header header;
 	u32 entry[ACPI_TABLE_COUNT];
 } __attribute__ ((packed));
 
-typedef struct {
+struct acpi_madt_entry_header {
 	u8 type;
 	u8 length;
-} acpi_madt_entry_header __attribute__ ((packed));
+} __attribute__ ((packed));
 
-typedef struct {
+struct acpi_madt_int_flags{
 	u16 polarity:2;
 	u16 trigger:2;
 	u16 reserved:12;
-} acpi_madt_int_flags __attribute__ ((packed));
+} __attribute__ ((packed));
 
 struct acpi_table_lapic {
-	acpi_madt_entry_header header;
+	struct acpi_madt_entry_header header;
 	u8 acpi_id;
 	u8 id;
 	struct {
@@ -171,7 +171,7 @@ struct acpi_table_lapic {
 } __attribute__ ((packed));
 
 struct acpi_table_ioapic {
-	acpi_madt_entry_header header;
+	struct acpi_madt_entry_header header;
 	u8 id;
 	u8 reserved;
 	u32 address;
@@ -179,34 +179,34 @@ struct acpi_table_ioapic {
 } __attribute__ ((packed));
 
 struct acpi_table_int_src_ovr {
-	acpi_madt_entry_header header;
+	struct acpi_madt_entry_header header;
 	u8 bus;
 	u8 bus_irq;
 	u32 global_irq;
-	acpi_madt_int_flags flags;
+	struct acpi_madt_int_flags flags;
 } __attribute__ ((packed));
 
 struct acpi_table_nmi_src {
-	acpi_madt_entry_header header;
-	acpi_madt_int_flags flags;
+	struct acpi_madt_entry_header header;
+	struct acpi_madt_int_flags flags;
 	u32 global_irq;
 } __attribute__ ((packed));
 
 struct acpi_table_lapic_nmi {
-	acpi_madt_entry_header header;
+	struct acpi_madt_entry_header header;
 	u8 acpi_id;
-	acpi_madt_int_flags flags;
+	struct acpi_madt_int_flags flags;
 	u8 lint;
 } __attribute__ ((packed));
 
 struct acpi_table_lapic_addr_ovr {
-	acpi_madt_entry_header header;
+	struct acpi_madt_entry_header header;
 	u8 reserved[2];
 	u64 address;
 } __attribute__ ((packed));
 
 struct acpi_table_iosapic {
-	acpi_madt_entry_header header;
+	struct acpi_madt_entry_header header;
 	u8 id;
 	u8 reserved;
 	u32 global_irq_base;
@@ -214,7 +214,7 @@ struct acpi_table_iosapic {
 } __attribute__ ((packed));
 
 struct acpi_table_lsapic {
-	acpi_madt_entry_header header;
+	struct acpi_madt_entry_header header;
 	u8 acpi_id;
 	u8 id;
 	u8 eid;
@@ -226,8 +226,8 @@ struct acpi_table_lsapic {
 } __attribute__ ((packed));
 
 struct acpi_table_plat_int_src {
-	acpi_madt_entry_header header;
-	acpi_madt_int_flags flags;
+	struct acpi_madt_entry_header header;
+	struct acpi_madt_int_flags flags;
 	u8 type;
 	u8 id;
 	u8 eid;
@@ -239,11 +239,11 @@ struct acpi_table_plat_int_src {
 /*
  * ACPI Table Descriptor.  One per ACPI table
  */
-typedef struct acpi_table_desc {
+struct acpi_table_desc {
 	struct acpi_table_desc *prev;
 	struct acpi_table_desc *next;
 	struct acpi_table_desc *installed_desc;
-	acpi_table_header *pointer;
+	struct acpi_table_header *pointer;
 	void *base_pointer;
 	u8 *aml_pointer;
 	u64 physical_address;
@@ -255,6 +255,6 @@ typedef struct acpi_table_desc {
 	u8 allocation;
 	u8 loaded_into_namespace;
 
-} acpi_table_desc __attribute__ ((packed));;
+} __attribute__ ((packed));;
 
 #endif

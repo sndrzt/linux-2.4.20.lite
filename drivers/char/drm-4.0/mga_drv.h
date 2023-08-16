@@ -94,9 +94,9 @@ typedef struct _drm_mga_private {
    	int current_prim_idx;
    	drm_mga_freelist_t *head;
    	drm_mga_freelist_t *tail;
-   	wait_queue_head_t flush_queue;	/* Processes waiting until flush    */
-      	wait_queue_head_t wait_queue;	/* Processes waiting until interrupt */
-	wait_queue_head_t buf_queue;    /* Processes waiting for a free buf */
+   	struct wait_queue_head_t flush_queue;	/* Processes waiting until flush    */
+      	struct wait_queue_head_t wait_queue;	/* Processes waiting until interrupt */
+	struct wait_queue_head_t buf_queue;    /* Processes waiting for a free buf */
 	/* Some validated register values:
 	 */
 	u32 mAccess;

@@ -52,7 +52,7 @@ struct mousedev {
 	int exist;
 	int open;
 	int minor;
-	wait_queue_head_t wait;
+	struct wait_queue_head_t wait;
 	struct mousedev_list *list;
 	struct input_handle handle;
 	devfs_handle_t devfs;

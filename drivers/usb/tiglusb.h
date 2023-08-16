@@ -34,8 +34,8 @@ typedef struct
 	struct usb_device	*dev;		/* USB device handle */
 	struct semaphore	mutex;		/* locks this struct */
 
-	wait_queue_head_t	wait;		/* for timed waits */
-	wait_queue_head_t	remove_ok;
+	struct wait_queue_head_t	wait;		/* for timed waits */
+	struct wait_queue_head_t	remove_ok;
 
 	int		minor;			/* which minor dev #? */
 	devfs_handle_t	devfs;			/* devfs device */

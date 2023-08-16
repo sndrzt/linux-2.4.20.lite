@@ -429,14 +429,14 @@ struct digi_port {
 	unsigned char dp_in_flag_buf[DIGI_IN_BUF_SIZE];
 	int dp_write_urb_in_use;
 	unsigned int dp_modem_signals;
-	wait_queue_head_t dp_modem_change_wait;
+	struct wait_queue_head_t dp_modem_change_wait;
 	int dp_transmit_idle;
-	wait_queue_head_t dp_transmit_idle_wait;
+	struct wait_queue_head_t dp_transmit_idle_wait;
 	int dp_throttled;
 	int dp_throttle_restart;
-	wait_queue_head_t dp_flush_wait;
+	struct wait_queue_head_t dp_flush_wait;
 	int dp_in_close;			/* close in progress */
-	wait_queue_head_t dp_close_wait;	/* wait queue for close */
+	struct wait_queue_head_t dp_close_wait;	/* wait queue for close */
 	struct tq_struct dp_wakeup_task;
 };
 
@@ -559,7 +559,7 @@ static struct usb_serial_device_type digi_acceleport_4_device = {
 */
 
 static inline long cond_wait_interruptible_timeout_irqrestore(
-	wait_queue_head_t *q, long timeout,
+	struct wait_queue_head_t *q, long timeout,
 	spinlock_t *lock, unsigned long flags )
 {
 

@@ -226,9 +226,9 @@ typedef struct multisound_dev {
 #define F_EXT_MIDI_INUSE		9
 #define F_HDR_MIDI_INUSE		10
 #define F_DISABLE_WRITE_NDELAY		11
-	wait_queue_head_t writeblock;
-	wait_queue_head_t readblock;
-	wait_queue_head_t writeflush;
+	struct wait_queue_head_t writeblock;
+	struct wait_queue_head_t readblock;
+	struct wait_queue_head_t writeflush;
 	spinlock_t lock;
 	int nresets;
 	unsigned long recsrc;

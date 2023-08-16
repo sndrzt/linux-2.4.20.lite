@@ -27,8 +27,8 @@
 
 #define MAX_QUEUE_SIZE	4000
 
-static wait_queue_head_t midi_sleeper[MAX_MIDI_DEV];
-static wait_queue_head_t input_sleeper[MAX_MIDI_DEV];
+static struct wait_queue_head_t midi_sleeper[MAX_MIDI_DEV];
+static struct wait_queue_head_t input_sleeper[MAX_MIDI_DEV];
 
 struct midi_buf
 {

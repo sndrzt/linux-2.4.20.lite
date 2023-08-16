@@ -15,7 +15,7 @@
 /* communication pending & processing queues */
 struct upc_channel {
         unsigned int         uc_seq;
-        wait_queue_head_t    uc_waitq;    /* Lento wait queue */
+        struct wait_queue_head_t    uc_waitq;    /* Lento wait queue */
         struct list_head     uc_pending;
         struct list_head     uc_processing;
         spinlock_t            uc_lock;
@@ -50,7 +50,7 @@ struct upc_req {
         int                rq_rep_size;
         int                rq_opcode;  /* copied from data to save lookup */
         int                rq_unique;
-        wait_queue_head_t  rq_sleep;   /* process' wait queue */
+        struct wait_queue_head_t  rq_sleep;   /* process' wait queue */
         unsigned long      rq_posttime;
 };
 

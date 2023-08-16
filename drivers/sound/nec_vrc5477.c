@@ -204,7 +204,7 @@ struct vrc5477_ac97_state {
 	spinlock_t lock;
 	struct semaphore open_sem;
 	mode_t open_mode;
-	wait_queue_head_t open_wait;
+	struct wait_queue_head_t open_wait;
 
 	struct dmabuf {
 		void *lbuf, *rbuf;
@@ -218,7 +218,7 @@ struct vrc5477_ac97_state {
 		unsigned nextOut;
 		int count;
 		unsigned error; /* over/underrun */
-		wait_queue_head_t wait;
+		struct wait_queue_head_t wait;
 		/* OSS stuff */
 		unsigned stopped:1;
 		unsigned ready:1;

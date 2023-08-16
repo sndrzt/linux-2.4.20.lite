@@ -581,7 +581,7 @@ struct rtl8139_private {
 	spinlock_t lock;
 	chip_t chipset;
 	pid_t thr_pid;
-	wait_queue_head_t thr_wait;
+	struct wait_queue_head_t thr_wait;
 	struct completion thr_exited;
 	u32 rx_config;
 	struct rtl_extra_stats xstats;

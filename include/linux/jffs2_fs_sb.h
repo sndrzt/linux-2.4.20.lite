@@ -68,7 +68,7 @@ struct jffs2_sb_info {
 
 	spinlock_t erase_completion_lock;	/* Protect free_list and erasing_list 
 						   against erase completion handler */
-	wait_queue_head_t erase_wait;		/* For waiting for erases to complete */
+	struct wait_queue_head_t erase_wait;		/* For waiting for erases to complete */
 	struct jffs2_inode_cache *inocache_list[INOCACHE_HASHSIZE];
 	spinlock_t inocache_lock;
 };

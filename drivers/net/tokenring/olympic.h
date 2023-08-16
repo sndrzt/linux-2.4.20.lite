@@ -259,12 +259,12 @@ struct olympic_private {
 	spinlock_t olympic_lock ; 
 
 	volatile int srb_queued;    /* True if an SRB is still posted */	
-	wait_queue_head_t srb_wait;
+	struct wait_queue_head_t srb_wait;
 
 	volatile int asb_queued;    /* True if an ASB is posted */
 
 	volatile int trb_queued;   /* True if a TRB is posted */
-	wait_queue_head_t trb_wait ; 
+	struct wait_queue_head_t trb_wait ; 
 
 	/* These must be on a 4 byte boundary. */
 	struct olympic_rx_desc olympic_rx_ring[OLYMPIC_RX_RING_SIZE];

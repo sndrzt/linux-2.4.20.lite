@@ -61,7 +61,7 @@ struct usb_vicam
 
 	int open_count;	/* number of times this port has been opened */
 	struct semaphore sem;			/* locks this structure */
-	wait_queue_head_t wait;			/* Processes waiting */ 
+	struct wait_queue_head_t wait;			/* Processes waiting */ 
 
 	int streaming;
 

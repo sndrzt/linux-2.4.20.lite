@@ -126,7 +126,7 @@ struct au1000_state {
 	struct semaphore open_sem;
 	struct semaphore sem;
 	mode_t          open_mode;
-	wait_queue_head_t open_wait;
+	struct wait_queue_head_t open_wait;
 
 	struct dmabuf {
 		unsigned int    dmanr;	// DMA Channel number
@@ -148,7 +148,7 @@ struct au1000_state {
 		int             count;	// current byte count in DMA buffer
 		unsigned        total_bytes;	// total bytes written or read
 		unsigned        error;	// over/underrun
-		wait_queue_head_t wait;
+		struct wait_queue_head_t wait;
 		/* redundant, but makes calculations easier */
 		unsigned fragsize;       // user perception of fragment size
 		unsigned dma_fragsize;   // DMA (real) fragment size

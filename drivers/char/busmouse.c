@@ -40,7 +40,7 @@ struct busmouse_data {
 	struct busmouse		*ops;
 	spinlock_t		lock;
 
-	wait_queue_head_t	wait;
+	struct wait_queue_head_t	wait;
 	struct fasync_struct	*fasyncptr;
 	char			active;
 	char			buttons;

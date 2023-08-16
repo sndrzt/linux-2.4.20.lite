@@ -116,12 +116,12 @@ struct zoran
 	char*		fbuffer;	/* framebuffers for mmap	*/
 	struct vidinfo	overinfo;	/* overlay data			*/
 	struct vidinfo	grabinfo[ZORAN_MAX_FBUFFERS];	/* grabbing data*/
-	wait_queue_head_t grabq;	/* grabbers queue		*/
+	struct wait_queue_head_t grabq;	/* grabbers queue		*/
 
 	/* VBI details */
 	struct video_device vbi_dev;
 	struct vidinfo	readinfo[2];	/* VBI data - flip buffers	*/
-	wait_queue_head_t vbiq;		/* vbi queue			*/
+	struct wait_queue_head_t vbiq;		/* vbi queue			*/
 
 	/* maintenance data */
 	int		have_decoder;	/* did we detect a mux?		*/

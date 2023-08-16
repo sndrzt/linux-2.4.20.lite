@@ -121,7 +121,7 @@ struct usblp {
 	struct semaphore	sem;			/* locks this struct, especially "dev" */
 	char			*buf;		/* writeurb.transfer_buffer */
 	struct urb		readurb, writeurb;	/* The urbs */
-	wait_queue_head_t	wait;			/* Zzzzz ... */
+	struct wait_queue_head_t	wait;			/* Zzzzz ... */
 	int			readcount;		/* Counter for reads */
 	int			ifnum;			/* Interface number */
 	/* Alternate-setting numbers and endpoints for each protocol

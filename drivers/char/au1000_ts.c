@@ -249,7 +249,7 @@ typedef struct {
 	int event_count;
 	struct fasync_struct *fasync;     // asynch notification
 	struct timer_list acq_timer;      // Timer for triggering acquisitions
-	wait_queue_head_t wait;           // read wait queue
+	struct wait_queue_head_t wait;           // read wait queue
 	spinlock_t lock;
 	struct tq_struct chug_tq;
 } au1000_ts_t;

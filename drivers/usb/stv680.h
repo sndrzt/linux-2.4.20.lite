@@ -140,7 +140,7 @@ struct usb_stv {
 	unsigned int palette;
 	unsigned int depth;	/* rgb24 in bits */
 
-	wait_queue_head_t wq;	/* Processes waiting */
+	struct wait_queue_head_t wq;	/* Processes waiting */
 
 	struct proc_dir_entry *proc_entry;	/* /proc/stv680/videoX */
 	int nullpackets;

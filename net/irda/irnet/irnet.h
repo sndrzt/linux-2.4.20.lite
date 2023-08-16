@@ -477,7 +477,7 @@ typedef struct irnet_ctrl_channel
   irnet_log	log[IRNET_MAX_EVENTS];	/* Event log */
   int		index;		/* Current index in log */
   spinlock_t	spinlock;	/* Serialize access to the event log */
-  wait_queue_head_t	rwait;	/* processes blocked on read (or poll) */
+  struct wait_queue_head_t	rwait;	/* processes blocked on read (or poll) */
 } irnet_ctrl_channel;
 
 /**************************** PROTOTYPES ****************************/

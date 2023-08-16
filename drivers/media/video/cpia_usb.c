@@ -69,7 +69,7 @@ struct usb_cpia {
 	struct usb_device *dev;
 
 	unsigned char iface;
-	wait_queue_head_t wq_stream;
+	struct wait_queue_head_t wq_stream;
 
 	int cursbuf;		/* Current receiving sbuf */
 	struct cpia_sbuf sbuf[CPIA_NUMSBUF];		/* Double buffering */

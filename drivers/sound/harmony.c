@@ -171,7 +171,7 @@ struct harmony_dev {
 	int blocked_playing;
 	int blocked_recording;
 	
-	wait_queue_head_t wq_play, wq_record;
+	struct wait_queue_head_t wq_play, wq_record;
 	int first_filled_play;	/* first buffer containing data (next to play) */
 	int nb_filled_play; 
 	int play_offset;

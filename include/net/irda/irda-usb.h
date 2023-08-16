@@ -137,7 +137,7 @@ struct irda_usb_cb {
 	__u16 bulk_out_mtu;		/* Max Tx packet size in bytes */
 	__u8  bulk_int_ep;		/* Interrupt Endpoint assignments */
 
-	wait_queue_head_t wait_q;	/* for timeouts */
+	struct wait_queue_head_t wait_q;	/* for timeouts */
 
 	struct urb rx_urb[IU_MAX_RX_URBS];	/* URBs used to receive data frames */
 	struct urb *idle_rx_urb;	/* Pointer to idle URB in Rx path */

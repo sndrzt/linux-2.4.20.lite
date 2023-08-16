@@ -299,7 +299,7 @@ struct ymf_dmabuf {
 	int count;		/* fill count */
 	unsigned total_bytes;	/* total bytes dmaed by hardware */
 
-	wait_queue_head_t wait;	/* put process on wait queue when no more space in buffer */
+	struct wait_queue_head_t wait;	/* put process on wait queue when no more space in buffer */
 
 	/* redundant, but makes calculations easier */
 	unsigned fragsize;

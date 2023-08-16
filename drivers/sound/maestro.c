@@ -399,7 +399,7 @@ struct ess_state {
 	spinlock_t lock;
 	/* only let 1 be opening at a time */
 	struct semaphore open_sem;
-	wait_queue_head_t open_wait;
+	struct wait_queue_head_t open_wait;
 	mode_t open_mode;
 
 	/* soundcore stuff */
@@ -416,7 +416,7 @@ struct ess_state {
 		unsigned total_bytes;
 		int count;
 		unsigned error; /* over/underrun */
-		wait_queue_head_t wait;
+		struct wait_queue_head_t wait;
 		/* redundant, but makes calculations easier */
 		unsigned fragsize;
 		unsigned dmasize;
@@ -463,7 +463,7 @@ struct ess_card {
 	int power_regs;
 		
 	int in_suspend;
-	wait_queue_head_t suspend_queue;
+	struct wait_queue_head_t suspend_queue;
 
 	struct ess_state channels[MAX_DSPS];
 	u16 maestro_map[NR_IDRS];	/* Register map */

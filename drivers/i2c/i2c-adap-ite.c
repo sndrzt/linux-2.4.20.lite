@@ -64,7 +64,7 @@ static struct iic_ite gpi;
 #if (LINUX_VERSION_CODE < 0x020301)
 static struct wait_queue *iic_wait = NULL;
 #else
-static wait_queue_head_t iic_wait;
+static struct wait_queue_head_t iic_wait;
 #endif
 static int iic_pending;
 

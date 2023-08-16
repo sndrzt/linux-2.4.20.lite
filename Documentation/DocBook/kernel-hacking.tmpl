@@ -855,7 +855,7 @@ foo_open (...)
    A wait queue is used to wait for someone to wake you up when a
    certain condition is true.  They must be used carefully to ensure
    there is no race condition.  You declare a
-   <type>wait_queue_head_t</type>, and then processes which want to
+   <type>struct wait_queue_head_t</type>, and then processes which want to
    wait for that condition declare a <type>wait_queue_t</type>
    referring to themselves, and place that in the queue.
   </para>
@@ -864,7 +864,7 @@ foo_open (...)
    <title>Declaring</title>
    
    <para>
-    You declare a <type>wait_queue_head_t</type> using the
+    You declare a <type>struct wait_queue_head_t</type> using the
     <function>DECLARE_WAIT_QUEUE_HEAD()</function> macro, or using the
     <function>init_waitqueue_head()</function> routine in your
     initialization code.

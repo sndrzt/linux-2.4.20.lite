@@ -870,7 +870,7 @@ static unsigned int pcimouse_irq;
 struct aux_queue {
 	unsigned long head;
 	unsigned long tail;
-	wait_queue_head_t proc_list;
+	struct wait_queue_head_t proc_list;
 	struct fasync_struct *fasync;
 	unsigned char buf[AUX_BUF_SIZE];
 };

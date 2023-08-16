@@ -57,7 +57,7 @@ struct netlink_opt
 	unsigned		dst_groups;
 	unsigned long		state;
 	int			(*handler)(int unit, struct sk_buff *skb);
-	wait_queue_head_t	wait;
+	struct wait_queue_head_t	wait;
 	struct netlink_callback	*cb;
 	spinlock_t		cb_lock;
 	void			(*data_ready)(struct sock *sk, int bytes);

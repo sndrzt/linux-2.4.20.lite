@@ -55,7 +55,7 @@ struct joydev {
 	int open;
 	int minor;
 	struct input_handle handle;
-	wait_queue_head_t wait;
+	struct wait_queue_head_t wait;
 	devfs_handle_t devfs;
 	struct joydev *next;
 	struct joydev_list *list;

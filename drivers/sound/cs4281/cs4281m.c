@@ -280,9 +280,9 @@ struct cs4281_state {
 	struct semaphore open_sem_adc;
 	struct semaphore open_sem_dac;
 	mode_t open_mode;
-	wait_queue_head_t open_wait;
-	wait_queue_head_t open_wait_adc;
-	wait_queue_head_t open_wait_dac;
+	struct wait_queue_head_t open_wait;
+	struct wait_queue_head_t open_wait_adc;
+	struct wait_queue_head_t open_wait_dac;
 
 	dma_addr_t dmaaddr_tmpbuff;
 	unsigned buforder_tmpbuff;	// Log base 2 of 'rawbuf' size in bytes..
@@ -299,7 +299,7 @@ struct cs4281_state {
 		int count;
 		unsigned underrun;	// underrun flag
 		unsigned error;	// over/underrun 
-		wait_queue_head_t wait;
+		struct wait_queue_head_t wait;
 		// redundant, but makes calculations easier 
 		unsigned fragsize;	// 2**fragshift..
 		unsigned dmasize;	// 2**buforder.
@@ -318,8 +318,8 @@ struct cs4281_state {
 	struct {
 		unsigned ird, iwr, icnt;
 		unsigned ord, owr, ocnt;
-		wait_queue_head_t iwait;
-		wait_queue_head_t owait;
+		struct wait_queue_head_t iwait;
+		struct wait_queue_head_t owait;
 		struct timer_list timer;
 		unsigned char ibuf[MIDIINBUF];
 		unsigned char obuf[MIDIOUTBUF];

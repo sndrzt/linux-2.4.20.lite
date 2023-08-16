@@ -137,7 +137,7 @@ struct iforce {
 	struct usb_ctrlrequest dr;
 #endif
 					/* Force Feedback */
-	wait_queue_head_t wait;
+	struct wait_queue_head_t wait;
 	struct resource device_memory;
 	struct iforce_core_effect core_effects[FF_EFFECTS_MAX];
 };

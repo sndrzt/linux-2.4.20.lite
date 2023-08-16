@@ -106,8 +106,8 @@ struct capiminor {
 
 	/* for raw device */
 	struct sk_buff_head recvqueue;
-	wait_queue_head_t recvwait;
-	wait_queue_head_t sendwait;
+	struct wait_queue_head_t recvwait;
+	struct wait_queue_head_t sendwait;
 	
 	/* transmit path */
 	struct datahandle_queue {
@@ -137,7 +137,7 @@ struct capidev {
 	unsigned        userflags;
 
 	struct sk_buff_head recvqueue;
-	wait_queue_head_t recvwait;
+	struct wait_queue_head_t recvwait;
 
 	/* Statistic */
 	unsigned long	nrecvctlpkt;

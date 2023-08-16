@@ -159,9 +159,9 @@ struct s_version {
 
 struct s_drive_stuff {
 	/* waitqueues */
-	wait_queue_head_t busyq;
-	wait_queue_head_t lockq;
-	wait_queue_head_t sleepq;
+	struct wait_queue_head_t busyq;
+	struct wait_queue_head_t lockq;
+	struct wait_queue_head_t sleepq;
 
 	/* flags */
 	volatile int introk;	/* status of last irq operation */

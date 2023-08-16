@@ -100,7 +100,7 @@ acpi_load_tables (
 
 acpi_status
 acpi_load_table (
-	acpi_table_header       *table_ptr);
+	struct acpi_table_header       *table_ptr);
 
 acpi_status
 acpi_unload_table (
@@ -110,7 +110,7 @@ acpi_status
 acpi_get_table_header (
 	acpi_table_type         table_type,
 	u32                     instance,
-	acpi_table_header       *out_table_header);
+	struct acpi_table_header       *out_table_header);
 
 acpi_status
 acpi_get_table (
@@ -123,7 +123,7 @@ acpi_get_firmware_table (
 	acpi_string             signature,
 	u32                     instance,
 	u32                     flags,
-	acpi_table_header       **table_pointer);
+	struct acpi_table_header       **table_pointer);
 
 
 /*

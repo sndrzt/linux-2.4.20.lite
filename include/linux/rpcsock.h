@@ -77,7 +77,7 @@ struct rpc_wait {
 	struct rpc_wait *	w_next;
 	struct rpc_ioreq *	w_req;
 	int			w_result;
-	wait_queue_head_t 	w_wait;
+	struct wait_queue_head_t 	w_wait;
 	rpc_callback_fn_t	w_handler;
 	void *			w_cdata;
 	char			w_queued;
@@ -94,8 +94,8 @@ struct rpc_sock {
 	unsigned long		cwnd;
 	struct rpc_wait *	pending;
 	struct rpc_wait *	free;
-	wait_queue_head_t	backlog;
-	wait_queue_head_t	shutwait;
+	struct wait_queue_head_t	backlog;
+	struct wait_queue_head_t	shutwait;
 	int			shutdown;
 };
 

@@ -138,7 +138,7 @@ struct pp_cam_entry {
 	struct parport *port;
 	struct tq_struct cb_task;
 	int open_count;
-	wait_queue_head_t wq_stream;
+	struct wait_queue_head_t wq_stream;
 	/* image state flags */
 	int image_ready;	/* we got an interrupt */
 	int image_complete;	/* we have seen 4 EOI */

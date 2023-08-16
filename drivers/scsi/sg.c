@@ -168,7 +168,7 @@ typedef struct sg_fd /* holds the state of a file descriptor */
 {
     struct sg_fd * nextfp; /* NULL when last opened fd on this device */
     struct sg_device * parentdp;     /* owning device */
-    wait_queue_head_t read_wait;     /* queue read until command done */
+    struct wait_queue_head_t read_wait;     /* queue read until command done */
     rwlock_t rq_list_lock;	     /* protect access to list in req_arr */
     int timeout;                     /* defaults to SG_DEFAULT_TIMEOUT */
     Sg_scatter_hold reserve;  /* buffer held for this file descriptor */
@@ -189,7 +189,7 @@ typedef struct sg_fd /* holds the state of a file descriptor */
 typedef struct sg_device /* holds the state of each scsi generic device */
 {
     Scsi_Device * device;
-    wait_queue_head_t o_excl_wait;   /* queue open() when O_EXCL in use */
+    struct wait_queue_head_t o_excl_wait;   /* queue open() when O_EXCL in use */
     int sg_tablesize;   /* adapter's max scatter-gather table size */
     Sg_fd * headfp;     /* first open fd belonging to this device */
     devfs_handle_t de;

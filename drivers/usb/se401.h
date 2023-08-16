@@ -222,7 +222,7 @@ struct usb_se401 {
 
 	struct se401_sbuf sbuf[SE401_NUMSBUF];
 
-	wait_queue_head_t wq;	/* Processes waiting */
+	struct wait_queue_head_t wq;	/* Processes waiting */
 
 	/* proc interface */
 	struct proc_dir_entry *proc_entry;	/* /proc/se401/videoX */

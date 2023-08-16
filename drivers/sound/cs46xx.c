@@ -241,7 +241,7 @@ struct cs_state {
 
 	/* single open lock mechanism, only used for recording */
 	struct semaphore open_sem;
-	wait_queue_head_t open_wait;
+	struct wait_queue_head_t open_wait;
 
 	/* file mode */
 	mode_t open_mode;
@@ -281,7 +281,7 @@ struct cs_state {
 
 		unsigned error;		/* number of over/underruns */
 		unsigned underrun;	/* underrun pending before next write has occurred */
-		wait_queue_head_t wait;	/* put process on wait queue when no more space in buffer */
+		struct wait_queue_head_t wait;	/* put process on wait queue when no more space in buffer */
 
 		/* redundant, but makes calculations easier */
 		unsigned fragsize;
@@ -367,9 +367,9 @@ struct cs_card {
 	struct {
 		unsigned ird, iwr, icnt;
 		unsigned ord, owr, ocnt;
-		wait_queue_head_t open_wait;
-		wait_queue_head_t iwait;
-		wait_queue_head_t owait;
+		struct wait_queue_head_t open_wait;
+		struct wait_queue_head_t iwait;
+		struct wait_queue_head_t owait;
 		spinlock_t lock;
 		unsigned char ibuf[CS_MIDIINBUF];
 		unsigned char obuf[CS_MIDIOUTBUF];

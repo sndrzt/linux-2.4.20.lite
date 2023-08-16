@@ -423,7 +423,7 @@ struct hrz_dev {
 
   spinlock_t          mem_lock;
 #if LINUX_VERSION_CODE >= 0x20303
-  wait_queue_head_t   tx_queue;
+  struct wait_queue_head_t   tx_queue;
 #else
   struct wait_queue * tx_queue;
 #endif

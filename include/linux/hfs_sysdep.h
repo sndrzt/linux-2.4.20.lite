@@ -93,7 +93,7 @@ static inline hfs_u32 hfs_time(void) {
 /*
  * hfs_wait_queue 
  */
-typedef wait_queue_head_t hfs_wait_queue;
+typedef struct wait_queue_head_t hfs_wait_queue;
 
 static inline void hfs_init_waitqueue(hfs_wait_queue *queue) {
         init_waitqueue_head(queue);

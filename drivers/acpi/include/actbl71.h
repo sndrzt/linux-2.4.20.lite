@@ -61,7 +61,7 @@ typedef struct  /* Root System Descriptor Pointer */
 /*****************************************/
 typedef struct
 {
-	acpi_table_header   header;                 /* Table header */
+	struct acpi_table_header   header;                 /* Table header */
 	u32                 reserved_pad;           /* IA64 alignment, must be 0 */
 	u64                 table_offset_entry [1]; /* Array of pointers to other */
 			   /* tables' headers */
@@ -93,7 +93,7 @@ typedef struct
 /******************************************/
 typedef struct
 {
-	acpi_table_header   header;             /* table header */
+	struct acpi_table_header   header;             /* table header */
 	u32                 reserved_pad;       /* IA64 alignment, must be 0 */
 	u64                 firmware_ctrl;      /* 64-bit Physical address of FACS */
 	u64                 dsdt;               /* 64-bit Physical address of DSDT */

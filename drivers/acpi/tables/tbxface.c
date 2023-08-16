@@ -137,7 +137,7 @@ error_exit:
 
 acpi_status
 acpi_load_table (
-	acpi_table_header       *table_ptr)
+	struct acpi_table_header       *table_ptr)
 {
 	acpi_status             status;
 	acpi_table_desc         table_info;
@@ -240,11 +240,11 @@ acpi_unload_table (
  *              Instance        - the non zero instance of the table, allows
  *                                support for multiple tables of the same type
  *                                see Acpi_gbl_Acpi_table_flag
- *              Out_table_header - pointer to the acpi_table_header if successful
+ *              Out_table_header - pointer to the struct acpi_table_header if successful
  *
  * DESCRIPTION: This function is called to get an ACPI table header.  The caller
  *              supplies an pointer to a data area sufficient to contain an ACPI
- *              acpi_table_header structure.
+ *              struct acpi_table_header structure.
  *
  *              The header contains a length field that can be used to determine
  *              the size of the buffer needed to contain the entire table.  This
@@ -257,9 +257,9 @@ acpi_status
 acpi_get_table_header (
 	acpi_table_type         table_type,
 	u32                     instance,
-	acpi_table_header       *out_table_header)
+	struct acpi_table_header       *out_table_header)
 {
-	acpi_table_header       *tbl_ptr;
+	struct acpi_table_header       *tbl_ptr;
 	acpi_status             status;
 
 
@@ -299,7 +299,7 @@ acpi_get_table_header (
 	 * Copy the header to the caller's buffer
 	 */
 	MEMCPY ((void *) out_table_header, (void *) tbl_ptr,
-			 sizeof (acpi_table_header));
+			 sizeof (struct acpi_table_header));
 
 	return_ACPI_STATUS (status);
 }
@@ -334,7 +334,7 @@ acpi_get_table (
 	u32                     instance,
 	acpi_buffer             *ret_buffer)
 {
-	acpi_table_header       *tbl_ptr;
+	struct acpi_table_header       *tbl_ptr;
 	acpi_status             status;
 	u32                     ret_buf_len;
 

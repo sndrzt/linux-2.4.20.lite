@@ -194,8 +194,8 @@ struct pwc_device
    spinlock_t ptrlock;			/* for manipulating the buffer pointers */
 
    /*** Misc. data ***/
-   wait_queue_head_t frameq;		/* When waiting for a frame to finish... */
-   wait_queue_head_t remove_ok;		/* When we got hot unplugged, we have to avoid a few race conditions */
+   struct wait_queue_head_t frameq;		/* When waiting for a frame to finish... */
+   struct wait_queue_head_t remove_ok;		/* When we got hot unplugged, we have to avoid a few race conditions */
 #if PWC_INT_PIPE
    void *usb_int_handler;		/* for the interrupt endpoint */
 #endif   

@@ -33,7 +33,7 @@
 #include <linux/config.h>
 
 #if LINUX_VERSION_CODE < 0x20212
-typedef struct wait_queue *wait_queue_head_t;
+typedef struct wait_queue *struct wait_queue_head_t;
 #endif
 
 /* The Buz only supports a maximum width of 720, but some V4L
@@ -251,7 +251,7 @@ struct zoran {
 	int video_interlace;		/* Image on screen is interlaced */
 
 	u32 *overlay_mask;
-        wait_queue_head_t v4l_capq;
+        struct wait_queue_head_t v4l_capq;
 
 	int v4l_overlay_active;		/* Overlay grab is activated */
 	int v4l_memgrab_active;		/* Memory grab is activated */
@@ -282,7 +282,7 @@ struct zoran {
 	enum zoran_codec_mode codec_mode;	/* status of codec */
 	struct zoran_params params;	/* structure with a lot of things to play with */
 
-	wait_queue_head_t jpg_capq;	/* wait here for grab to finish */
+	struct wait_queue_head_t jpg_capq;	/* wait here for grab to finish */
 
 	/* grab queue counts/indices, mask with BUZ_MASK_STAT_COM before using as index */
 	/* (dma_head - dma_tail) is number active in DMA, must be <= BUZ_NUM_STAT_COM */
@@ -331,7 +331,7 @@ struct zoran {
 	u32 last_isr;
 	unsigned long frame_num;
 
-	wait_queue_head_t test_q;
+	struct wait_queue_head_t test_q;
 };
 
 #endif

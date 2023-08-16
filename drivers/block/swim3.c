@@ -196,7 +196,7 @@ struct floppy_state {
 	struct timer_list timeout;
 	int	timeout_pending;
 	int	ejected;
-	wait_queue_head_t wait;
+	struct wait_queue_head_t wait;
 	int	wanted;
 	struct device_node*	media_bay; /* NULL when not in bay */
 	char	dbdma_cmd_space[5 * sizeof(struct dbdma_cmd)];

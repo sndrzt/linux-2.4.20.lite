@@ -91,8 +91,8 @@ struct ircomm_tty_cb {
 	struct termios	  normal_termios;
 	struct termios	  callout_termios;
 
-	wait_queue_head_t open_wait;
-	wait_queue_head_t close_wait;
+	struct wait_queue_head_t open_wait;
+	struct wait_queue_head_t close_wait;
 	struct timer_list watchdog_timer;
 	struct tq_struct  tqueue;
 

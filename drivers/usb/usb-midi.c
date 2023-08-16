@@ -175,7 +175,7 @@ struct midi_out_endpoint {
 	struct usb_device *usbdev;
 	int                endpoint;
 	spinlock_t         lock;
-	wait_queue_head_t  wait;
+	struct wait_queue_head_t  wait;
 	
 	unsigned char     *buf;
 	int                bufWrPtr;
@@ -191,7 +191,7 @@ struct midi_in_endpoint {
 	struct usb_device *usbdev;
 	int                endpoint;
 	spinlock_t         lock;
-	wait_queue_head_t  wait;
+	struct wait_queue_head_t  wait;
 
 	struct usb_mididev *cables[16];	// cables open for read
 	int                 readers;	// number of cables open for read

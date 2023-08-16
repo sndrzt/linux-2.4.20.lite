@@ -174,7 +174,7 @@ struct brlvger_priv {
 	__u8 event_queue[MAX_INTERRUPT_BUFFER][MAX_INTERRUPT_DATA];
 	atomic_t intr_idx, read_idx;
 	spinlock_t intr_idx_lock; /* protects intr_idx */
-	wait_queue_head_t read_wait;
+	struct wait_queue_head_t read_wait;
 
 	int opened;
 	struct semaphore open_sem; /* protects ->opened */

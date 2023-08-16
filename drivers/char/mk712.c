@@ -95,7 +95,7 @@ struct mk712_packet {
 struct mk712_queue {
 	unsigned long head;
 	unsigned long tail;
-	wait_queue_head_t proc_list;
+	struct wait_queue_head_t proc_list;
 	struct fasync_struct *fasync;
 	struct mk712_packet buf[256];
 };

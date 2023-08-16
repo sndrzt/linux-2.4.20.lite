@@ -665,7 +665,7 @@ void usbvideo_HexDump(const unsigned char *data, int len)
 /* Debugging aid */
 void usbvideo_SayAndWait(const char *what)
 {
-	wait_queue_head_t wq;
+	struct wait_queue_head_t wq;
 	init_waitqueue_head(&wq);
 	info("Say: %s", what);
 	interruptible_sleep_on_timeout (&wq, HZ*3); /* Timeout */

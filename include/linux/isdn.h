@@ -520,7 +520,7 @@ typedef struct modem_info {
   atemu                 emu;             /* AT-emulator data               */
   struct termios	normal_termios;  /* For saving termios structs     */
   struct termios	callout_termios;
-  wait_queue_head_t	open_wait, close_wait;
+  struct wait_queue_head_t	open_wait, close_wait;
   struct semaphore      write_sem;
 } modem_info;
 
@@ -581,7 +581,7 @@ typedef struct {
 	ulong               flags;            /* Misc driver Flags                */
 	int                 locks;            /* Number of locks for this driver  */
 	int                 channels;         /* Number of channels               */
-	wait_queue_head_t   st_waitq;         /* Wait-Queue for status-read's     */
+	struct wait_queue_head_t   st_waitq;         /* Wait-Queue for status-read's     */
 	int                 maxbufsize;       /* Maximum Buffersize supported     */
 	unsigned long       pktcount;         /* Until now: unused                */
 	int                 stavail;          /* Chars avail on Status-device     */
@@ -592,8 +592,8 @@ typedef struct {
 	unsigned long      DLEflag;           /* Flags: Insert DLE at next read   */
 #endif
 	struct sk_buff_head *rpqueue;         /* Pointers to start of Rcv-Queue   */
-	wait_queue_head_t  *rcv_waitq;       /* Wait-Queues for B-Channel-Reads  */
-	wait_queue_head_t  *snd_waitq;       /* Wait-Queue for B-Channel-Send's  */
+	struct wait_queue_head_t  *rcv_waitq;       /* Wait-Queues for B-Channel-Reads  */
+	struct wait_queue_head_t  *snd_waitq;       /* Wait-Queue for B-Channel-Send's  */
 	char               msn2eaz[10][ISDN_MSNLEN];  /* Mapping-Table MSN->EAZ   */
 } driver;
 
@@ -609,7 +609,7 @@ typedef struct isdn_devt {
 	/*  see ISDN_TIMER_..defines  */
 	int               global_flags;
 	infostruct        *infochain;                /* List of open info-devs.    */
-	wait_queue_head_t info_waitq;               /* Wait-Queue for isdninfo    */
+	struct wait_queue_head_t info_waitq;               /* Wait-Queue for isdninfo    */
 	struct timer_list timer;		       /* Misc.-function Timer       */
 	int               chanmap[ISDN_MAX_CHANNELS];/* Map minor->device-channel  */
 	int               drvmap[ISDN_MAX_CHANNELS]; /* Map minor->driver-index    */

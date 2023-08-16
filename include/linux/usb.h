@@ -743,7 +743,7 @@ int usb_bulk_msg(struct usb_device *usb_dev, unsigned int pipe, void *data, int 
 
 struct usb_api_data
 {
-	wait_queue_head_t wqh;
+	struct wait_queue_head_t wqh;
 	int done;
 	/* void* stuff;	*/	/* Possible extension later. */
 };

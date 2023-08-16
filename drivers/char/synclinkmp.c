@@ -185,11 +185,11 @@ typedef struct _synclinkmp_info {
 	int			tx_get;
 	int			tx_count;
 
-	wait_queue_head_t	open_wait;
-	wait_queue_head_t	close_wait;
+	struct wait_queue_head_t	open_wait;
+	struct wait_queue_head_t	close_wait;
 
-	wait_queue_head_t	status_event_wait_q;
-	wait_queue_head_t	event_wait_q;
+	struct wait_queue_head_t	status_event_wait_q;
+	struct wait_queue_head_t	event_wait_q;
 	struct timer_list	tx_timer;	/* HDLC transmit timeout timer */
 	struct _synclinkmp_info	*next_device;	/* device list link */
 	struct timer_list	status_timer;	/* input signal status check timer */

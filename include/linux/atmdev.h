@@ -206,7 +206,7 @@ struct atm_cirange {
 #undef __AAL_STAT_ITEMS
 #else
 
-#include <linux/sched.h> /* wait_queue_head_t */
+#include <linux/sched.h> /* struct wait_queue_head_t */
 #include <linux/time.h> /* struct timeval */
 #include <linux/net.h>
 #include <linux/skbuff.h> /* struct sk_buff */
@@ -305,7 +305,7 @@ struct atm_vcc {
 	struct timeval	timestamp;	/* AAL timestamps */
 	struct sk_buff_head recvq;	/* receive queue */
 	struct k_atm_aal_stats *stats;	/* pointer to AAL stats group */
-	wait_queue_head_t sleep;	/* if socket is busy */
+	struct wait_queue_head_t sleep;	/* if socket is busy */
 	struct sock	*sk;		/* socket backpointer */
 	struct atm_vcc	*prev,*next;
 	/* SVC part --- may move later ------------------------------------- */

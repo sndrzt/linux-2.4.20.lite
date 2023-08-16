@@ -2463,7 +2463,7 @@ struct pmu_private {
 		unsigned short len;
 		unsigned char data[16];
 	}	rb_buf[RB_SIZE];
-	wait_queue_head_t wait;
+	struct wait_queue_head_t wait;
 	spinlock_t lock;
 #if defined(CONFIG_INPUT_ADBHID) && defined(CONFIG_PMAC_BACKLIGHT)
 	int	backlight_locker;

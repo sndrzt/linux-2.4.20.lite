@@ -274,11 +274,11 @@ acpi_get_firmware_table (
 	acpi_string             signature,
 	u32                     instance,
 	u32                     flags,
-	acpi_table_header       **table_pointer)
+	struct acpi_table_header       **table_pointer)
 {
 	ACPI_PHYSICAL_ADDRESS   physical_address;
-	acpi_table_header       *rsdt_ptr = NULL;
-	acpi_table_header       *table_ptr;
+	struct acpi_table_header       *rsdt_ptr = NULL;
+	struct acpi_table_header       *table_ptr;
 	acpi_status             status;
 	u32                     rsdt_size = 0;
 	u32                     table_size;

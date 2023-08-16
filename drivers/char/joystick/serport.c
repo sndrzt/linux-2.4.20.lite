@@ -41,7 +41,7 @@
 
 struct serport {
 	struct tty_struct *tty;
-	wait_queue_head_t wait;
+	struct wait_queue_head_t wait;
 	struct serio serio;
 };
 

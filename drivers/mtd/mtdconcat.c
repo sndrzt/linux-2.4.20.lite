@@ -144,13 +144,13 @@ static int concat_write (struct mtd_info *mtd, loff_t to, size_t len,
 
 static void concat_erase_callback (struct erase_info *instr)
 {
-	wake_up((wait_queue_head_t *)instr->priv);
+	wake_up((struct wait_queue_head_t *)instr->priv);
 }
 
 static int concat_dev_erase(struct mtd_info *mtd, struct erase_info *erase)
 {
 	int err;
-	wait_queue_head_t waitq;
+	struct wait_queue_head_t waitq;
 	DECLARE_WAITQUEUE(wait, current);
 
 	/*

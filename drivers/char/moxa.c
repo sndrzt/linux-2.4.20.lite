@@ -158,8 +158,8 @@ struct moxa_str {
 	struct tty_struct *tty;
 	struct termios normal_termios;
 	struct termios callout_termios;
-	wait_queue_head_t open_wait;
-	wait_queue_head_t close_wait;
+	struct wait_queue_head_t open_wait;
+	struct wait_queue_head_t close_wait;
 	struct tq_struct tqueue;
 };
 

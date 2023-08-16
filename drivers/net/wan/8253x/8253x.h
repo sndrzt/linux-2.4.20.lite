@@ -406,11 +406,11 @@ typedef struct sab_port
 	struct async_icount	icount;
 	struct termios		normal_termios;
 	struct termios		callout_termios;
-	wait_queue_head_t	open_wait;
-	wait_queue_head_t	close_wait;
-	wait_queue_head_t	delta_msr_wait;
-	wait_queue_head_t	read_wait;
-	wait_queue_head_t	write_wait;
+	struct wait_queue_head_t	open_wait;
+	struct wait_queue_head_t	close_wait;
+	struct wait_queue_head_t	delta_msr_wait;
+	struct wait_queue_head_t	read_wait;
+	struct wait_queue_head_t	write_wait;
   
   /*
    * Pointer to FIFO access routines.  These are individualized

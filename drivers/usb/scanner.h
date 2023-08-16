@@ -259,7 +259,7 @@ struct scn_usb_data {
 	char present;		/* Not zero if device is present */
 	char *obuf, *ibuf;	/* transfer buffers */
 	char bulk_in_ep, bulk_out_ep, intr_ep; /* Endpoint assignments */
-	wait_queue_head_t rd_wait_q; /* read timeouts */
+	struct wait_queue_head_t rd_wait_q; /* read timeouts */
 	struct semaphore sem; /* lock to prevent concurrent reads or writes */
 	unsigned int rd_nak_timeout; /* Seconds to wait before read() timeout. */
 };

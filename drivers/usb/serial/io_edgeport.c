@@ -354,10 +354,10 @@ struct edgeport_port {
 	char			closePending;
 	char			chaseResponsePending;
 
-	wait_queue_head_t	wait_chase;		/* for handling sleeping while waiting for chase to finish */
-	wait_queue_head_t	wait_open;		/* for handling sleeping while waiting for open to finish */
-	wait_queue_head_t	wait_command;		/* for handling sleeping while waiting for command to finish */
-	wait_queue_head_t	delta_msr_wait;		/* for handling sleeping while waiting for msr change to happen */
+	struct wait_queue_head_t	wait_chase;		/* for handling sleeping while waiting for chase to finish */
+	struct wait_queue_head_t	wait_open;		/* for handling sleeping while waiting for open to finish */
+	struct wait_queue_head_t	wait_command;		/* for handling sleeping while waiting for command to finish */
+	struct wait_queue_head_t	delta_msr_wait;		/* for handling sleeping while waiting for msr change to happen */
 
 	struct async_icount	icount;
 	struct usb_serial_port	*port;			/* loop back to the owner of this object */

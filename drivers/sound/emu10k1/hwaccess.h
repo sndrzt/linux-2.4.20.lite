@@ -175,7 +175,7 @@ struct emu10k1_card
 
 	struct semaphore	open_sem;
 	mode_t			open_mode;
-	wait_queue_head_t	open_wait;
+	struct wait_queue_head_t	open_wait;
 
 	u32	    mpuacqcount;	  // Mpu acquire count
 	u32	    has_toslink;	       // TOSLink detection

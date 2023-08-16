@@ -68,7 +68,7 @@ struct woinst
 	struct emu_timer timer;
 	struct wave_format format;
 	struct waveout_buffer buffer;
-	wait_queue_head_t wait_queue;
+	struct wait_queue_head_t wait_queue;
 	u8 mmapped;
 	u32 total_copied;	/* total number of bytes written() to the buffer (excluding silence) */
 	u32 total_played;	/* total number of bytes played including silence */

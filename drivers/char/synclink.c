@@ -219,11 +219,11 @@ struct mgsl_struct {
 	int			xmit_tail;
 	int			xmit_cnt;
 	
-	wait_queue_head_t	open_wait;
-	wait_queue_head_t	close_wait;
+	struct wait_queue_head_t	open_wait;
+	struct wait_queue_head_t	close_wait;
 	
-	wait_queue_head_t	status_event_wait_q;
-	wait_queue_head_t	event_wait_q;
+	struct wait_queue_head_t	status_event_wait_q;
+	struct wait_queue_head_t	event_wait_q;
 	struct timer_list	tx_timer;	/* HDLC transmit timeout timer */
 	struct mgsl_struct	*next_device;	/* device list link */
 	

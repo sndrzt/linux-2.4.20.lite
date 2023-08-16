@@ -133,7 +133,7 @@ struct btaudio {
 	int dma_block;
 	int read_offset;
 	int read_count;
-	wait_queue_head_t readq;
+	struct wait_queue_head_t readq;
 
 	/* settings */
 	int gain[3];

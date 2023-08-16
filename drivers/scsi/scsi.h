@@ -549,7 +549,7 @@ struct scsi_device {
 	 */
 	struct scsi_device *next;	/* Used for linked list */
 	struct scsi_device *prev;	/* Used for linked list */
-	wait_queue_head_t   scpnt_wait;	/* Used to wait if
+	struct wait_queue_head_t   scpnt_wait;	/* Used to wait if
 					   device is busy */
 	struct Scsi_Host *host;
 	request_queue_t request_queue;

@@ -60,7 +60,7 @@ struct wiinst
 	struct emu_timer timer;
 	struct wave_format format;
 	struct wavein_buffer buffer;
-	wait_queue_head_t wait_queue;
+	struct wait_queue_head_t wait_queue;
 	u8 mmapped;
 	u32 total_recorded;	/* total bytes read() from device */
 	u32 blocks;

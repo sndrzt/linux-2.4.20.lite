@@ -91,7 +91,7 @@ typedef struct pegasus {
 	int			intr_interval;
 	struct urb		*ctrl_urb, *rx_urb, *tx_urb, *intr_urb;
 	struct usb_ctrlrequest	dr;
-	wait_queue_head_t	ctrl_wait;
+	struct wait_queue_head_t	ctrl_wait;
 	struct semaphore	sem;
 	unsigned char		rx_buff[PEGASUS_MAX_MTU];
 	unsigned char		tx_buff[PEGASUS_MAX_MTU];

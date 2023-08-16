@@ -82,7 +82,7 @@
  * @write_urb: pointer to the bulk out struct urb for this port.
  * @bulk_out_endpointAddress: endpoint address for the bulk out pipe for this
  *	port.
- * @write_wait: a wait_queue_head_t used by the port.
+ * @write_wait: a struct wait_queue_head_t used by the port.
  * @tqueue: task queue for the line discipline waking up.
  * @open_count: number of times this port has been opened.
  * @sem: struct semaphore used to lock this structure.
@@ -112,7 +112,7 @@ struct usb_serial_port {
 	struct urb *		write_urb;
 	__u8			bulk_out_endpointAddress;
 
-	wait_queue_head_t	write_wait;
+	struct wait_queue_head_t	write_wait;
 	struct tq_struct	tqueue;
 	int			open_count;
 	struct semaphore	sem;

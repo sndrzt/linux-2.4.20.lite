@@ -705,7 +705,7 @@ typedef struct scq_info
    u32 scd;				/* SRAM address of the corresponding
                                            SCD */
    int tbd_count;			/* Only meaningful on variable rate */
-   wait_queue_head_t scqfull_waitq;
+   struct wait_queue_head_t scqfull_waitq;
    volatile char full;			/* SCQ full indicator */
    spinlock_t lock;			/* SCQ spinlock */
 #ifdef NS_DEBUG_SPINLOCKS

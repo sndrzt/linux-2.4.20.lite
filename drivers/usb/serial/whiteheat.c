@@ -160,7 +160,7 @@ static struct usb_serial_device_type whiteheat_device = {
 
 struct whiteheat_private {
 	__u8			command_finished;
-	wait_queue_head_t	wait_command;	/* for handling sleeping while waiting for a command to finish */
+	struct wait_queue_head_t	wait_command;	/* for handling sleeping while waiting for a command to finish */
 };
 
 

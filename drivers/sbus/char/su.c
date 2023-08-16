@@ -148,9 +148,9 @@ struct su_struct {
 	int			xmit_tail;
 	int			xmit_cnt;
 	struct tq_struct	tqueue;
-	wait_queue_head_t	open_wait;
-	wait_queue_head_t	close_wait;
-	wait_queue_head_t	delta_msr_wait;
+	struct wait_queue_head_t	open_wait;
+	struct wait_queue_head_t	close_wait;
+	struct wait_queue_head_t	delta_msr_wait;
 
 	int			count;
 	struct async_icount	icount;

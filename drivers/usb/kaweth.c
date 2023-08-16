@@ -217,7 +217,7 @@ struct kaweth_device
 
 	struct usb_device *dev;
 	struct net_device *net;
-	wait_queue_head_t term_wait;
+	struct wait_queue_head_t term_wait;
 
 	struct urb *rx_urb;
 	struct urb *tx_urb;
@@ -1100,7 +1100,7 @@ static void kaweth_disconnect(struct usb_device *dev, void *ptr)
 // FIXME this completion stuff is a modified clone of
 // an OLD version of some stuff in usb.c ...
 struct kw_api_data {
-	wait_queue_head_t wqh;
+	struct wait_queue_head_t wqh;
 	int done;
 };
 

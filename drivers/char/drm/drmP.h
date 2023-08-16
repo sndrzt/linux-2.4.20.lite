@@ -397,7 +397,7 @@ typedef struct drm_buf {
 	struct drm_buf	  *next;       /* Kernel-only: used for free list    */
 	__volatile__ int  waiting;     /* On kernel DMA queue		     */
 	__volatile__ int  pending;     /* On hardware DMA queue		     */
-	wait_queue_head_t dma_wait;    /* Processes waiting		     */
+	struct wait_queue_head_t dma_wait;    /* Processes waiting		     */
 	pid_t		  pid;	       /* PID of holding process	     */
 	int		  context;     /* Kernel queue for this buffer	     */
 	int		  while_locked;/* Dispatch this buffer while locked  */
@@ -459,7 +459,7 @@ typedef struct drm_freelist {
 	atomic_t	  count;       /* Number of free buffers	   */
 	drm_buf_t	  *next;       /* End pointer			   */
 
-	wait_queue_head_t waiting;     /* Processes waiting on free bufs   */
+	struct wait_queue_head_t waiting;     /* Processes waiting on free bufs   */
 	int		  low_mark;    /* Low water mark		   */
 	int		  high_mark;   /* High water mark		   */
 	atomic_t	  wfh;	       /* If waiting for high mark	   */
@@ -501,9 +501,9 @@ typedef struct drm_queue {
 	atomic_t	  finalization;	/* Finalization in progress	    */
 	atomic_t	  block_count;	/* Count of processes waiting	    */
 	atomic_t	  block_read;	/* Queue blocked for reads	    */
-	wait_queue_head_t read_queue;	/* Processes waiting on block_read  */
+	struct wait_queue_head_t read_queue;	/* Processes waiting on block_read  */
 	atomic_t	  block_write;	/* Queue blocked for writes	    */
-	wait_queue_head_t write_queue;	/* Processes waiting on block_write */
+	struct wait_queue_head_t write_queue;	/* Processes waiting on block_write */
 #if 1
 	atomic_t	  total_queued;	/* Total queued statistic	    */
 	atomic_t	  total_flushed;/* Total flushes statistic	    */
@@ -511,13 +511,13 @@ typedef struct drm_queue {
 #endif
 	drm_ctx_flags_t	  flags;	/* Context preserving and 2D-only   */
 	drm_waitlist_t	  waitlist;	/* Pending buffers		    */
-	wait_queue_head_t flush_queue;	/* Processes waiting until flush    */
+	struct wait_queue_head_t flush_queue;	/* Processes waiting until flush    */
 } drm_queue_t;
 
 typedef struct drm_lock_data {
 	drm_hw_lock_t	  *hw_lock;	/* Hardware lock		   */
 	pid_t		  pid;		/* PID of lock holder (0=kernel)   */
-	wait_queue_head_t lock_queue;	/* Queue of blocked processes	   */
+	struct wait_queue_head_t lock_queue;	/* Queue of blocked processes	   */
 	unsigned long	  lock_time;	/* Time of last lock in jiffies	   */
 } drm_lock_data_t;
 
@@ -554,7 +554,7 @@ typedef struct drm_device_dma {
 	drm_buf_t	  *this_buffer;	/* Buffer being sent		   */
 	drm_buf_t	  *next_buffer; /* Selected buffer to send	   */
 	drm_queue_t	  *next_queue;	/* Queue from which buffer selected*/
-	wait_queue_head_t waiting;	/* Processes waiting on free bufs  */
+	struct wait_queue_head_t waiting;	/* Processes waiting on free bufs  */
 } drm_device_dma_t;
 
 #if __REALLY_HAVE_AGP
@@ -653,7 +653,7 @@ typedef struct drm_device {
 	__volatile__ long interrupt_flag; /* Interruption handler flag	   */
 	__volatile__ long dma_flag;	/* DMA dispatch flag		   */
 	struct timer_list timer;	/* Timer for delaying ctx switch   */
-	wait_queue_head_t context_wait; /* Processes waiting on ctx switch */
+	struct wait_queue_head_t context_wait; /* Processes waiting on ctx switch */
 	int		  last_checked;	/* Last context checked for DMA	   */
 	int		  last_context;	/* Last current context		   */
 	unsigned long	  last_switch;	/* jiffies at last context switch  */
@@ -671,8 +671,8 @@ typedef struct drm_device {
 	char		  *buf_wp;	/* Write pointer		   */
 	char		  *buf_end;	/* End pointer			   */
 	struct fasync_struct *buf_async;/* Processes waiting for SIGIO	   */
-	wait_queue_head_t buf_readers;	/* Processes waiting to read	   */
-	wait_queue_head_t buf_writers;	/* Processes waiting to ctx switch */
+	struct wait_queue_head_t buf_readers;	/* Processes waiting to read	   */
+	struct wait_queue_head_t buf_writers;	/* Processes waiting to ctx switch */
 
 #if __REALLY_HAVE_AGP
 	drm_agp_head_t    *agp;

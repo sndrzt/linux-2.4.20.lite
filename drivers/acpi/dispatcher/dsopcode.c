@@ -60,7 +60,7 @@ acpi_ds_get_buffer_field_arguments (
 	acpi_parse_object       *op;
 	acpi_parse_object       *field_op;
 	acpi_status             status;
-	acpi_table_desc         *table_desc;
+	struct acpi_table_desc         *table_desc;
 	acpi_walk_state         *walk_state;
 
 
@@ -199,7 +199,7 @@ acpi_ds_get_region_arguments (
 	acpi_parse_object       *op;
 	acpi_parse_object       *region_op;
 	acpi_status             status;
-	acpi_table_desc         *table_desc;
+	struct acpi_table_desc         *table_desc;
 	acpi_walk_state         *walk_state;
 
 

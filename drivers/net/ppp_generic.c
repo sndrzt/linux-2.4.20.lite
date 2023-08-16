@@ -74,7 +74,7 @@ struct ppp_file {
 	}		kind;
 	struct sk_buff_head xq;		/* pppd transmit queue */
 	struct sk_buff_head rq;		/* receive queue for pppd */
-	wait_queue_head_t rwait;	/* for poll on reading /dev/ppp */
+	struct wait_queue_head_t rwait;	/* for poll on reading /dev/ppp */
 	atomic_t	refcnt;		/* # refs (incl /dev/ppp attached) */
 	int		hdrlen;		/* space to leave for headers */
 	int		index;		/* interface unit / channel number */

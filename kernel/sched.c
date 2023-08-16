@@ -711,7 +711,7 @@ same_process:
  * started to run but is not in state TASK_RUNNING.  try_to_wake_up() returns zero
  * in this (rare) case, and we handle it by contonuing to scan the queue.
  */
-static inline void __wake_up_common (wait_queue_head_t *q, unsigned int mode,
+static inline void __wake_up_common (struct wait_queue_head_t *q, unsigned int mode,
 			 	     int nr_exclusive, const int sync)
 {
 	struct list_head *tmp;
@@ -735,7 +735,7 @@ static inline void __wake_up_common (wait_queue_head_t *q, unsigned int mode,
 	}
 }
 
-void __wake_up(wait_queue_head_t *q, unsigned int mode, int nr)
+void __wake_up(struct wait_queue_head_t *q, unsigned int mode, int nr)
 {
 	if (q) {
 		unsigned long flags;
@@ -745,7 +745,7 @@ void __wake_up(wait_queue_head_t *q, unsigned int mode, int nr)
 	}
 }
 
-void __wake_up_sync(wait_queue_head_t *q, unsigned int mode, int nr)
+void __wake_up_sync(struct wait_queue_head_t *q, unsigned int mode, int nr)
 {
 	if (q) {
 		unsigned long flags;
@@ -800,7 +800,7 @@ void wait_for_completion(struct completion *x)
 	__remove_wait_queue(q, &wait);				\
 	wq_write_unlock_irqrestore(&q->lock,flags);
 
-void interruptible_sleep_on(wait_queue_head_t *q)
+void interruptible_sleep_on(struct wait_queue_head_t *q)
 {
 	SLEEP_ON_VAR
 
@@ -811,7 +811,7 @@ void interruptible_sleep_on(wait_queue_head_t *q)
 	SLEEP_ON_TAIL
 }
 
-long interruptible_sleep_on_timeout(wait_queue_head_t *q, long timeout)
+long interruptible_sleep_on_timeout(struct wait_queue_head_t *q, long timeout)
 {
 	SLEEP_ON_VAR
 
@@ -824,7 +824,7 @@ long interruptible_sleep_on_timeout(wait_queue_head_t *q, long timeout)
 	return timeout;
 }
 
-void sleep_on(wait_queue_head_t *q)
+void sleep_on(struct wait_queue_head_t *q)
 {
 	SLEEP_ON_VAR
 	
@@ -835,7 +835,7 @@ void sleep_on(wait_queue_head_t *q)
 	SLEEP_ON_TAIL
 }
 
-long sleep_on_timeout(wait_queue_head_t *q, long timeout)
+long sleep_on_timeout(struct wait_queue_head_t *q, long timeout)
 {
 	SLEEP_ON_VAR
 	

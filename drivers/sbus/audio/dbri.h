@@ -104,7 +104,7 @@ struct dbri {
 
 #if 0
 	/* Where to sleep if busy */
-	wait_queue_head_t wait, int_wait;
+	struct wait_queue_head_t wait, int_wait;
 #endif
 	struct audio_info perchip_info;
 

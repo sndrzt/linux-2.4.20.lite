@@ -278,7 +278,7 @@ struct meye_queue {
 	unsigned int tail;		/* queue tail */
 	unsigned int len;		/* queue length */
 	spinlock_t s_lock;		/* spinlock protecting the queue */
-	wait_queue_head_t proc_list;	/* wait queue */
+	struct wait_queue_head_t proc_list;	/* wait queue */
 	int buf[MEYE_QUEUE_SIZE];	/* queue contents */
 };
 

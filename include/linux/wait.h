@@ -74,7 +74,7 @@ typedef struct __wait_queue wait_queue_t;
 # define wq_write_unlock spin_unlock
 #endif
 
-struct __wait_queue_head {
+struct wait_queue_head_t {
 	wq_lock_t lock;
 	struct list_head task_list;
 #if WAITQUEUE_DEBUG
@@ -82,8 +82,6 @@ struct __wait_queue_head {
 	long __creator;
 #endif
 };
-typedef struct __wait_queue_head wait_queue_head_t;
-
 
 /*
  * Debugging macros.  We eschew `do { } while (0)' because gcc can generate
@@ -150,9 +148,9 @@ typedef struct __wait_queue_head wait_queue_head_t;
 			__WAITQUEUE_HEAD_DEBUG_INIT(name)}
 
 #define DECLARE_WAIT_QUEUE_HEAD(name) \
-	wait_queue_head_t name = __WAIT_QUEUE_HEAD_INITIALIZER(name)
+	struct wait_queue_head_t name = __WAIT_QUEUE_HEAD_INITIALIZER(name)
 
-static inline void init_waitqueue_head(wait_queue_head_t *q)
+static inline void init_waitqueue_head(struct wait_queue_head_t *q)
 {
 #if WAITQUEUE_DEBUG
 	if (!q)
@@ -179,7 +177,7 @@ static inline void init_waitqueue_entry(wait_queue_t *q, struct task_struct *p)
 #endif
 }
 
-static inline int waitqueue_active(wait_queue_head_t *q)
+static inline int waitqueue_active(struct wait_queue_head_t *q)
 {
 #if WAITQUEUE_DEBUG
 	if (!q)
@@ -190,7 +188,7 @@ static inline int waitqueue_active(wait_queue_head_t *q)
 	return !list_empty(&q->task_list);
 }
 
-static inline void __add_wait_queue(wait_queue_head_t *head, wait_queue_t *new)
+static inline void __add_wait_queue(struct wait_queue_head_t *head, wait_queue_t *new)
 {
 #if WAITQUEUE_DEBUG
 	if (!head || !new)
@@ -206,7 +204,7 @@ static inline void __add_wait_queue(wait_queue_head_t *head, wait_queue_t *new)
 /*
  * Used for wake-one threads:
  */
-static inline void __add_wait_queue_tail(wait_queue_head_t *head,
+static inline void __add_wait_queue_tail(struct wait_queue_head_t *head,
 						wait_queue_t *new)
 {
 #if WAITQUEUE_DEBUG
@@ -220,7 +218,7 @@ static inline void __add_wait_queue_tail(wait_queue_head_t *head,
 	list_add_tail(&new->task_list, &head->task_list);
 }
 
-static inline void __remove_wait_queue(wait_queue_head_t *head,
+static inline void __remove_wait_queue(struct wait_queue_head_t *head,
 							wait_queue_t *old)
 {
 #if WAITQUEUE_DEBUG

@@ -29,8 +29,8 @@ struct hpusbscsi
 	u8 sense_command[SENSE_COMMAND_SIZE];
 
         int use_count;
-        wait_queue_head_t pending;
-        wait_queue_head_t deathrow;
+        struct wait_queue_head_t pending;
+        struct wait_queue_head_t deathrow;
 
         struct urb dataurb;
         struct urb controlurb;

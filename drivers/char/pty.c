@@ -35,7 +35,7 @@
 
 struct pty_struct {
 	int	magic;
-	wait_queue_head_t open_wait;
+	struct wait_queue_head_t open_wait;
 };
 
 #define PTY_MAGIC 0x5001

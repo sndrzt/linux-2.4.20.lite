@@ -34,7 +34,7 @@
 struct hci_vhci_struct {
 	struct hci_dev       hdev;
 	__u32                flags;
-	wait_queue_head_t    read_wait;
+	struct wait_queue_head_t    read_wait;
 	struct sk_buff_head  readq;
 	struct fasync_struct *fasync;
 };

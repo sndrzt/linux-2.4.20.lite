@@ -72,7 +72,7 @@ struct socket
 	struct fasync_struct	*fasync_list;	/* Asynchronous wake up list	*/
 	struct file		*file;		/* File back pointer for gc	*/
 	struct sock		*sk;
-	wait_queue_head_t	wait;
+	struct wait_queue_head_t	wait;
 
 	short			type;
 	unsigned char		passcred;

@@ -232,7 +232,7 @@ static ssize_t mtd_write(struct file *file, const char *buf, size_t count,loff_t
 ======================================================================*/
 static void mtd_erase_callback (struct erase_info *instr)
 {
-	wake_up((wait_queue_head_t *)instr->priv);
+	wake_up((struct wait_queue_head_t *)instr->priv);
 }
 
 static int mtd_ioctl(struct inode *inode, struct file *file,
@@ -291,7 +291,7 @@ static int mtd_ioctl(struct inode *inode, struct file *file,
 		if (!erase)
 			ret = -ENOMEM;
 		else {
-			wait_queue_head_t waitq;
+			struct wait_queue_head_t waitq;
 			DECLARE_WAITQUEUE(wait, current);
 
 			init_waitqueue_head(&waitq);

@@ -34,7 +34,7 @@
 /*************************************/
 typedef struct
 {
-	acpi_table_header       header;                 /* Table header */
+	struct acpi_table_header       header;                 /* Table header */
 	u32                     table_offset_entry [1]; /* Array of pointers to other */
 			 /* ACPI tables */
 } RSDT_DESCRIPTOR_REV1;
@@ -64,7 +64,7 @@ typedef struct
 /************************************/
 typedef struct
 {
-	acpi_table_header       header;                 /* table header */
+	struct acpi_table_header       header;                 /* table header */
 	u32                     firmware_ctrl;          /* Physical address of FACS */
 	u32                     dsdt;                   /* Physical address of DSDT */
 	u8                      model;                  /* System Interrupt Model */

@@ -54,12 +54,12 @@ struct ti_lynx {
 
 #ifdef CONFIG_IEEE1394_PCILYNX_PORTS
         atomic_t aux_intr_seen;
-        wait_queue_head_t aux_intr_wait;
+        struct wait_queue_head_t aux_intr_wait;
 
         void *mem_dma_buffer;
         dma_addr_t mem_dma_buffer_dma;
         struct semaphore mem_dma_mutex;
-        wait_queue_head_t mem_dma_intr_wait;
+        struct wait_queue_head_t mem_dma_intr_wait;
 #endif
 
         /*

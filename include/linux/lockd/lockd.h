@@ -49,7 +49,7 @@ struct nlm_host {
 				h_inuse      : 1,
 				h_killed     : 1,
 				h_monitored  : 1;
-	wait_queue_head_t	h_gracewait;	/* wait while reclaiming */
+	struct wait_queue_head_t	h_gracewait;	/* wait while reclaiming */
 	u32			h_state;	/* pseudo-state counter */
 	u32			h_nsmstate;	/* true remote NSM state */
 	unsigned int		h_count;	/* reference count */

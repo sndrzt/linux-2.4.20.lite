@@ -231,7 +231,7 @@ struct sonypi_queue {
 	unsigned long tail;
 	unsigned long len;
 	spinlock_t s_lock;
-	wait_queue_head_t proc_list;
+	struct wait_queue_head_t proc_list;
 	struct fasync_struct *fasync;
 	unsigned char buf[SONYPI_BUF_SIZE];
 };

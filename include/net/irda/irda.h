@@ -161,7 +161,7 @@ struct irda_sock {
 	int errno;            /* status of the IAS query */
 
 	struct sock *sk;
-	wait_queue_head_t query_wait;	/* Wait for the answer to a query */
+	struct wait_queue_head_t query_wait;	/* Wait for the answer to a query */
 	struct timer_list watchdog;	/* Timeout for discovery */
 
 	LOCAL_FLOW tx_flow;

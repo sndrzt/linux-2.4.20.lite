@@ -273,8 +273,8 @@ struct cm206_struct {
 	int openfiles;
 	ush sector[READ_AHEAD * RAW_SECTOR_SIZE / 2];	/* buffered cd-sector */
 	int sector_first, sector_last;	/* range of these sectors */
-	wait_queue_head_t uart;	/* wait queues for interrupt */
-	wait_queue_head_t data;
+	struct wait_queue_head_t uart;	/* wait queues for interrupt */
+	struct wait_queue_head_t data;
 	struct timer_list timer;	/* time-out */
 	char timed_out;
 	signed char max_sectors;	/* number of sectors that fit in adapter mem */
@@ -440,12 +440,12 @@ void cm206_timeout(unsigned long who)
 {
 	cd->timed_out = 1;
 	debug(("Timing out\n"));
-	wake_up_interruptible((wait_queue_head_t *) who);
+	wake_up_interruptible((struct wait_queue_head_t *) who);
 }
 
 /* This function returns 1 if a timeout occurred, 0 if an interrupt
    happened */
-int sleep_or_timeout(wait_queue_head_t * wait, int timeout)
+int sleep_or_timeout(struct wait_queue_head_t * wait, int timeout)
 {
 	cd->timed_out = 0;
 	cd->timer.data = (unsigned long) wait;

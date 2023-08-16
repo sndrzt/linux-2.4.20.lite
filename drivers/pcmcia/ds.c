@@ -110,7 +110,7 @@ typedef struct socket_info_t {
     int			state;
     user_info_t		*user;
     int			req_pending, req_result;
-    wait_queue_head_t	queue, request;
+    struct wait_queue_head_t	queue, request;
     struct timer_list	removal;
     socket_bind_t	*bind;
 } socket_info_t;

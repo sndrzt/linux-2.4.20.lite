@@ -24,13 +24,13 @@ struct hpfs_sb_info {
 	unsigned sb_rd_inode : 2;	/* lookup tells read_inode: 1-read fnode
 					   2-don't read fnode, file
 					   3-don't read fnode, direcotry */
-	wait_queue_head_t sb_iget_q;
+	struct wait_queue_head_t sb_iget_q;
 	unsigned char *sb_cp_table;	/* code page tables: */
 					/* 	128 bytes uppercasing table & */
 					/*	128 bytes lowercasing table */
 	unsigned *sb_bmp_dir;		/* main bitmap directory */
 	unsigned sb_c_bitmap;		/* current bitmap */
-	wait_queue_head_t sb_creation_de;/* when creating dirents, nobody else
+	struct wait_queue_head_t sb_creation_de;/* when creating dirents, nobody else
 					   can alloc blocks */
 	unsigned sb_creation_de_lock : 1;
 	/*unsigned sb_mounting : 1;*/

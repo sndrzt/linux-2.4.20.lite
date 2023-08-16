@@ -137,7 +137,7 @@ struct request_queue
 	/*
 	 * Tasks wait here for free read and write requests
 	 */
-	wait_queue_head_t	wait_for_requests[2];
+	struct wait_queue_head_t	wait_for_requests[2];
 };
 
 extern unsigned long blk_max_low_pfn, blk_max_pfn;

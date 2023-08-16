@@ -66,7 +66,7 @@ static struct pc110pad_params current_params;
 
 
 /* driver/filesystem interface management */
-static wait_queue_head_t queue;
+static struct wait_queue_head_t queue;
 static struct fasync_struct *asyncptr;
 static int active;	/* number of concurrent open()s */
 static struct semaphore reader_lock;

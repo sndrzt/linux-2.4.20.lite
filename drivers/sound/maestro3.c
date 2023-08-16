@@ -206,7 +206,7 @@ struct m3_state {
     spinlock_t lock;
 
     struct semaphore open_sem;
-    wait_queue_head_t open_wait;
+    struct wait_queue_head_t open_wait;
     mode_t open_mode;
 
     int dev_audio;
@@ -227,7 +227,7 @@ struct m3_state {
         unsigned total_bytes;
         int count;
         unsigned error; /* over/underrun */
-        wait_queue_head_t wait;
+        struct wait_queue_head_t wait;
         /* redundant, but makes calculations easier */
         unsigned fragsize;
         unsigned dmasize;
@@ -284,7 +284,7 @@ struct m3_card {
 
     u16 *suspend_mem;
     int in_suspend;
-    wait_queue_head_t suspend_queue;
+    struct wait_queue_head_t suspend_queue;
 };
 
 /*

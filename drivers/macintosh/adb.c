@@ -603,7 +603,7 @@ struct adbdev_state {
 	spinlock_t	lock;
 	atomic_t	n_pending;
 	struct adb_request *completed;
-  	wait_queue_head_t wait_queue;
+  	struct wait_queue_head_t wait_queue;
 	int		inuse;
 };
 

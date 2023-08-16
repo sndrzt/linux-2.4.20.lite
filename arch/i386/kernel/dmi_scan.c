@@ -522,7 +522,7 @@ static __init int print_if_true(struct dmi_blacklist *d)
  *	interrupt mask settings according to the laptop
  */
  
-static __initdata struct dmi_blacklist dmi_blacklist[]={
+static __initdata struct dmi_blacklist dmi_blacklst[]={
 #if 0
 	{ disable_ide_dma, "KT7", {	/* Overbroad right now - kill DMA on problem KT7 boards */
 			MATCH(DMI_PRODUCT_NAME, "KT7-RAID"),
@@ -812,7 +812,7 @@ static __init void dmi_check_blacklist(void)
 	struct dmi_blacklist *d;
 	int i;
 		
-	d=&dmi_blacklist[0];
+	d=&dmi_blacklst[0];
 	while(d->callback)
 	{
 		for(i=0;i<4;i++)

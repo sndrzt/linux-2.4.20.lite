@@ -4086,7 +4086,7 @@ char *options = NULL;
 MODULE_PARM(options,"s");
 MODULE_LICENSE("GPL");
 
-static void __init parse_options (char *line)
+static void __init parse_ide_options (char *line)
 {
 	char *next = line;
 
@@ -4102,7 +4102,7 @@ static void __init parse_options (char *line)
 
 int init_module (void)
 {
-	parse_options(options);
+	parse_ide_options(options);
 	return ide_init();
 }
 

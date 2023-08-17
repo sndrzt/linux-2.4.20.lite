@@ -82,7 +82,7 @@ extern int irda_device_init(void);
 extern char _stext, _etext;
 extern char *linux_banner;
 
-static int init(void *);
+static int init_proc(void *);
 
 extern void init_IRQ(void);
 extern void init_modules(void);
@@ -327,21 +327,6 @@ static void __init smp_init(void)
 #endif
 
 /*
- * We need to finalize in a non-__init function or else race conditions
- * between the root thread and the init thread may cause start_kernel to
- * be reaped by free_initmem before the root thread has proceeded to
- * cpu_idle.
- */
-
-static void rest_init(void)
-{
-	kernel_thread(init, NULL, CLONE_FS | CLONE_FILES | CLONE_SIGNAL);
-	unlock_kernel();
-	current->need_resched = 1;
- 	cpu_idle();
-} 
-
-/*
  *	Activate the first processor.
  */
 
@@ -432,7 +417,18 @@ asmlinkage void __init start_kernel(void)
 	 *	make syscalls (and thus be locked).
 	 */
 	smp_init();
-	rest_init();
+
+	/*
+	 * We need to finalize in a non-__init function or else race conditions
+	 * between the root thread and the init thread may cause start_kernel to
+	 * be reaped by free_initmem before the root thread has proceeded to
+	 * cpu_idle.
+	 */
+	kernel_thread(init_proc, NULL, CLONE_FS | CLONE_FILES | CLONE_SIGNAL);
+	unlock_kernel();
+	current->need_resched = 1;
+
+ 	cpu_idle();
 }
 
 struct task_struct *child_reaper = &init_task;
@@ -540,7 +536,7 @@ static void __init do_basic_setup(void)
 
 extern void prepare_namespace(void);
 
-static int init(void * unused)
+static int init_proc(void * unused)
 {
 	lock_kernel();
 	do_basic_setup();

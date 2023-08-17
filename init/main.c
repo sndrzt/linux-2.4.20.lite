@@ -571,8 +571,5 @@ static int init(void * unused)
 	if (execute_command)
 		execve(execute_command,argv_init,envp_init);
 	execve("/sbin/init",argv_init,envp_init);
-	execve("/etc/init",argv_init,envp_init);
-	execve("/bin/init",argv_init,envp_init);
-	execve("/bin/sh",argv_init,envp_init);
 	panic("No init found.  Try passing init= option to kernel.");
 }

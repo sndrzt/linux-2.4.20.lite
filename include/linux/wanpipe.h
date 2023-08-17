@@ -45,8 +45,6 @@
   #define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))
 #endif
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,3,0)
- 
  #define LINUX_2_4
  #define netdevice_t struct net_device
 
@@ -59,39 +57,6 @@
  #define wake_net_dev(a)	netif_wake_queue(a)
  #define is_dev_running(a)	netif_running(a)
  #define wan_dev_kfree_skb(a,b)	dev_kfree_skb_any(a)
-
-
-#elif LINUX_VERSION_CODE >= KERNEL_VERSION(2,1,0)
-
- #define LINUX_2_1
- #define netdevice_t struct device
- #define FREE_READ 1
- #define FREE_WRITE 0
-
- #define stop_net_queue(a) 	(set_bit(0, &##a->tbusy)) 
- #define start_net_queue(a) 	(clear_bit(0,&##a->tbusy))
- #define is_queue_stopped(a)	(##a->tbusy)
- #define wake_net_dev(a)	{clear_bit(0,&##a->tbusy);mark_bh(NET_BH);}
- #define is_dev_running(a)	(test_bit(0,&##a->start))
- #define wan_dev_kfree_skb(a,b)	dev_kfree_skb(a)
-
-#else
- #define LINUX_2_0
- #define netdevice_t struct device
-
- #define test_and_set_bit set_bit
- #define net_ratelimit() 1 
-
- #define stop_net_queue(a) 	(set_bit(0, &##a->tbusy)) 
- #define start_net_queue(a) 	(clear_bit(0,&##a->tbusy))
- #define is_queue_stopped(a)	(##a->tbusy)
- #define wake_net_dev(a)	{clear_bit(0,&##a->tbusy);mark_bh(NET_BH);}
- #define is_dev_running(a)	(test_bit(0,(void*)&##a->start))
- #define wan_dev_kfree_skb(a,b) dev_kfree_skb(a,b)  		 
- #define spin_lock_init(a)
- #define spin_lock(a)
- #define spin_unlock(a)
-#endif
 
 #include <linux/wanrouter.h>
 

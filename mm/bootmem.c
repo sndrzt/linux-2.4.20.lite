@@ -281,26 +281,6 @@ static unsigned long __init free_all_bootmem_core(struct pm_node *pmnod)
 	return total;
 }
 
-unsigned long __init init_bootmem_node (struct pm_node *pmnod, unsigned long freepfn, unsigned long startpfn, unsigned long endpfn)
-{
-	return(init_bootmem_core(pmnod, freepfn, startpfn, endpfn));
-}
-
-void __init reserve_bootmem_node (struct pm_node *pmnod, unsigned long physaddr, unsigned long size)
-{
-	reserve_bootmem_core(pmnod->botm, physaddr, size);
-}
-
-void __init free_bootmem_node (struct pm_node *pmnod, unsigned long physaddr, unsigned long size)
-{
-	return(free_bootmem_core(pmnod->botm, physaddr, size));
-}
-
-unsigned long __init free_all_bootmem_node (struct pm_node *pmnod)
-{
-	return(free_all_bootmem_core(pmnod));
-}
-
 unsigned long __init init_bootmem (unsigned long start, unsigned long pages)
 {
 	max_low_pfn = pages;
@@ -332,22 +312,6 @@ void * __init __alloc_bootmem (unsigned long size, unsigned long align, unsigned
 		if ((ptr = __alloc_bootmem_core(pmnod->botm, size,
 						align, goal)))
 			return(ptr);
-
-	/*
-	 * Whoops, we cannot satisfy the allocation request.
-	 */
-	printk(KERN_ALERT "bootmem alloc of %lu bytes failed!\n", size);
-	panic("Out of memory");
-	return NULL;
-}
-
-void * __init __alloc_bootmem_node (struct pm_node *pmnod, unsigned long size, unsigned long align, unsigned long goal)
-{
-	void *ptr;
-
-	ptr = __alloc_bootmem_core(pmnod->botm, size, align, goal);
-	if (ptr)
-		return (ptr);
 
 	/*
 	 * Whoops, we cannot satisfy the allocation request.

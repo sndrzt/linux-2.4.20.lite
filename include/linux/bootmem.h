@@ -41,20 +41,9 @@ extern void * __init __alloc_bootmem (unsigned long size, unsigned long align, u
 	__alloc_bootmem((x), SMP_CACHE_BYTES, 0)
 #define alloc_bootmem_pages(x) \
 	__alloc_bootmem((x), PAGE_SIZE, __pa(MAX_DMA_ADDRESS))
-#define alloc_bootmem_low_pages(x) \
-	__alloc_bootmem((x), PAGE_SIZE, 0)
 extern unsigned long __init free_all_bootmem (void);
 
-extern unsigned long __init init_bootmem_node (struct pm_node *pmnod, unsigned long freepfn, unsigned long startpfn, unsigned long endpfn);
-extern void __init reserve_bootmem_node (struct pm_node *pmnod, unsigned long physaddr, unsigned long size);
-extern void __init free_bootmem_node (struct pm_node *pmnod, unsigned long addr, unsigned long size);
-extern unsigned long __init free_all_bootmem_node (struct pm_node *pmnod);
-extern void * __init __alloc_bootmem_node (struct pm_node *pmnod, unsigned long size, unsigned long align, unsigned long goal);
 #define alloc_bootmem_node(pmnod, x) \
 	__alloc_bootmem_node((pmnod), (x), SMP_CACHE_BYTES, __pa(MAX_DMA_ADDRESS))
-#define alloc_bootmem_pages_node(pmnod, x) \
-	__alloc_bootmem_node((pmnod), (x), PAGE_SIZE, __pa(MAX_DMA_ADDRESS))
-#define alloc_bootmem_low_pages_node(pmnod, x) \
-	__alloc_bootmem_node((pmnod), (x), PAGE_SIZE, 0)
 
 #endif /* _LINUX_BOOTMEM_H */

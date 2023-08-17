@@ -178,20 +178,10 @@ static void __init fixrange_init (unsigned long start, unsigned long end, pgd_t 
 	pgd = pgd_base + i;
 
 	for ( ; (i < PTRS_PER_PGD) && (vaddr != end); pgd++, i++) {
-#if CONFIG_X86_PAE
-		if (pgd_none(*pgd)) {
-			pmd = (pmd_t *) alloc_bootmem_low_pages(PAGE_SIZE);
-			set_pgd(pgd, __pgd(__pa(pmd) + 0x1));
-			if (pmd != pmd_offset(pgd, 0))
-				printk("PAE BUG #02!\n");
-		}
-		pmd = pmd_offset(pgd, vaddr);
-#else
 		pmd = (pmd_t *)pgd;
-#endif
 		for (; (j < PTRS_PER_PMD) && (vaddr != end); pmd++, j++) {
 			if (pmd_none(*pmd)) {
-				pte = (pte_t *) alloc_bootmem_low_pages(PAGE_SIZE);
+				pte = (pte_t *) __alloc_bootmem(PAGE_SIZE, PAGE_SIZE, 0);
 				set_pmd(pmd, __pmd(_KERNPG_TABLE + __pa(pte)));
 				if (pte != pte_offset(pmd, 0))
 					BUG();
@@ -229,7 +219,7 @@ static void __init pagetable_init (void)
 		if (end && (vaddr >= end))
 			break;
 #if CONFIG_X86_PAE
-		pmd = (pmd_t *) alloc_bootmem_low_pages(PAGE_SIZE);
+		pmd = (pmd_t *) __alloc_bootmem(PAGE_SIZE, PAGE_SIZE, 0);
 		set_pgd(pgd, __pgd(__pa(pmd) + 0x1));
 #else
 		pmd = (pmd_t *)pgd;
@@ -255,7 +245,7 @@ static void __init pagetable_init (void)
 				continue;
 			}
 
-			pte_base = pte = (pte_t *) alloc_bootmem_low_pages(PAGE_SIZE);
+			pte_base = pte = (pte_t *) __alloc_bootmem(PAGE_SIZE, PAGE_SIZE, 0);
 
 			for (k = 0; k < PTRS_PER_PTE; pte++, k++) {
 				vaddr = i*PGDIR_SIZE + j*PMD_SIZE + k*PAGE_SIZE;

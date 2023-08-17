@@ -960,14 +960,13 @@ static unsigned long __init setup_memory(void)
 
 	max_low_pfn = find_max_low_pfn();
 
-#ifdef CONFIG_HIGHMEM
 	highstart_pfn = highend_pfn = max_pfn;
 	if (max_pfn > max_low_pfn) {
 		highstart_pfn = max_low_pfn;
 	}
 	printk(KERN_NOTICE "%ldMB HIGHMEM available.\n",
 		pages_to_mb(highend_pfn - highstart_pfn));
-#endif
+
 	printk(KERN_NOTICE "%ldMB LOWMEM available.\n",
 			pages_to_mb(max_low_pfn));
 	/*
@@ -992,22 +991,13 @@ static unsigned long __init setup_memory(void)
 	 */
 	reserve_bootmem(0, PAGE_SIZE);
 
-#ifdef CONFIG_SMP
 	/*
 	 * But first pinch a few for the stack/trampoline stuff
 	 * FIXME: Don't need the extra page at 4K, but need to fix
 	 * trampoline before removing it. (see the GDT stuff)
 	 */
 	reserve_bootmem(PAGE_SIZE, PAGE_SIZE);
-#endif
 
-#ifdef CONFIG_X86_LOCAL_APIC
-	/*
-	 * Find and reserve possible boot-time SMP configuration:
-	 */
-	find_smp_config();
-#endif
-#ifdef CONFIG_BLK_DEV_INITRD
 	if (LOADER_TYPE && INITRD_START) {
 		if (INITRD_START + INITRD_SIZE <= (max_low_pfn << PAGE_SHIFT)) {
 			reserve_bootmem(INITRD_START, INITRD_SIZE);
@@ -1023,7 +1013,6 @@ static unsigned long __init setup_memory(void)
 			initrd_start = 0;
 		}
 	}
-#endif
 
 	return max_low_pfn;
 }
@@ -1079,14 +1068,6 @@ void __init setup_arch(char **cmdline_p)
 {
 	unsigned long max_low_pfn;
 
-#ifdef CONFIG_VISWS
-	visws_get_board_type_and_rev();
-#endif
-
-#ifndef CONFIG_HIGHIO
-	blk_nohighio = 1;
-#endif
-
  	ROOT_DEV = to_kdev_t(ORIG_ROOT_DEV);
  	drive_info = DRIVE_INFO;
  	screen_info = SCREEN_INFO;
@@ -1099,11 +1080,10 @@ void __init setup_arch(char **cmdline_p)
 	}
 	aux_device_present = AUX_DEVICE_INFO;
 
-#ifdef CONFIG_BLK_DEV_RAM
 	rd_image_start = RAMDISK_FLAGS & RAMDISK_IMAGE_START_MASK;
 	rd_prompt = ((RAMDISK_FLAGS & RAMDISK_PROMPT_FLAG) != 0);
 	rd_doload = ((RAMDISK_FLAGS & RAMDISK_LOAD_FLAG) != 0);
-#endif
+
 	setup_memory_region();
 
 	if (!MOUNT_ROOT_RDONLY)
@@ -1143,27 +1123,14 @@ void __init setup_arch(char **cmdline_p)
 	 * any memory using the bootmem allocator.
 	 */
 
-#ifdef CONFIG_SMP
 	smp_alloc_memory(); /* AP processor realmode stacks in low memory*/
-#endif
+
 	paging_init();
-#ifdef CONFIG_X86_LOCAL_APIC
-	/*
-	 * get boot-time SMP configuration:
-	 */
-	if (smp_found_config)
-		get_smp_config();
-#endif
 
 	register_memory(max_low_pfn);
 
-#ifdef CONFIG_VT
-#if defined(CONFIG_VGA_CONSOLE)
 	conswitchp = &vga_con;
-#elif defined(CONFIG_DUMMY_CONSOLE)
-	conswitchp = &dummy_con;
-#endif
-#endif
+
 	dmi_scan_machine();
 }
 
@@ -1175,22 +1142,11 @@ static int __init cachesize_setup(char *str)
 }
 __setup("cachesize=", cachesize_setup);
 
-
-#ifndef CONFIG_X86_TSC
-static int tsc_disable __initdata = 0;
-
-static int __init notsc_setup(char *str)
-{
-	tsc_disable = 1;
-	return 1;
-}
-#else
 static int __init notsc_setup(char *str)
 {
 	printk("notsc: Kernel compiled with CONFIG_X86_TSC, cannot disable TSC.\n");
 	return 1;
 }
-#endif
 __setup("notsc", notsc_setup);
 
 static int __init highio_setup(char *str)
@@ -1686,248 +1642,6 @@ static void __init init_cyrix(struct cpuinfo_x86 *c)
 	if (p) strcat(buf, p);
 	return;
 }
-
-#ifdef CONFIG_X86_OOSTORE
-
-static u32 __init power2(u32 x)
-{
-	u32 s=1;
-	while(s<=x)
-		s<<=1;
-	return s>>=1;
-}
-
-/*
- *	Set up an actual MCR
- */
- 
-static void __init winchip_mcr_insert(int reg, u32 base, u32 size, int key)
-{
-	u32 lo, hi;
-	
-	hi = base & ~0xFFF;
-	lo = ~(size-1);		/* Size is a power of 2 so this makes a mask */
-	lo &= ~0xFFF;		/* Remove the ctrl value bits */
-	lo |= key;		/* Attribute we wish to set */
-	wrmsr(reg+MSR_IDT_MCR0, lo, hi);
-	mtrr_centaur_report_mcr(reg, lo, hi);	/* Tell the mtrr driver */
-}
-
-/*
- *	Figure what we can cover with MCR's
- *
- *	Shortcut: We know you can't put 4Gig of RAM on a winchip
- */
-
-static u32 __init ramtop(void)		/* 16388 */
-{
-	int i;
-	u32 top = 0;
-	u32 clip = 0xFFFFFFFFUL;
-	
-	for (i = 0; i < e820.nr_map; i++) {
-		unsigned long start, end;
-
-		if (e820.map[i].addr > 0xFFFFFFFFUL)
-			continue;
-		/*
-		 *	Don't MCR over reserved space. Ignore the ISA hole
-		 *	we frob around that catastrophy already
-		 */
-		 			
-		if (e820.map[i].type == E820_RESERVED)
-		{
-			if(e820.map[i].addr >= 0x100000UL && e820.map[i].addr < clip)
-				clip = e820.map[i].addr;
-			continue;
-		}
-		start = e820.map[i].addr;
-		end = e820.map[i].addr + e820.map[i].size;
-		if (start >= end)
-			continue;
-		if (end > top)
-			top = end;
-	}
-	/* Everything below 'top' should be RAM except for the ISA hole.
-	   Because of the limited MCR's we want to map NV/ACPI into our
-	   MCR range for gunk in RAM 
-	   
-	   Clip might cause us to MCR insufficient RAM but that is an
-	   acceptable failure mode and should only bite obscure boxes with
-	   a VESA hole at 15Mb
-	   
-	   The second case Clip sometimes kicks in is when the EBDA is marked
-	   as reserved. Again we fail safe with reasonable results
-	*/
-	
-	if(top>clip)
-		top=clip;
-		
-	return top;
-}
-
-/*
- *	Compute a set of MCR's to give maximum coverage
- */
-
-static int __init winchip_mcr_compute(int nr, int key)
-{
-	u32 mem = ramtop();
-	u32 root = power2(mem);
-	u32 base = root;
-	u32 top = root;
-	u32 floor = 0;
-	int ct = 0;
-	
-	while(ct<nr)
-	{
-		u32 fspace = 0;
-
-		/*
-		 *	Find the largest block we will fill going upwards
-		 */
-
-		u32 high = power2(mem-top);	
-
-		/*
-		 *	Find the largest block we will fill going downwards
-		 */
-
-		u32 low = base/2;
-
-		/*
-		 *	Don't fill below 1Mb going downwards as there
-		 *	is an ISA hole in the way.
-		 */		
-		 
-		if(base <= 1024*1024)
-			low = 0;
-			
-		/*
-		 *	See how much space we could cover by filling below
-		 *	the ISA hole
-		 */
-		 
-		if(floor == 0)
-			fspace = 512*1024;
-		else if(floor ==512*1024)
-			fspace = 128*1024;
-
-		/* And forget ROM space */
-		
-		/*
-		 *	Now install the largest coverage we get
-		 */
-		 
-		if(fspace > high && fspace > low)
-		{
-			winchip_mcr_insert(ct, floor, fspace, key);
-			floor += fspace;
-		}
-		else if(high > low)
-		{
-			winchip_mcr_insert(ct, top, high, key);
-			top += high;
-		}
-		else if(low > 0)
-		{
-			base -= low;
-			winchip_mcr_insert(ct, base, low, key);
-		}
-		else break;
-		ct++;
-	}
-	/*
-	 *	We loaded ct values. We now need to set the mask. The caller
-	 *	must do this bit.
-	 */
-	 
-	return ct;
-}
-
-static void __init winchip_create_optimal_mcr(void)
-{
-	int i;
-	/*
-	 *	Allocate up to 6 mcrs to mark as much of ram as possible
-	 *	as write combining and weak write ordered.
-	 *
-	 *	To experiment with: Linux never uses stack operations for 
-	 *	mmio spaces so we could globally enable stack operation wc
-	 *
-	 *	Load the registers with type 31 - full write combining, all
-	 *	writes weakly ordered.
-	 */
-	int used = winchip_mcr_compute(6, 31);
-
-	/*
-	 *	Wipe unused MCRs
-	 */
-	 
-	for(i=used;i<8;i++)
-		wrmsr(MSR_IDT_MCR0+i, 0, 0);
-}
-
-static void __init winchip2_create_optimal_mcr(void)
-{
-	u32 lo, hi;
-	int i;
-
-	/*
-	 *	Allocate up to 6 mcrs to mark as much of ram as possible
-	 *	as write combining, weak store ordered.
-	 *
-	 *	Load the registers with type 25
-	 *		8	-	weak write ordering
-	 *		16	-	weak read ordering
-	 *		1	-	write combining
-	 */
-
-	int used = winchip_mcr_compute(6, 25);
-	
-	/*
-	 *	Mark the registers we are using.
-	 */
-	 
-	rdmsr(MSR_IDT_MCR_CTRL, lo, hi);
-	for(i=0;i<used;i++)
-		lo|=1<<(9+i);
-	wrmsr(MSR_IDT_MCR_CTRL, lo, hi);
-	
-	/*
-	 *	Wipe unused MCRs
-	 */
-	 
-	for(i=used;i<8;i++)
-		wrmsr(MSR_IDT_MCR0+i, 0, 0);
-}
-
-/*
- *	Handle the MCR key on the Winchip 2.
- */
-
-static void __init winchip2_unprotect_mcr(void)
-{
-	u32 lo, hi;
-	u32 key;
-	
-	rdmsr(MSR_IDT_MCR_CTRL, lo, hi);
-	lo&=~0x1C0;	/* blank bits 8-6 */
-	key = (lo>>17) & 7;
-	lo |= key<<6;	/* replace with unlock key */
-	wrmsr(MSR_IDT_MCR_CTRL, lo, hi);
-}
-
-static void __init winchip2_protect_mcr(void)
-{
-	u32 lo, hi;
-	
-	rdmsr(MSR_IDT_MCR_CTRL, lo, hi);
-	lo&=~0x1C0;	/* blank bits 8-6 */
-	wrmsr(MSR_IDT_MCR_CTRL, lo, hi);
-}
-	
-#endif
 
 static void __init init_centaur(struct cpuinfo_x86 *c)
 {

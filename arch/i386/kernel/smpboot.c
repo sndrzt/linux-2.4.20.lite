@@ -125,7 +125,7 @@ static unsigned long __init setup_trampoline(void)
  */
 void __init smp_alloc_memory(void)
 {
-	trampoline_base = (void *) alloc_bootmem_low_pages(PAGE_SIZE);
+	trampoline_base = (void *) __alloc_bootmem(PAGE_SIZE, PAGE_SIZE, 0);
 	/*
 	 * Has to be in very low memory so we can execute
 	 * real-mode AP code.

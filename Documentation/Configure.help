@@ -2323,13 +2323,6 @@ R10000
 CONFIG_CPU_R10000
   MIPS Technologies R10000-series processors.
 
-Discontiguous Memory Support
-CONFIG_DISCONTIGMEM
-  Say Y to support efficient handling of discontiguous physical memory,
-  for architectures which are either NUMA (Non-Uniform Memory Access)
-  or have huge holes in the physical address space for other reasons.
-  See <file:Documentation/vm/numa> for more.
-
 Mapped kernel support
 CONFIG_MAPPED_KERNEL
   Change the way a Linux kernel is loaded unto memory on a MIPS64

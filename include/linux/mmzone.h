@@ -13,11 +13,7 @@
  * Free memory management - zoned buddy allocator.
  */
 
-#ifndef CONFIG_FORCE_MAX_ZONEORDER
 #define MAX_ORDER 10
-#else
-#define MAX_ORDER CONFIG_FORCE_MAX_ZONEORDER
-#endif
 
 struct free_area {
 	struct list_head	free_list;
@@ -211,23 +207,9 @@ static inline struct pm_zone *next_zone(struct pm_zone *zone)
 #define for_each_zone(zone) \
 	for(zone = nod_list->node_zones; zone; zone = next_zone(zone))
 
-
-#ifndef CONFIG_DISCONTIGMEM
-
 #define NODE_DATA(nid)		(&contig_pm_node)
 #define NODE_MEM_MAP(nid)	pg_map
 #define MAX_NR_NODES		1
-
-#else /* !CONFIG_DISCONTIGMEM */
-
-#include <asm/mmzone.h>
-
-/* page->zone is currently 8 bits ... */
-#ifndef MAX_NR_NODES
-#define MAX_NR_NODES		(255 / MAX_NR_ZONES)
-#endif
-
-#endif /* !CONFIG_DISCONTIGMEM */
 
 #define MAP_ALIGN(x)	((((x) % sizeof(struct page)) == 0) ? (x) : ((x) + \
 		sizeof(struct page) - ((x) % sizeof(struct page))))

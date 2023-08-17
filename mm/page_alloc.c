@@ -241,13 +241,11 @@ static struct page * rmqueue(struct pm_zone *zone, unsigned int order)
 	return NULL;
 }
 
-#ifndef CONFIG_DISCONTIGMEM
 struct page *_alloc_pages(unsigned int gfp_mask, unsigned int order)
 {
 	return __alloc_pages(gfp_mask, order,
 		contig_pm_node.node_zonelists+(gfp_mask & GFP_ZONEMASK));
 }
-#endif
 
 static struct page * FASTCALL(balance_classzone(struct pm_zone *, unsigned int, unsigned int, int *));
 static struct page * balance_classzone(struct pm_zone * classzone, unsigned int gfp_mask, unsigned int order, int * freed)

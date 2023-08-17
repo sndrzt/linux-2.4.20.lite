@@ -423,7 +423,6 @@ extern struct page * pg_map;
  */
 extern struct page * FASTCALL(_alloc_pages(unsigned int gfp_mask, unsigned int order));
 extern struct page * FASTCALL(__alloc_pages(unsigned int gfp_mask, unsigned int order, struct pm_zonelist *zonelist));
-extern struct page * alloc_pages_node(int nid, unsigned int gfp_mask, unsigned int order);
 
 static inline struct page * alloc_pages(unsigned int gfp_mask, unsigned int order)
 {
@@ -461,7 +460,6 @@ extern void FASTCALL(free_pages(unsigned long addr, unsigned int order));
 #define free_page(addr) free_pages((addr),0)
 
 extern void show_free_areas(void);
-extern void show_free_areas_node(struct pm_node *pmnod);
 
 extern void clear_page_tables(struct mm_struct *, unsigned long, int);
 

@@ -147,25 +147,17 @@ extern unsigned long blk_max_low_pfn, blk_max_pfn;
 
 extern void blk_queue_bounce_limit(request_queue_t *, u64);
 
-#ifdef CONFIG_HIGHMEM
 extern struct buffer_head *create_bounce(int, struct buffer_head *);
 extern inline struct buffer_head *blk_queue_bounce(request_queue_t *q, int rw,
 						   struct buffer_head *bh)
 {
 	struct page *page = bh->b_page;
 
-#ifndef CONFIG_DISCONTIGMEM
 	if (page - pg_map <= q->bounce_pfn)
-#else
-	if ((page - page_zone(page)->zone_pg_map) + (page_zone(page)->zone_start_paddr >> PAGE_SHIFT) <= q->bounce_pfn)
-#endif
 		return bh;
 
 	return create_bounce(rw, bh);
 }
-#else
-#define blk_queue_bounce(q, rw, bh)	(bh)
-#endif
 
 #define bh_phys(bh)		(page_to_phys((bh)->b_page) + bh_offset((bh)))
 

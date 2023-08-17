@@ -195,7 +195,7 @@ static int __init com20020isa_setup(char *s)
 	s = get_options(s, 8, ints);
 	if (!ints[0])
 		return 1;
-	dev = alloc_bootmem(sizeof(struct net_device) + sizeof(struct arcnet_local));
+	dev = __alloc_bootmem(sizeof(struct net_device) + sizeof(struct arcnet_local), SMP_CACHE_BYTES, __pa(MAX_DMA_ADDRESS));
 	memset(dev, 0, sizeof(struct net_device) + sizeof(struct arcnet_local));
 	lp = dev->priv = (struct arcnet_local *) (dev + 1);
 	dev->init = com20020isa_probe;

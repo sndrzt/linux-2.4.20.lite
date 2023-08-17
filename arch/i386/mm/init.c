@@ -71,7 +71,6 @@ int do_check_pgt_cache(int low, int high)
  * around without checking the pgd every time.
  */
 
-#if CONFIG_HIGHMEM
 pte_t *kmap_pte;
 pgprot_t kmap_prot;
 
@@ -88,7 +87,6 @@ void __init kmap_init(void)
 
 	kmap_prot = PAGE_KERNEL;
 }
-#endif /* CONFIG_HIGHMEM */
 
 void show_mem(void)
 {
@@ -207,10 +205,6 @@ static void __init pagetable_init (void)
 	end = (unsigned long)__va(max_low_pfn*PAGE_SIZE);
 
 	pgd_base = swapper_pg_dir;
-#if CONFIG_X86_PAE
-	for (i = 0; i < PTRS_PER_PGD; i++)
-		set_pgd(pgd_base + i, __pgd(1 + __pa(empty_zero_page)));
-#endif
 	i = __pgd_offset(PAGE_OFFSET);
 	pgd = pgd_base + i;
 
@@ -218,12 +212,7 @@ static void __init pagetable_init (void)
 		vaddr = i*PGDIR_SIZE;
 		if (end && (vaddr >= end))
 			break;
-#if CONFIG_X86_PAE
-		pmd = (pmd_t *) __alloc_bootmem(PAGE_SIZE, PAGE_SIZE, 0);
-		set_pgd(pgd, __pgd(__pa(pmd) + 0x1));
-#else
 		pmd = (pmd_t *)pgd;
-#endif
 		if (pmd != pmd_offset(pgd, 0))
 			BUG();
 		for (j = 0; j < PTRS_PER_PMD; pmd++, j++) {
@@ -267,7 +256,6 @@ static void __init pagetable_init (void)
 	vaddr = __fix_to_virt(__end_of_fixed_addresses - 1) & PMD_MASK;
 	fixrange_init(vaddr, 0, pgd_base);
 
-#if CONFIG_HIGHMEM
 	/*
 	 * Permanent kmaps:
 	 */
@@ -278,18 +266,6 @@ static void __init pagetable_init (void)
 	pmd = pmd_offset(pgd, vaddr);
 	pte = pte_offset(pmd, vaddr);
 	pkmap_page_table = pte;
-#endif
-
-#if CONFIG_X86_PAE
-	/*
-	 * Add low memory identity-mappings - SMP needs it when
-	 * starting up on an AP from real-mode. In the non-PAE
-	 * case we already have these mappings through head.S.
-	 * All user-space mappings are explicitly cleared after
-	 * SMP startup.
-	 */
-	pgd_base[0] = pgd_base[USER_PTRS_PER_PGD];
-#endif
 }
 
 void __init zap_low_mappings (void)
@@ -324,9 +300,7 @@ static void __init zone_sizes_init(void)
 	else {
 		zones_size[ZONE_DMA] = max_dma;
 		zones_size[ZONE_NORMAL] = low - max_dma;
-#ifdef CONFIG_HIGHMEM
 		zones_size[ZONE_HIGHMEM] = high - low;
-#endif
 	}
 	free_area_init(zones_size);
 }
@@ -344,20 +318,10 @@ void __init paging_init(void)
 
 	load_cr3(swapper_pg_dir);	
 
-#if CONFIG_X86_PAE
-	/*
-	 * We will bail out later - printk doesnt work right now so
-	 * the user would just see a hanging kernel.
-	 */
-	if (cpu_has_pae)
-		set_in_cr4(X86_CR4_PAE);
-#endif
-
 	__flush_tlb_all();
 
-#ifdef CONFIG_HIGHMEM
 	kmap_init();
-#endif
+
 	zone_sizes_init();
 }
 
@@ -436,7 +400,6 @@ static inline int page_kills_ppro(unsigned long pagenr)
 	return 0;
 }
 
-#ifdef CONFIG_HIGHMEM
 void __init one_highpage_init(struct page *page, int pfn, int bad_ppro)
 {
 	if (!page_is_ram(pfn)) {
@@ -455,17 +418,12 @@ void __init one_highpage_init(struct page *page, int pfn, int bad_ppro)
 	__free_page(page);
 	totalhigh_pages++;
 }
-#endif /* CONFIG_HIGHMEM */
 
 static void __init set_max_mapnr_init(void)
 {
-#ifdef CONFIG_HIGHMEM
         highmem_start_page = pg_map + highstart_pfn;
         max_mapnr = num_physpages = highend_pfn;
         num_mappedpages = max_low_pfn;
-#else
-        max_mapnr = num_mappedpages = num_physpages = max_low_pfn;
-#endif
 }
 
 static int __init free_pages_init(void)
@@ -581,7 +539,6 @@ void free_initmem(void)
 	printk (KERN_INFO "Freeing unused kernel memory: %dk freed\n", (&__init_end - &__init_begin) >> 10);
 }
 
-#ifdef CONFIG_BLK_DEV_INITRD
 void free_initrd_mem(unsigned long start, unsigned long end)
 {
 	if (start < end)
@@ -593,7 +550,6 @@ void free_initrd_mem(unsigned long start, unsigned long end)
 		totalram_pages++;
 	}
 }
-#endif
 
 void si_meminfo(struct sysinfo *val)
 {
@@ -607,16 +563,3 @@ void si_meminfo(struct sysinfo *val)
 	return;
 }
 
-#if defined(CONFIG_X86_PAE)
-struct kmem_cache_s *pae_pgd_cachep;
-void __init pgtable_cache_init(void)
-{
-	/*
-	 * PAE pgds must be 16-byte aligned:
-	 */
-	pae_pgd_cachep = kmem_cache_create("pae_pgd", 32, 0,
-		SLAB_HWCACHE_ALIGN | SLAB_MUST_HWCACHE_ALIGN, NULL, NULL);
-	if (!pae_pgd_cachep)
-		panic("init_pae(): Cannot alloc pae_pgd SLAB cache");
-}
-#endif /* CONFIG_X86_PAE */

@@ -1031,7 +1031,7 @@ static void __init register_memory(unsigned long max_low_pfn)
 		struct resource *res;
 		if (e820.map[i].addr + e820.map[i].size > 0x100000000ULL)
 			continue;
-		res = alloc_bootmem_low(sizeof(struct resource));
+		res = __alloc_bootmem(sizeof(struct resource), SMP_CACHE_BYTES, 0);
 		switch (e820.map[i].type) {
 		case E820_RAM:	res->name = "System RAM"; break;
 		case E820_ACPI:	res->name = "ACPI Tables"; break;

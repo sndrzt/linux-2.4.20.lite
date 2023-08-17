@@ -365,7 +365,7 @@ asmlinkage void __init start_kernel(void)
 		prof_len >>= prof_shift;
 		
 		size = prof_len * sizeof(unsigned int) + PAGE_SIZE-1;
-		prof_buffer = (unsigned int *) alloc_bootmem(size);
+		prof_buffer = (unsigned int *) __alloc_bootmem(size, SMP_CACHE_BYTES, __pa(MAX_DMA_ADDRESS));
 	}
 
 	kmem_cache_init();

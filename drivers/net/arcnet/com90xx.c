@@ -679,7 +679,7 @@ static int __init com90xx_setup(char *s)
 		printk("com90xx: Disabled.\n");
 		return 1;
 	}
-	dev = alloc_bootmem(sizeof(struct net_device));
+	dev = __alloc_bootmem(sizeof(struct net_device), SMP_CACHE_BYTES, __pa(MAX_DMA_ADDRESS));
 	memset(dev, 0, sizeof(struct net_device));
 	dev->init = com90xx_probe;
 

@@ -432,7 +432,7 @@ static int __init com90io_setup(char *s)
 	s = get_options(s, 4, ints);
 	if (!ints[0])
 		return 0;
-	dev = alloc_bootmem(sizeof(struct net_device));
+	dev = __alloc_bootmem(sizeof(struct net_device), SMP_CACHE_BYTES, __pa(MAX_DMA_ADDRESS));
 	memset(dev, 0, sizeof(struct net_device));
 	dev->init = com90io_probe;
 

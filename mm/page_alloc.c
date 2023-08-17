@@ -611,9 +611,6 @@ static inline void build_zonelists(struct pm_node *pmnod)
 			case ZONE_HIGHMEM:
 				zone = pmnod->node_zones + ZONE_HIGHMEM;
 				if (zone->size) {
-#ifndef CONFIG_HIGHMEM
-					BUG();
-#endif
 					zonelist->zones[j++] = zone;
 				}
 			case ZONE_NORMAL:

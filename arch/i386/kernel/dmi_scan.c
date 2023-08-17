@@ -166,7 +166,7 @@ static void __init dmi_save_ident(struct dmi_header *dm, int slot, int string)
 		return;
 	if (dmi_ident[slot])
 		return;
-	dmi_ident[slot] = alloc_bootmem(strlen(p)+1);
+	dmi_ident[slot] = __alloc_bootmem(strlen(p)+1, SMP_CACHE_BYTES, __pa(MAX_DMA_ADDRESS));
 	if(dmi_ident[slot])
 		strcpy(dmi_ident[slot], p);
 	else

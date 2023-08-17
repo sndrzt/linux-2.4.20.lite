@@ -661,7 +661,7 @@ void __init init_apic_mappings(void)
 	 * one for the IO-APIC.
 	 */
 	if (!smp_found_config && detect_init_APIC()) {
-		apic_phys = (unsigned long) alloc_bootmem_pages(PAGE_SIZE);
+		apic_phys = (unsigned long) __alloc_bootmem(PAGE_SIZE, PAGE_SIZE, __pa(MAX_DMA_ADDRESS));
 		apic_phys = __pa(apic_phys);
 	} else
 		apic_phys = mp_lapic_addr;
@@ -693,7 +693,7 @@ void __init init_apic_mappings(void)
 				}
 			} else {
 fake_ioapic_page:
-				ioapic_phys = (unsigned long) alloc_bootmem_pages(PAGE_SIZE);
+				ioapic_phys = (unsigned long) __alloc_bootmem(PAGE_SIZE, PAGE_SIZE, __pa(MAX_DMA_ADDRESS));
 				ioapic_phys = __pa(ioapic_phys);
 			}
 			set_fixmap_nocache(idx, ioapic_phys);

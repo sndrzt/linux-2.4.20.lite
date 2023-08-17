@@ -70,17 +70,7 @@ extern unsigned long pgkern_mask;
 /*
  * Do not check the PGE bit unnecesserily if this is a PPro+ kernel.
  */
-#ifdef CONFIG_X86_PGE
 # define __flush_tlb_all() __flush_tlb_global()
-#else
-# define __flush_tlb_all()						\
-	do {								\
-		if (cpu_has_pge)					\
-			__flush_tlb_global();				\
-		else							\
-			__flush_tlb();					\
-	} while (0)
-#endif
 
 #define __flush_tlb_single(addr) \
 	__asm__ __volatile__("invlpg %0": :"m" (*(char *) addr))

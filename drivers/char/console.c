@@ -2499,11 +2499,11 @@ void __init con_init(void)
 	 */
 	for (currcons = 0; currcons < MIN_NR_CONSOLES; currcons++) {
 		vc_cons[currcons].d = (struct vc_data *)
-				alloc_bootmem(sizeof(struct vc_data));
+				__alloc_bootmem(sizeof(struct vc_data), SMP_CACHE_BYTES, __pa(MAX_DMA_ADDRESS));
 		vt_cons[currcons] = (struct vt_struct *)
-				alloc_bootmem(sizeof(struct vt_struct));
+				__alloc_bootmem(sizeof(struct vt_struct), SMP_CACHE_BYTES, __pa(MAX_DMA_ADDRESS));
 		visual_init(currcons, 1);
-		screenbuf = (unsigned short *) alloc_bootmem(screenbuf_size);
+		screenbuf = (unsigned short *) __alloc_bootmem(screenbuf_size, SMP_CACHE_BYTES, __pa(MAX_DMA_ADDRESS));
 		kmalloced = 0;
 		vc_init(currcons, video_num_lines, video_num_columns, 
 			currcons || !sw->con_save_screen);

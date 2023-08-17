@@ -35,7 +35,7 @@ struct pm_node *nod_list;
  * struct zone corresponding to a given zone number (ZONE_DMA,
  * ZONE_NORMAL, or ZONE_HIGHMEM).
  */
-struct pm_zone *zone_table[MAX_NR_ZONES*MAX_NR_NODES];
+struct pm_zone *zone_table[MAX_NR_ZONES];
 EXPORT_SYMBOL(zone_table);
 
 static char *zone_names[MAX_NR_ZONES] = { "DMA", "Normal", "HighMem" };

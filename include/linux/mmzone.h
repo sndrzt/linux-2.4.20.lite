@@ -121,14 +121,14 @@ struct pm_zonelist {
  * XXX: we need to move the global memory statistics (active_list, ...)
  *      into the struct pm_node to properly support NUMA.
  */
-struct bootmem_data;
+struct bootmem;
 struct pm_node {
 	struct pm_zone node_zones[MAX_NR_ZONES];
 	struct pm_zonelist node_zonelists[GFP_ZONEMASK+1];
 	int nr_zones;
 	struct page *pg_map;
 	unsigned long *valid_addr_bitmap;
-	struct bootmem_data *bdata;
+	struct bootmem *botm;
 	unsigned long node_start_paddr;
 	unsigned long node_start_mapnr;
 	unsigned long node_size;
@@ -206,10 +206,6 @@ static inline struct pm_zone *next_zone(struct pm_zone *zone)
  */
 #define for_each_zone(zone) \
 	for(zone = nod_list->node_zones; zone; zone = next_zone(zone))
-
-#define NODE_DATA(nid)		(&contig_pm_node)
-#define NODE_MEM_MAP(nid)	pg_map
-#define MAX_NR_NODES		1
 
 #define MAP_ALIGN(x)	((((x) % sizeof(struct page)) == 0) ? (x) : ((x) + \
 		sizeof(struct page) - ((x) % sizeof(struct page))))

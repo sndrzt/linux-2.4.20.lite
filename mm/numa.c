@@ -11,6 +11,6 @@
 
 int numnodes = 1;	/* Initialized for UMA platforms */
 
-static struct bootmem_data contig_bootmem_data;
-struct pm_node contig_pm_node = { bdata: &contig_bootmem_data };
+static struct bootmem contig_botm;
+struct pm_node contig_pm_node = { botm: &contig_botm };
 

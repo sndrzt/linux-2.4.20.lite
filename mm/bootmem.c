@@ -308,7 +308,7 @@ void * __init __alloc_bootmem (unsigned long size, unsigned long align, unsigned
 	struct pm_node *pmnod;
 	void *ptr;
 
-	for_each_pmnod(pmnod)
+	for (pmnod = nod_list; pmnod; pmnod = pmnod->node_next)
 		if ((ptr = __alloc_bootmem_core(pmnod->botm, size,
 						align, goal)))
 			return(ptr);

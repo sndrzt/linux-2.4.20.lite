@@ -154,21 +154,6 @@ extern void free_area_init_core(int nid, struct pm_node *pmnod, struct page **gm
 
 extern struct pm_node contig_pm_node;
 
-/**
- * for_each_pmnod - helper macro to iterate over all nodes
- * @pmnod - struct pm_node * variable
- *
- * Meant to help with common loops of the form
- * pmnod = nod_list;
- * while(pmnod) {
- * 	...
- * 	pmnod = pmnod->node_next;
- * }
- */
-#define for_each_pmnod(pmnod) \
-	for (pmnod = nod_list; pmnod; pmnod = pmnod->node_next)
-
-
 /*
  * next_zone - helper magic for for_each_zone()
  * Thanks to William Lee Irwin III for this piece of ingenuity.
@@ -188,24 +173,6 @@ static inline struct pm_zone *next_zone(struct pm_zone *zone)
 
 	return zone;
 }
-
-/**
- * for_each_zone - helper macro to iterate over all memory zones
- * @zone - struct pm_zone * variable
- *
- * The user only needs to declare the zone variable, for_each_zone
- * fills it in. This basically means for_each_zone() is an
- * easier to read version of this piece of code:
- *
- * for(pmnod = nod_list; pmnod; pmnod = pmnod->node_next)
- * 	for(i = 0; i < MAX_NR_ZONES; ++i) {
- * 		struct pm_zone * z = pmnod->node_zones + i;
- * 		...
- * 	}
- * }
- */
-#define for_each_zone(zone) \
-	for(zone = nod_list->node_zones; zone; zone = next_zone(zone))
 
 #define MAP_ALIGN(x)	((((x) % sizeof(struct page)) == 0) ? (x) : ((x) + \
 		sizeof(struct page) - ((x) % sizeof(struct page))))

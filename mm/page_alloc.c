@@ -466,7 +466,7 @@ unsigned int nr_free_pages (void)
 	unsigned int sum = 0;
 	struct pm_zone *zone;
 
-	for_each_zone(zone)
+	for(zone = nod_list->node_zones; zone; zone = next_zone(zone))
 		sum += zone->free_pages;
 
 	return sum;
@@ -480,7 +480,7 @@ unsigned int nr_free_buffer_pages (void)
 	struct pm_node *pmnod;
 	unsigned int sum = 0;
 
-	for_each_pmnod(pmnod) {
+	for (pmnod = nod_list; pmnod; pmnod = pmnod->node_next) {
 		struct pm_zonelist *zonelist = pmnod->node_zonelists + (GFP_USER & GFP_ZONEMASK);
 		struct pm_zone **zonep = zonelist->zones;
 		struct pm_zone *zone;
@@ -502,7 +502,7 @@ unsigned int nr_free_highpages (void)
 	struct pm_node *pmnod;
 	unsigned int pages = 0;
 
-	for_each_pmnod(pmnod)
+	for (pmnod = nod_list; pmnod; pmnod = pmnod->node_next)
 		pages += pmnod->node_zones[ZONE_HIGHMEM].free_pages;
 
 	return pages;

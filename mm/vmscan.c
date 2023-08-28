@@ -614,7 +614,7 @@ int try_to_free_pages(unsigned int gfp_mask)
 	pf_free_pages = current->flags & PF_FREE_PAGES;
 	current->flags &= ~PF_FREE_PAGES;
 
-	for_each_pmnod(pmnod) {
+	for (pmnod = nod_list; pmnod; pmnod = pmnod->node_next) {
 		zonelist = pmnod->node_zonelists + (gfp_mask & GFP_ZONEMASK);
 		error |= try_to_free_pages_zone(zonelist->zones[0], gfp_mask);
 	}
@@ -672,7 +672,7 @@ static void kswapd_balance(void)
 	do {
 		need_more_balance = 0;
 
-		for_each_pmnod(pmnod)
+		for (pmnod = nod_list; pmnod; pmnod = pmnod->node_next)
 			need_more_balance |= kswapd_balance_pmnod(pmnod);
 	} while (need_more_balance);
 }
@@ -696,7 +696,7 @@ static int kswapd_can_sleep(void)
 {
 	struct pm_node * pmnod;
 
-	for_each_pmnod(pmnod) {
+	for (pmnod = nod_list; pmnod; pmnod = pmnod->node_next) {
 		if (!kswapd_can_sleep_pmnod(pmnod))
 			return 0;
 	}

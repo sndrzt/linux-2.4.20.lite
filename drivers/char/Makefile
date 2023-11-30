@@ -288,6 +288,7 @@ subdir-$(CONFIG_MWAVE) += mwave
 ifeq ($(CONFIG_MWAVE),y)
   obj-y += mwave/mwave.o
 endif
+obj-$(CONFIG_RBTREE_TEST) += rbtree_test.o
 
 include $(TOPDIR)/Rules.make
 
